@@ -10,7 +10,7 @@ build_android:
   script:
     - yes | flutter doctor --android-licenses || true
     - flutter pub run flutter_native_splash:create
-    - flutter build appbundle --release
+    - flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info
     - mv build/app/outputs/bundle/release/app-release.aab android/dulno.aab
   artifacts:
     paths:

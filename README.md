@@ -5,7 +5,7 @@
 
 </div>
 
-This app can be used by Dulno customers to automate their local devices. The app is not a direct representation of the Dulno panels but implements its own functions. It is based on Flutter and will be available for many different platforms in the course of development
+The app used by our customers to access and manage their digital cards from our partners via their smartphone.
 
 ## Status
 
