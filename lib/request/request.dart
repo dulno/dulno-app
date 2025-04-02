@@ -16,7 +16,8 @@ class Request {
   }
 
   Request.post({
-    required url, Map<String, String> this.headers = const {},
+    required url,
+    Map<String, String> this.headers = const {},
     Map<String, String> this.body = const {},
   }) {
     this.url = "https://${EnvironmentOptions.environment.endpoint}/v1$url";
@@ -40,8 +41,8 @@ class Request {
       return await http.get(Uri.parse(url), headers: headers);
     } else if (method == "POST") {
       Map<String, String> body = Map.from(this.body);
-      return await http.post(Uri.parse(url), headers: headers,
-        body: jsonEncode(body));
+      return await http.post(Uri.parse(url),
+          headers: headers, body: jsonEncode(body));
     }
   }
 }

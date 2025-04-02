@@ -12,5 +12,6 @@ enum DulnoEnvironment {
   final String _endpoint;
 
   String get domain => _domain;
+
   String get endpoint => _endpoint;
 }

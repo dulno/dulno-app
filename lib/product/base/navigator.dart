@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProductNavigator extends StatelessWidget implements PreferredSizeWidget {
@@ -6,18 +5,31 @@ class ProductNavigator extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Color(0xFFFFFFFF),
-      surfaceTintColor: Colors.transparent,
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.account_circle, size: 40),
-          color: Color(0xFFEDEDED),
-          onPressed: () {
-
-          },
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.black12, width: 1), // Top Border
         ),
-      ],
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Color(0xFFEDEDED),
+        elevation: 10,
+        type: BottomNavigationBarType.fixed,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle), // Empty space for floating button
+            label: "Stamp",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile",
+          ),
+        ],
+      ),
     );
   }
 
