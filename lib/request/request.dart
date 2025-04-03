@@ -5,33 +5,29 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class Request {
-  var url;
-  var method;
-  var headers;
-  var body;
+  final String url;
+  final String method;
+  final Map<String, String> headers;
+  final Map<String, String> body;
 
-  Request.get({required url, Map<String, String> this.headers = const {}}) {
-    this.url = "https://${EnvironmentOptions.environment.endpoint}/v1$url";
-    method = "GET";
-  }
+  Request.get(
+      {required String url, this.headers = const {}, this.body = const {}})
+      : url = "https://${EnvironmentOptions.environment.endpoint}/v1$url",
+        method = "GET";
 
-  Request.post({
-    required url,
-    Map<String, String> this.headers = const {},
-    Map<String, String> this.body = const {},
-  }) {
-    this.url = "https://${EnvironmentOptions.environment.endpoint}/v1$url";
-    method = "POST";
-  }
+  Request.post(
+      {required String url, this.headers = const {}, this.body = const {}})
+      : url = "https://${EnvironmentOptions.environment.endpoint}/v1$url",
+        method = "POST";
 
   send() async {
     Map<String, String> headers = Map.from(this.headers);
     headers["Content-Type"] = "application/json; charset=UTF-8";
-    const storage = FlutterSecureStorage();
-    var token = await storage.read(key: "token") ?? "";
+    /*const storage = FlutterSecureStorage();
+    String token = await storage.read(key: "token") ?? "";
     if (token != "") {
       headers["Authorization"] = "Bearer $token";
-    }
+    }*/
     var response = await generateResponse(headers);
     return response;
   }

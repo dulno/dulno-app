@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dulno/config/firebase_options.dart';
-import 'package:dulno/product/home/home.dart';
+import 'package:dulno/product/base/page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class DulnoApp extends StatelessWidget {
                 colorScheme: ColorScheme.light(
                     primary: Color(0xFF2196F3), background: Color(0xFFE8E8E8)),
               ),
-              home: HomePage(),
+              home: ProductPage(),
               debugShowCheckedModeBanner: false,
               localizationsDelegates: Locales.delegates,
               supportedLocales: Locales.supportedLocales,

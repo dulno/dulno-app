@@ -1,7 +1,8 @@
+import 'package:dulno/product/profile/profile.dart';
 import 'package:flutter/material.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
-  ProductHeader({super.key});
+  const ProductHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,10 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.account_circle, size: 40),
           color: Color(0xFFB3B3B3),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ProfilePage()));
+          },
         ),
       ],
       bottom: PreferredSize(
