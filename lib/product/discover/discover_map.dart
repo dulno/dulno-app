@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-
-import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:latlong2/latlong.dart';
 
 class OSMMap extends StatefulWidget {
   const OSMMap(
       {super.key,
-        required this.data,
-        required this.mapController,
-        required this.latitude,
-        required this.longitude,
-        required this.radius,
-        this.isFirstOpen = true});
+      required this.data,
+      required this.mapController,
+      required this.latitude,
+      required this.longitude,
+      required this.radius,
+      this.isFirstOpen = true});
 
   final List<LatLng> data;
   final MapController mapController;
@@ -49,7 +48,6 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
 
   // Control visibility of the bottom sheet using ValueNotifier
   final ValueNotifier<bool> _showBottomSheet = ValueNotifier(false);
-
 
   double _calculateZoom() {
     if (widget.radius <= 5) return 15; // Close zoom for very small radius
@@ -149,7 +147,6 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
     // Animate the map to widget.latitude and widget.longitude if the flag is true
     if (shouldAnimateToWidgetPosition) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -162,84 +159,54 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
     final List<Marker> markers = widget.data
         .map(
           (coordinates) => Marker(
-        point: coordinates,
-        width: 50.0,
-        height: 50.0,
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              shouldAnimateToWidgetPosition =
-              false; // Disable widget animation
-            });
+            point: coordinates,
+            height: 100.0,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  shouldAnimateToWidgetPosition =
+                      false; // Disable widget animation
+                });
 
-            // Animate the map to the selected marker's location
-            _animateMapMove(coordinates, targetElementZoom);
-          },
-          child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Icon(Icons.location_pin)),
-        ),
-      ),
-    )
+                // Animate the map to the selected marker's location
+                _animateMapMove(coordinates, targetElementZoom);
+              },
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Image.asset(
+                  'assets/images/pin.png',
+                  height: 100,
+                ),
+              ),
+            ),
+          ),
+        )
         .toList();
 
     return Stack(
+      children: [
+        FlutterMap(
+          mapController: widget.mapController,
+          options: MapOptions(
+              initialCenter: _startCenter,
+              initialZoom: _startZoom,
+              minZoom: 3.0,
+              maxZoom: 18.0,
+              interactionOptions:
+                  InteractionOptions(enableMultiFingerGestureRace: true)),
           children: [
-            FlutterMap(
-              mapController: widget.mapController,
-              options: MapOptions(
-                initialCenter: _startCenter,
-                initialZoom: _startZoom,
-                minZoom: 3.0,
-                maxZoom: 18.0,
-                interactionOptions: InteractionOptions(enableMultiFingerGestureRace: true)
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  userAgentPackageName: '<your_package_name>',
-                  tileProvider: CancellableNetworkTileProvider(),
-                ),
-                MarkerLayer(
-                  markers: markers,
-                ),
-              ],
+            TileLayer(
+              urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+              userAgentPackageName:
+                  'com.dulno.app.kuB0u5QxTkBGK7LptkOxDoRpaZbMN1TZ',
+              tileProvider: CancellableNetworkTileProvider(),
             ),
-            Positioned(
-              right: 15,
-              top: 20,
-              child: Column(
-                children: [
-                  FloatingActionButton(
-                    heroTag: 'mapButtonZoomIn',
-                    onPressed: () {
-                      widget.mapController.move(
-                        widget.mapController.camera.center,
-                        widget.mapController.camera.zoom + 1,
-                      );
-                    },
-                    mini: true,
-                    backgroundColor: Colors.white,
-                    child: const Icon(Icons.add, color: Colors.black,),
-                  ),
-                  const SizedBox(height: 10),
-                  FloatingActionButton(
-                    heroTag: 'mapButtonZoomOut',
-                    onPressed: () {
-                      widget.mapController.move(
-                        widget.mapController.camera.center,
-                        widget.mapController.camera.zoom - 1,
-                      );
-                    },
-                    mini: true,
-                    backgroundColor: Colors.white,
-                    child: const Icon(Icons.remove, color: Colors.black),
-                  ),
-                ],
-              ),
+            MarkerLayer(
+              markers: markers,
             ),
           ],
-
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,8 @@
 {
+  "product.scan.popup.title": "Bereit zum Scannen",
+  "product.scan.popup.description": "Der NFC-Sensor befindet sich meistens mittig im oberen Drittel auf der Rückseite Ihres Smartphones",
+  "product.scan.popup.cancel": "Abbrechen",
+
   "product.card.list.label": "Karten",
 
   "product.discover.label": "Entdecken"

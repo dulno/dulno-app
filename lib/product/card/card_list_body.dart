@@ -1,4 +1,3 @@
-import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/card/card_element.dart';
 import 'package:flutter/material.dart';

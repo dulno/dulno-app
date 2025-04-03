@@ -1,5 +1,3 @@
-import 'package:dulno/product/base/header.dart';
-import 'package:dulno/product/base/navigator.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
