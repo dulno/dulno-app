@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:dulno/product/base/header.dart';
 import 'package:dulno/product/base/navigator.dart';
 import 'package:dulno/product/base/page_body.dart';
-import 'package:dulno/product/card/card_list.dart';
-import 'package:dulno/product/discover/discover.dart';
+import 'package:dulno/product/card/card_list_body.dart';
+import 'package:dulno/product/discover/discover_body.dart';
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _ProductPageState extends State<ProductPage> {
   List<ProductPageBody> pageBodies = [CardListBody(), DiscoverBody()];
 
   void _onItemTapped(int index) {
-    if (_selectedIndex == 1) {
+    if (index == 1) {
       return;
     }
     setState(() {
@@ -66,7 +66,6 @@ class _ShiningFABState extends State<ShiningFAB> with SingleTickerProviderStateM
       animation: _controller,
       builder: (context, child) {
         double glowValue = sin(_controller.value * pi);
-
         return Container(
           height: 90,
           width: 90,
@@ -79,7 +78,7 @@ class _ShiningFABState extends State<ShiningFAB> with SingleTickerProviderStateM
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.blue.withOpacity(0.4 * glowValue),
+                color: Colors.blue.withOpacity(0.6 * glowValue),
                 blurRadius: 20 * glowValue,
                 spreadRadius: 5 * glowValue,
               ),
@@ -87,7 +86,7 @@ class _ShiningFABState extends State<ShiningFAB> with SingleTickerProviderStateM
           ),
           child: FloatingActionButton(
             onPressed: () {},
-            backgroundColor: Color(0xFF2F73CC),
+            backgroundColor: Color.lerp(Color(0xFF316DBC), Color(0xFF207EFA), glowValue),
             shape: CircleBorder(),
             child: Image.asset('assets/images/logo-light.png', width: 65),
           ),

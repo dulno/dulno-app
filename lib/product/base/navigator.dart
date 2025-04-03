@@ -29,7 +29,8 @@ class ProductNavigator extends StatelessWidget implements PreferredSizeWidget {
             selectedItemColor: Colors.black,
             currentIndex: selectedIndex,
             onTap: updateIndex,
-            selectedFontSize: 12,
+            unselectedFontSize: 14,
+            selectedFontSize: 14,
             items: navigationBarItems(context),
           ),
           Positioned(

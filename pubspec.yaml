@@ -43,6 +43,9 @@ dependencies:
   rflutter_alert: ^2.0.7
   url_launcher: ^6.3.1
   skeletonizer: ^1.4.3
+  flutter_map: ^8.1.1
+  flutter_map_cancellable_tile_provider: ^3.1.0
+  latlong2: ^0.9.1
   flutter_native_splash: ^2.4.4
 
 dev_dependencies:
