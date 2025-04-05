@@ -24,7 +24,7 @@ class ProductNavigator extends StatelessWidget implements PreferredSizeWidget {
       child: Stack(
         children: [
           BottomNavigationBar(
-            backgroundColor: Color(0xFFEDEDED),
+            backgroundColor: Colors.white,
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Colors.black,
             currentIndex: selectedIndex,

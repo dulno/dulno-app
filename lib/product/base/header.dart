@@ -7,7 +7,7 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(0xFFEDEDED),
+      backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       title: Image.asset('assets/images/logo-header.png', width: 120),
       centerTitle: true,
