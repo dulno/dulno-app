@@ -41,9 +41,9 @@ class _ProductScanButtonState extends State<ProductScanButton>
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.blue.withOpacity(0.6 * glowValue),
-                blurRadius: 20 * glowValue,
-                spreadRadius: 5 * glowValue,
+                color: Colors.blue.withOpacity(0.6 * min(glowValue + 0.5, 1)),
+                blurRadius: 20 * (glowValue + 0.5),
+                spreadRadius: 5 * (glowValue + 0.5),
               ),
             ],
           ),

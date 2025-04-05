@@ -7,7 +7,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFEDEDED),
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: Icon(Icons.keyboard_backspace),
@@ -25,7 +25,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ),
       ),
-      body: Center(child: Text("Test")),
+      body: Center(child: Text("Coming soon")),
     );
   }
 }

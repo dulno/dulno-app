@@ -1,5 +1,5 @@
 class EnvironmentOptions {
-  static DulnoEnvironment environment = DulnoEnvironment.production;
+  static DulnoEnvironment environment = DulnoEnvironment.staging;
 }
 
 enum DulnoEnvironment {

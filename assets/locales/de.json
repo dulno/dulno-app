@@ -4,6 +4,9 @@
   "product.scan.popup.cancel": "Abbrechen",
 
   "product.card.list.label": "Karten",
+  "product.card.list.login.description": "Sie hatten bereits Stempel?",
+  "product.card.list.login.call": "Jetzt anmelden",
+  "product.card.list.stamp.description": "Zum Stempeln hier klicken",
 
   "product.discover.label": "Entdecken"
 }
