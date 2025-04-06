@@ -1,27 +1,41 @@
 import 'dart:convert';
 
 import 'package:app_settings/app_settings.dart';
+import 'package:dulno/product/base/page.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 
 class ProductNFCScanPopup extends StatefulWidget {
-  const ProductNFCScanPopup({super.key});
+  Function callback;
+  Function currentPageIndex;
+
+  ProductNFCScanPopup(
+      {super.key, required this.callback, required this.currentPageIndex});
 
   @override
-  State<ProductNFCScanPopup> createState() => _ProductNFCScanPopupState();
+  State<ProductNFCScanPopup> createState() => _ProductNFCScanPopupState(
+      callback: callback, currentPageIndex: currentPageIndex);
 }
 
 class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
     with WidgetsBindingObserver {
-  bool _nfcSupported = true;
+  Function callback;
+  Function currentPageIndex;
+  bool nfcSupported = true;
+  bool scanned = false;
+
+  _ProductNFCScanPopupState(
+      {required this.callback, required this.currentPageIndex});
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    checkNFC();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkNFC(context);
+    });
   }
 
   @override
@@ -30,28 +44,33 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
     super.dispose();
   }
 
-  Future<void> checkNFC() async {
+  Future<void> checkNFC(context) async {
     NFCAvailability availability = await FlutterNfcKit.nfcAvailability;
     if (availability == NFCAvailability.disabled) {
       await AppSettings.openAppSettings(type: AppSettingsType.nfc);
     } else if (availability == NFCAvailability.not_supported) {
       setState(() {
-        _nfcSupported = false;
+        nfcSupported = false;
       });
     } else {
-      readNFCTag();
+      readNFCTag(context);
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      checkNFC();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        checkNFC(context);
+      });
     }
   }
 
-  Future<void> readNFCTag() async {
+  Future<void> readNFCTag(context) async {
     var tag = await FlutterNfcKit.poll();
+    setState(() {
+      scanned = true;
+    });
     if (tag.ndefAvailable == true) {
       var records = await FlutterNfcKit.readNDEFRecords();
       if (records.isNotEmpty) {
@@ -65,6 +84,20 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         var response =
             await Request.post(url: "/user/stamp/", body: body).send();
         var responseBody = jsonDecode(response.body);
+        if (currentPageIndex() == 0) {
+          callback();
+          Navigator.pop(context);
+        } else {
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  ProductPage(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
+        }
       }
     }
   }
@@ -77,7 +110,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         mainAxisSize: MainAxisSize.min,
         children: [
           LocaleText(
-            _nfcSupported
+            nfcSupported
                 ? 'product.scan.popup.title'
                 : 'product.scan.unsupported.title',
             textAlign: TextAlign.center,
@@ -86,7 +119,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
           SizedBox(height: 20),
           Builder(
             builder: (context) {
-              if (!_nfcSupported) {
+              if (!nfcSupported) {
                 return Container();
               }
               return CircleAvatar(
@@ -95,15 +128,16 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 45.0,
-                  child:
-                      Image.asset('assets/images/android-nfc.png', width: 75),
+                  child: scanned
+                      ? CircularProgressIndicator()
+                      : Image.asset('assets/images/android-nfc.png', width: 75),
                 ),
               );
             },
           ),
           SizedBox(height: 20),
           LocaleText(
-            _nfcSupported
+            nfcSupported
                 ? 'product.scan.popup.description'
                 : 'product.scan.unsupported.description',
             textAlign: TextAlign.center,

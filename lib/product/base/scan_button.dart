@@ -4,15 +4,25 @@ import 'package:dulno/product/base/scan_popup.dart';
 import 'package:flutter/material.dart';
 
 class ProductScanButton extends StatefulWidget {
-  const ProductScanButton({super.key});
+  Function callback;
+  Function currentPageIndex;
+
+  ProductScanButton(
+      {super.key, required this.callback, required this.currentPageIndex});
 
   @override
-  State<ProductScanButton> createState() => _ProductScanButtonState();
+  State<ProductScanButton> createState() => _ProductScanButtonState(
+      callback: callback, currentPageIndex: currentPageIndex);
 }
 
 class _ProductScanButtonState extends State<ProductScanButton>
     with SingleTickerProviderStateMixin {
+  Function callback;
+  Function currentPageIndex;
   late AnimationController _controller;
+
+  _ProductScanButtonState(
+      {required this.callback, required this.currentPageIndex});
 
   @override
   void initState() {
@@ -71,12 +81,15 @@ class _ProductScanButtonState extends State<ProductScanButton>
           onTap: () {
             Navigator.of(context).pop(); // Close when tapping outside
           },
-          behavior: HitTestBehavior.opaque, // Ensures tap detection outside the child
+          behavior: HitTestBehavior.opaque,
+          // Ensures tap detection outside the child
           child: Align(
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
-              onTap: () {}, // Prevents closing when tapping inside
-              behavior: HitTestBehavior.translucent, // Ensures touch events inside are not blocked
+              onTap: () {},
+              // Prevents closing when tapping inside
+              behavior: HitTestBehavior.translucent,
+              // Ensures touch events inside are not blocked
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.95,
                 margin: EdgeInsets.only(bottom: 30),
@@ -92,7 +105,10 @@ class _ProductScanButtonState extends State<ProductScanButton>
                     ),
                   ],
                 ),
-                child: ProductNFCScanPopup(),
+                child: ProductNFCScanPopup(
+                  callback: callback,
+                  currentPageIndex: currentPageIndex,
+                ),
               ),
             ),
           ),

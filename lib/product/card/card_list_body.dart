@@ -8,12 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 class CardListBody extends ProductPageBody {
+  final GlobalKey<_CardListBodyContentState> _key =
+      GlobalKey<_CardListBodyContentState>();
+
   CardListBody({super.key})
       : super(name: "product.card.list.label", icon: Icon(Icons.wallet));
 
   @override
   Widget content(BuildContext context) {
-    return CardListBodyContent();
+    return CardListBodyContent(key: _key);
+  }
+
+  void refresh() {
+    _key.currentState?.refresh();
   }
 }
 
@@ -33,7 +40,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     _cardElementsFuture = createCardElements();
   }
 
-  Future<void> _refresh() async {
+  Future<void> refresh() async {
     setState(() {
       _cardElementsFuture = createCardElements();
     });
@@ -88,11 +95,11 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
       );
     }
     var elements = <Widget>[];
-    for (var cards in cards) {
+    for (var card in cards) {
       elements.add(
         Container(
           margin: const EdgeInsets.only(bottom: 20),
-          child: ProductCardElement(content: {}),
+          child: ProductCardElement(content: card),
         ),
       );
     }
@@ -104,7 +111,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
       ),
       child: Container(
         alignment: Alignment.center,
-        margin: const EdgeInsets.only(top: 20, bottom: 75),
+        margin: const EdgeInsets.only(top: 20, bottom: 100),
         child: Column(children: elements),
       ),
     );
@@ -113,7 +120,8 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: _refresh,
+      onRefresh: refresh,
+      displacement: 20,
       child: FutureBuilder<Widget>(
         future: _cardElementsFuture,
         builder: (context, AsyncSnapshot<Widget> snapshot) {
