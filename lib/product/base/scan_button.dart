@@ -92,7 +92,7 @@ class _ProductScanButtonState extends State<ProductScanButton>
                     ),
                   ],
                 ),
-                child: NFCScanPopup(),
+                child: ProductNFCScanPopup(),
               ),
             ),
           ),

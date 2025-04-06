@@ -1,6 +1,8 @@
 {
   "product.scan.popup.title": "Ready to scan",
   "product.scan.popup.description": "The NFC sensor is usually located in the middle of the upper third of the back of your smartphone",
+  "product.scan.unsupported.title": "Error",
+  "product.scan.unsupported.description": "Unfortunately, your smartphone doesn't support NFC, so you can't collect stamps",
   "product.scan.popup.cancel": "Cancel",
 
   "product.card.list.label": "Cards",

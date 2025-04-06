@@ -36,6 +36,7 @@ class _ProductPageState extends State<ProductPage> {
           pageBodies: pageBodies),
       body: pageBodies[_selectedIndex > 1 ? _selectedIndex - 1 : _selectedIndex]
           .content(context),
+      backgroundColor: Color(0xFFFAFAFA),
       floatingActionButton: ProductScanButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
