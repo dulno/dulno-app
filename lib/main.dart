@@ -35,25 +35,26 @@ class DulnoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-        future: checkUserCreation(),
-        builder: (context, AsyncSnapshot<void> snapshot) {
-          return LocaleBuilder(
-            builder: (locale) => MaterialApp(
-              title: 'Dulno',
-              theme: ThemeData(
-                useMaterial3: true,
-                primaryColor: Colors.black,
-                colorScheme: ColorScheme.light(
-                    primary: Color(0xFF2196F3), background: Color(0xFFE8E8E8)),
-              ),
-              home: ProductPage(),
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: Locales.delegates,
-              supportedLocales: Locales.supportedLocales,
-              locale: locale,
+      future: checkUserCreation(),
+      builder: (context, AsyncSnapshot<void> snapshot) {
+        return LocaleBuilder(
+          builder: (locale) => MaterialApp(
+            title: 'Dulno',
+            theme: ThemeData(
+              useMaterial3: true,
+              primaryColor: Colors.black,
+              colorScheme: ColorScheme.light(
+                  primary: Color(0xFF2196F3), background: Color(0xFFE8E8E8)),
             ),
-          );
-        });
+            home: ProductPage(),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: Locales.delegates,
+            supportedLocales: Locales.supportedLocales,
+            locale: locale,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> checkUserCreation() async {

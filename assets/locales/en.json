@@ -9,6 +9,8 @@
   "product.card.list.login.description": "You already had stamps?",
   "product.card.list.login.call": "Sign in now",
   "product.card.list.stamp.description": "Click here to stamp",
+  "product.card.list.search": "Search for card...",
+  "product.card.list.empty": "No cards found.",
 
   "product.discover.label": "Discover"
 }

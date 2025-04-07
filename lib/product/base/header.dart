@@ -1,4 +1,4 @@
-import 'package:dulno/product/profile/profile.dart';
+import 'package:dulno/product/profile/profile_dart.dart';
 import 'package:flutter/material.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -12,15 +12,34 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
       title: Image.asset('assets/images/logo-header.png', width: 120),
       centerTitle: true,
       actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.account_circle, size: 40),
-          color: Color(0xFFB3B3B3),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ProfilePage()));
-          },
+        Stack(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.account_circle, size: 40),
+              color: const Color(0xFFB3B3B3),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
+            ),
+            Positioned(
+              right: 10,
+              top: 10,
+              child: Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
+
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),
         child: Container(

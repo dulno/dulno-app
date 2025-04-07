@@ -9,6 +9,8 @@
   "product.card.list.login.description": "Sie hatten bereits Stempel?",
   "product.card.list.login.call": "Jetzt anmelden",
   "product.card.list.stamp.description": "Zum Stempeln hier klicken",
+  "product.card.list.search": "Nach Karte suchen...",
+  "product.card.list.empty": "Keine Karten gefunden.",
 
   "product.discover.label": "Entdecken"
 }

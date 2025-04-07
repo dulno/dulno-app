@@ -122,17 +122,23 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
               if (!nfcSupported) {
                 return Container();
               }
-              return CircleAvatar(
-                backgroundColor: Colors.blue,
-                radius: 50.0,
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 45.0,
-                  child: scanned
-                      ? CircularProgressIndicator()
-                      : Image.asset('assets/images/android-nfc.png', width: 75),
-                ),
-              );
+              return scanned
+                  ? Container(
+                      margin: EdgeInsets.symmetric(vertical: 25),
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                    )
+                  : CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      radius: 50.0,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 45.0,
+                        child: Image.asset('assets/images/android-nfc.png',
+                            width: 75),
+                      ),
+                    );
             },
           ),
           SizedBox(height: 20),

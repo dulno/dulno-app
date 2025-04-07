@@ -5,79 +5,142 @@ import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ProductCardElement extends StatelessWidget {
-  const ProductCardElement({super.key, required this.content});
-
+  final bool isLoading;
   final Map<String, dynamic> content;
+
+  const ProductCardElement(
+      {super.key, required this.isLoading, required this.content});
 
   @override
   Widget build(BuildContext context) {
-    var foregroundColor = parseColor("cardForegroundColor");
-    var backgroundColor = parseColor("cardBackgroundColor");
+    var foregroundColor =
+        isLoading ? Colors.black : parseColor("cardForegroundColor");
+    var backgroundColor =
+        isLoading ? Colors.white : parseColor("cardBackgroundColor");
     return FutureBuilder<dynamic>(
       future: findCardLogo(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
-        return Container(
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white.withOpacity(0.1)
-                    : Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 350,
-                height: 140,
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(8),
+        return Skeletonizer(
+          enabled: isLoading,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white.withOpacity(0.1)
+                      : Colors.black.withOpacity(0.2),
+                  blurRadius: 10,
                 ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: snapshot.data == null ?
-                        Container() : Image.memory(snapshot.data, height: 75,),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Wrap(
-                        spacing: 5,
-                        runSpacing: 5,
-                        children: List.generate(
-                          10,
-                          (index) => Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: index < content["stamps"]
-                                  ? foregroundColor
-                                  : Colors.transparent,
-                              border:
-                                  Border.all(color: foregroundColor, width: 3),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                          ),
-                        ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: (snapshot.data == null || isLoading)
+                            ? Skeleton.leaf(
+                                child: Container(
+                                  height: 75,
+                                  width: 75,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                ),
+                              )
+                            : Image.memory(snapshot.data, height: 75),
                       ),
-                    ),
-                  ],
+                      isLoading
+                          ? Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Skeleton.leaf(
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    // This helps even in non-skeleton mode
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : createCardContent(foregroundColor),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+
+  Widget createCardContent(foregroundColor) {
+    var type = content["cardType"];
+    if (type == "COLLECTION" || type == "VALUE") {
+      return createStampCardContent(foregroundColor);
+    } else if (type == "MEMBER") {
+      return createMemberCardContent(foregroundColor);
+    }
+    return Container();
+  }
+
+  Widget createStampCardContent(foregroundColor) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Wrap(
+        spacing: 5,
+        runSpacing: 5,
+        children: List.generate(
+          10,
+          (index) => Skeleton.leaf(
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color: stampFillColor(index, foregroundColor),
+                border: Border.all(color: foregroundColor, width: 3),
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color stampFillColor(index, foregroundColor) {
+    if (isLoading) {
+      return Colors.transparent;
+    }
+    if (index < content["stamps"]) {
+      return foregroundColor;
+    }
+    return Colors.transparent;
+  }
+
+  Widget createMemberCardContent(foregroundColor) {
+    return Align(
+      alignment: Alignment.center,
+      child: Icon(Icons.star, size: 64, color: foregroundColor),
     );
   }
 
@@ -88,23 +151,34 @@ class ProductCardElement extends StatelessWidget {
   }
 
   Future findCardLogo() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dir.path, 'dulno', content["logoId"]));
-    if (await file.exists()) {
-      return await file.readAsBytes();
+    if (isLoading) {
+      return null;
     }
-    var body = <String, Object>{"card": content["cardId"]};
-    var response =
-        await Request.post(url: "/user/card/logo/", body: body).send();
-    var responseBody = jsonDecode(response.body);
-    var logoId = responseBody["logoId"];
-    var logo = base64Decode(responseBody["logo"]);
+    final dir = await getApplicationDocumentsDirectory();
     final folder = Directory(path.join(dir.path, 'dulno'));
     if (!await folder.exists()) {
       await folder.create(recursive: true);
     }
-    final newFile = File(path.join(folder.path, logoId));
-    await newFile.writeAsBytes(logo);
-    return logo;
+    var cardId = content["cardId"];
+    var currentLogoId = content["logoId"];
+    final file = File(path.join(dir.path, 'dulno', "$cardId:$currentLogoId"));
+    if (await file.exists()) {
+      return await file.readAsBytes();
+    }
+    var body = <String, Object>{"card": cardId};
+    var response =
+        await Request.post(url: "/user/card/logo/", body: body).send();
+    var responseBody = jsonDecode(response.body);
+    var newLogoId = responseBody["logoId"];
+    var newLogo = base64Decode(responseBody["logo"]);
+    final files = folder.listSync();
+    for (var file in files) {
+      if (file is File && file.path.contains(cardId)) {
+        await file.delete();
+      }
+    }
+    final newFile = File(path.join(folder.path, "$cardId:$newLogoId"));
+    await newFile.writeAsBytes(newLogo);
+    return newLogo;
   }
 }

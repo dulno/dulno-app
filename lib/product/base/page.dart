@@ -3,7 +3,7 @@ import 'package:dulno/product/base/navigator.dart';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/base/scan_button.dart';
 import 'package:dulno/product/card/card_list_body.dart';
-import 'package:dulno/product/discover/discover_body.dart';
+import 'package:dulno/product/partner/discover_body.dart';
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
