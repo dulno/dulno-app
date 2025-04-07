@@ -244,12 +244,14 @@ class CardPage extends StatelessWidget {
 
   Widget createMapElement(partner) {
     if (partner == null) {
-      return Container(
-        width: double.infinity,
-        height: 200,
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(12),
+      return Skeleton.leaf(
+        child: Container(
+          width: double.infinity,
+          height: 300,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
     }
