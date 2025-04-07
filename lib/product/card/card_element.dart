@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:skeletonizer/skeletonizer.dart';
@@ -140,7 +141,7 @@ class ProductCardElement extends StatelessWidget {
   Widget createMemberCardContent(foregroundColor) {
     return Align(
       alignment: Alignment.center,
-      child: Icon(Icons.star, size: 64, color: foregroundColor),
+      child: FaIcon(FontAwesomeIcons.crown, size: 56, color: foregroundColor),
     );
   }
 

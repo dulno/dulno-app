@@ -12,5 +12,14 @@
   "product.card.list.search": "Search for card...",
   "product.card.list.empty": "No cards found.",
 
+  "product.card.about": "About this card",
+  "product.card.links": "Links",
+  "product.card.links.empty": "No links found",
+  "product.card.link.website": "Website",
+  "product.card.link.instagram": "Instagram",
+  "product.card.link.facebook": "Facebook",
+  "product.card.link.tiktok": "TikTok",
+  "product.card.locations": "Locations",
+
   "product.discover.label": "Discover"
 }

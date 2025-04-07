@@ -11,7 +11,8 @@ class OSMMap extends StatefulWidget {
       required this.latitude,
       required this.longitude,
       required this.radius,
-      this.isFirstOpen = true});
+      this.isFirstOpen = true,
+      this.initialZoom = 6.0});
 
   final List<LatLng> data;
   final MapController mapController;
@@ -19,6 +20,7 @@ class OSMMap extends StatefulWidget {
   final double longitude;
   final int radius;
   final bool isFirstOpen;
+  final double initialZoom;
 
   @override
   OSMMapState createState() => OSMMapState();
@@ -151,7 +153,7 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
     if (shouldAnimateToWidgetPosition) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _animateMapMove(LatLng(widget.latitude, widget.longitude),
-            widget.isFirstOpen ? 6 : _calculateZoom());
+            widget.isFirstOpen ? widget.initialZoom : _calculateZoom());
       });
     }
 

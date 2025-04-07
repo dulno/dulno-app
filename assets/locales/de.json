@@ -12,5 +12,14 @@
   "product.card.list.search": "Nach Karte suchen...",
   "product.card.list.empty": "Keine Karten gefunden.",
 
+  "product.card.about": "Über diese Karte",
+  "product.card.links": "Links",
+  "product.card.links.empty": "Keine Links gefunden",
+  "product.card.link.website": "Website",
+  "product.card.link.instagram": "Instagram",
+  "product.card.link.facebook": "Facebook",
+  "product.card.link.tiktok": "TikTok",
+  "product.card.locations": "Standorte",
+
   "product.discover.label": "Entdecken"
 }
