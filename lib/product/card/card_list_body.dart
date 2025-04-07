@@ -109,6 +109,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
         ),
       );
     }
+    _cards.sort((a, b) => (a["lastUpdate"] as num).compareTo(b["lastUpdate"] as num));
     var elements = <Widget>[createSearchBar()];
     for (var card in _cards) {
       if (value.toString().isEmpty ||
