@@ -109,8 +109,9 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
         ),
       );
     }
-    _cards.sort((a, b) => (a["lastUpdate"] as num).compareTo(b["lastUpdate"] as num));
-    var elements = <Widget>[createSearchBar()];
+    _cards.sort(
+        (a, b) => (b["lastUpdate"] as num).compareTo(a["lastUpdate"] as num));
+    var elements = <Widget>[];
     for (var card in _cards) {
       if (value.toString().isEmpty ||
           card["partnerName"]
@@ -131,11 +132,13 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
         ));
       }
     }
-    if (elements.length == 1) {
-      elements.add(LocaleText(
-        "product.card.list.empty",
-        textAlign: TextAlign.center,
-      ));
+    if (elements.isEmpty) {
+      elements.add(
+        LocaleText(
+          "product.card.list.empty",
+          textAlign: TextAlign.center,
+        ),
+      );
     }
     return SizedBox(
       height: MediaQuery.of(context).size.height,
@@ -149,7 +152,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
           alignment: Alignment.center,
           margin: const EdgeInsets.only(bottom: 75),
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(children: elements),
+          child: Column(children: [createSearchBar(), ...elements]),
         ),
       ),
     );
