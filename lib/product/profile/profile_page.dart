@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/profile/profile_email_connect_page.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
+import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -18,21 +23,68 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  GoogleSignInAccount? _currentUser;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+      serverClientId:
+          "1057662416151-qt2uppuh1k3e6voe5d5gtpusck95oab1.apps.googleusercontent.com");
 
-  Future<void> _handleSignIn() async {
-    final user = await _googleSignIn.signIn();
-    setState(() {
-      _currentUser = user;
-    });
+  Future<void> _processGoogleSignIn() async {
+    await _googleSignIn.signOut();
+    final account = await _googleSignIn.signIn();
+    if (account == null) {
+      return;
+    }
+    final auth = await account.authentication;
+    final idToken = auth.idToken;
+    if (idToken == null) {
+      return;
+    }
+    var body = <String, Object>{"token": idToken};
+    var response =
+        await Request.post(url: "/user/bind/google/", body: body).send();
+    var responseBody = jsonDecode(response.body);
+    if (!responseBody["success"]) {
+      Alert(
+              description: "product.profile.google.connect.failure",
+              icon: CupertinoIcons.exclamationmark_triangle)
+          .show(context);
+      return;
+    }
+    if (responseBody["user"] != null &&
+        responseBody["authenticationKey"] != null) {
+      Alert(
+        description: "product.profile.google.connect.overwrite",
+        icon: CupertinoIcons.exclamationmark_triangle,
+        cancelButton: true,
+        callback: () => completeGoogleSignIn(context, responseBody),
+      ).show(context);
+      return;
+    }
+    completeGoogleSignIn(context, responseBody);
   }
 
-  Future<void> _handleSignOut() async {
-    await _googleSignIn.signOut();
-    setState(() {
-      _currentUser = null;
-    });
+  void completeGoogleSignIn(context, responseBody) async {
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "email", value: responseBody["email"]);
+    if (responseBody["user"] != null &&
+        responseBody["authenticationKey"] != null) {
+      storage.write(key: "user", value: responseBody["user"]);
+      storage.write(
+          key: "authenticationKey", value: responseBody["authenticationKey"]);
+    }
+    Alert(
+      description: "product.profile.google.connect.success",
+      icon: CupertinoIcons.check_mark_circled,
+      callback: () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  ProfilePage(),
+              transitionDuration: Duration.zero),
+          ModalRoute.withName('/'),
+        );
+      },
+    ).show(context);
   }
 
   @override
@@ -227,6 +279,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () async {
                     const storage = FlutterSecureStorage();
                     await storage.delete(key: "email");
+                    await _googleSignIn.signOut();
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
@@ -348,7 +401,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: WidgetStateProperty.all(EdgeInsets.all(15)),
                 alignment: Alignment.centerLeft),
             onPressed: () async {
-              await _handleSignIn();
+              await _processGoogleSignIn();
             },
             icon: Container(
               margin: EdgeInsets.symmetric(horizontal: 10),
