@@ -46,7 +46,7 @@ class DulnoApp extends StatelessWidget {
               providers: [
                 ChangeNotifierProvider(
                     create: (_) =>
-                        ProfileLanguageState(languageSnapshot.data ?? "en")),
+                        ProfileLanguageState(languageSnapshot.data ?? "de")),
               ],
               child: LocaleBuilder(
                 builder: (locale) => MaterialApp(
@@ -134,7 +134,7 @@ class DulnoApp extends StatelessWidget {
 
   Future<String> findLanguage() async {
     const storage = FlutterSecureStorage();
-    final language = await storage.read(key: "language") ?? "en";
+    final language = await storage.read(key: "language") ?? "de";
     return language;
   }
 }
