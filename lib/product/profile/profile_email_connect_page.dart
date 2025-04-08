@@ -7,6 +7,7 @@ import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProfileEmailConnectPage extends StatefulWidget {
   const ProfileEmailConnectPage({super.key});
@@ -18,6 +19,7 @@ class ProfileEmailConnectPage extends StatefulWidget {
 
 class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
   final TextEditingController _controller = TextEditingController();
+  bool _newsletterChecked = false;
   bool _isEmailValid = false;
   bool _hasTyped = false;
   bool _connecting = false;
@@ -80,6 +82,22 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                 ),
+              ),
+              SizedBox(height: 10),
+              CheckboxListTile(
+                title: LocaleText(
+                  "product.profile.email.connect.newsletter",
+                  style: TextStyle(fontSize: 12),
+                ),
+                value: _newsletterChecked,
+                onChanged: (bool? newValue) {
+                  setState(() {
+                    _newsletterChecked = newValue!;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                // checkbox before text
+                activeColor: Colors.indigo, // optional styling
               ),
               SizedBox(height: 50),
               Align(
@@ -148,17 +166,36 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     setState(() {
       _connecting = true;
     });
-    var body = <String, Object>{"email": _controller.text, "newsletter": true};
+    var body = <String, Object>{
+      "email": _controller.text,
+      "newsletter": _newsletterChecked
+    };
     var response =
         await Request.post(url: "/user/bind/request/", body: body).send();
     var responseBody = jsonDecode(response.body);
+    setState(() {
+      _connecting = false;
+    });
     if (!responseBody["success"]) {
-      displayRequestBindingFailure(context, responseBody);
-      setState(() {
-        _connecting = false;
-      });
+      Alert(
+        description: "product.profile.email.connect.failure.email.format",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
       return;
     }
+    if (responseBody["alreadyExists"]) {
+      Alert(
+        description: "product.profile.email.connect.overwrite",
+        icon: CupertinoIcons.exclamationmark_triangle,
+        cancelButton: true,
+        callback: () => displayBindingCodePage(context),
+      ).show(context);
+      return;
+    }
+    displayBindingCodePage(context);
+  }
+
+  void displayBindingCodePage(context) {
     var codeController = TextEditingController();
     Navigator.push(
       context,
@@ -174,21 +211,6 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     );
   }
 
-  void displayRequestBindingFailure(context, responseBody) {
-    var description = "";
-    if (responseBody["error"] == 1000) {
-      description = "product.profile.email.connect.failure.email.format";
-    } else if (responseBody["error"] == 1001) {
-      description = "product.profile.email.connect.failure.email.existing";
-    } else if (responseBody["error"] == 1002) {
-      description = "product.profile.email.connect.failure.already.bound";
-    }
-    Alert(
-      description: description,
-      icon: CupertinoIcons.exclamationmark_triangle,
-    ).show(context);
-  }
-
   void completeBinding(context, codeController, code) async {
     var body = <String, Object>{"code": code};
     var response =
@@ -197,19 +219,32 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     if (!responseBody["success"]) {
       codeController.text = "";
       Alert(
-        description: "product.profile.email.connect.failure.complete",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+              description: "product.profile.email.connect.failure.complete",
+              icon: CupertinoIcons.exclamationmark_triangle)
+          .show(context);
       return;
     }
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "email", value: _controller.text);
+    if (responseBody["user"] != null && responseBody["authenticationKey"] != null) {
+      storage.write(key: "user", value: responseBody["user"]);
+      storage.write(
+          key: "authenticationKey", value: responseBody["authenticationKey"]);
+    }
+    Alert(
+      description: "product.profile.email.connect.success",
+      icon: CupertinoIcons.check_mark_circled,
+      callback: () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
+            transitionDuration: Duration.zero
+          ),
+          ModalRoute.withName('/'),
+        );
+      },
+    ).show(context);
   }
 
   void _checkEmail(String value) {

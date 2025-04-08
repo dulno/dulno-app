@@ -1,4 +1,7 @@
 {
+  "alert.ok": "OK",
+  "alert.cancel": "Cancel",
+
   "product.scan.popup.title": "Ready to scan",
   "product.scan.popup.description": "The NFC sensor is usually located in the middle of the upper third of the back of your smartphone",
   "product.scan.unsupported.title": "Error",
@@ -29,6 +32,8 @@
   "product.profile.account.disclaimer.description": "We recommend that you link your Dulno account to an email address or your Google account. This way your stamps will not be lost if you change or lose your device.",
   "product.profile.account.email.button": "Connect email address",
   "product.profile.account.google.button": "Connect with Google",
+  "product.profile.account.email.headline": "Signed in as:",
+  "product.profile.logout": "Logout",
   "product.profile.language": "Language",
   "product.profile.notification": "Notifications",
   "product.profile.notification.description": "Receive notifications",
@@ -38,11 +43,12 @@
 
   "product.profile.email.connect.headline": "Connect email",
   "product.profile.email.connect.placeholder": "Email",
+  "product.profile.email.connect.newsletter": "Do you agree that we inform you about offers and news by email? (optional)",
   "product.profile.email.connect.button": "Connect",
+  "product.profile.email.connect.success": "Email connection was successful",
   "product.profile.email.connect.failure.email.format": "The email you entered could not be found",
-  "product.profile.email.connect.failure.email.existing": "The email you entered is already being used by another user",
-  "product.profile.email.connect.failure.already.bound": "Your account is already linked to another email",
   "product.profile.email.connect.failure.complete": "The code entered is incorrect. Please try again",
+  "product.profile.email.connect.overwrite": "The email belongs to an existing user. By confirming, your currently collected cards will be overwritten by the cards of the user to whom the email belongs. Do you agree with this?",
 
   "product.profile.email.code.headline": "Enter verification code",
   "product.profile.email.code.description.1": "We have sent you a confirmation code to the email ",

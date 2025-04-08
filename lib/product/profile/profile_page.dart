@@ -76,101 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 textAlign: TextAlign.left,
               ),
               SizedBox(height: 5),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(6.0),
-                  border: Border.all(
-                    color: Colors.grey[300] ?? Colors.grey,
-                    width: 1,
-                  ),
-                ),
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    LocaleText(
-                      "product.profile.account.disclaimer.headline",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(height: 5),
-                    LocaleText(
-                      "product.profile.account.disclaimer.description",
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 25),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                      padding: WidgetStateProperty.all(EdgeInsets.all(15)),
-                      alignment: Alignment.centerLeft),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ProfileEmailConnectPage()),
-                    );
-                  },
-                  icon: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: FaIcon(
-                      FontAwesomeIcons.envelope,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                  ),
-                  label: LocaleText(
-                    "product.profile.account.email.button",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.black),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                      padding: WidgetStateProperty.all(EdgeInsets.all(15)),
-                      alignment: Alignment.centerLeft),
-                  onPressed: () async {
-                    await _handleSignIn();
-                  },
-                  icon: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: FaIcon(
-                      FontAwesomeIcons.google,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                  ),
-                  label: LocaleText(
-                    "product.profile.account.google.button",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-              ),
+              accountContent(),
               SizedBox(height: 30),
               LocaleText(
                 "product.profile.language",
@@ -193,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               SizedBox(height: 10),
               NotificationToggle(),
-              SizedBox(height: 50),
+              SizedBox(height: 80),
               new Divider(
                 color: Colors.grey[300],
                 height: 2,
@@ -233,12 +139,232 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 30,
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget accountContent() {
+    const storage = FlutterSecureStorage();
+    return FutureBuilder<String?>(
+      future: storage.read(key: "email"),
+      builder: (context, AsyncSnapshot<String?> notifications) {
+        if (notifications.connectionState == ConnectionState.done) {
+          if (notifications.data != null && notifications.data != "") {
+            return accountConnectedContent(notifications.data);
+          } else {
+            return accountConnectContent();
+          }
+        }
+        return Skeletonizer(
+          enabled: notifications.connectionState != ConnectionState.done,
+          child: Skeleton.leaf(
+            child: Container(
+              width: double.infinity,
+              height: 300,
+              decoration: BoxDecoration(
+                color: Colors.grey[500],
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget accountConnectedContent(email) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(6.0),
+            border: Border.all(
+              color: Colors.grey[300] ?? Colors.grey,
+              width: 1,
+            ),
+          ),
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LocaleText(
+                "product.profile.account.email.headline",
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              SizedBox(height: 5),
+              Text(
+                email,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              SizedBox(height: 15),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      padding: WidgetStateProperty.all(
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 8)),
+                      alignment: Alignment.center),
+                  onPressed: () async {
+                    const storage = FlutterSecureStorage();
+                    await storage.delete(key: "email");
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              ProfilePage(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero),
+                    );
+                  },
+                  icon: Container(
+                    margin: EdgeInsets.only(right: 2),
+                    child: Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                      size: 21,
+                    ),
+                  ),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LocaleText(
+                        "product.profile.logout",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget accountConnectContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(6.0),
+            border: Border.all(
+              color: Colors.grey[300] ?? Colors.grey,
+              width: 1,
+            ),
+          ),
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LocaleText(
+                "product.profile.account.disclaimer.headline",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              SizedBox(height: 5),
+              LocaleText(
+                "product.profile.account.disclaimer.description",
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 25),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.indigo),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                padding: WidgetStateProperty.all(EdgeInsets.all(15)),
+                alignment: Alignment.centerLeft),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfileEmailConnectPage()),
+              );
+            },
+            icon: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: FaIcon(
+                FontAwesomeIcons.envelope,
+                color: Colors.white,
+                size: 25,
+              ),
+            ),
+            label: LocaleText(
+              "product.profile.account.email.button",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.black),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                padding: WidgetStateProperty.all(EdgeInsets.all(15)),
+                alignment: Alignment.centerLeft),
+            onPressed: () async {
+              await _handleSignIn();
+            },
+            icon: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: FaIcon(
+                FontAwesomeIcons.google,
+                color: Colors.white,
+                size: 25,
+              ),
+            ),
+            label: LocaleText(
+              "product.profile.account.google.button",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ),
+        )
+      ],
     );
   }
 }
@@ -336,11 +462,11 @@ class _NotificationToggleState extends State<NotificationToggle> {
     return FutureBuilder<String?>(
       future: storage.read(key: "notifications"),
       builder: (context, AsyncSnapshot<String?> notifications) {
-        if (notifications.hasData) {
-          _notificationsEnabled = notifications.data == "true";
+        if (notifications.connectionState == ConnectionState.done) {
+          _notificationsEnabled = notifications.data != "false";
         }
         return Skeletonizer(
-          enabled: !notifications.hasData,
+          enabled: notifications.connectionState != ConnectionState.done,
           child: SwitchListTile(
             title: LocaleText("product.profile.notification.description"),
             value: _notificationsEnabled,

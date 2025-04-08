@@ -1,4 +1,7 @@
 {
+  "alert.ok": "OK",
+  "alert.cancel": "Abbrechen",
+
   "product.scan.popup.title": "Bereit zum Scannen",
   "product.scan.popup.description": "Der NFC-Sensor befindet sich meistens mittig im oberen Drittel auf der Rückseite Ihres Smartphones",
   "product.scan.unsupported.title": "Fehler",
@@ -29,6 +32,8 @@
   "product.profile.account.disclaimer.description": "Wir empfehlen, dass Sie Ihr Dulno-Konto mit einer E-Mail-Adresse oder Ihrem Google-Konto verknüpfen. Auf diese Weise gehen Ihre Stempel nicht verloren, wenn Sie Ihr Gerät wechseln oder verlieren.",
   "product.profile.account.email.button": "E-Mail Adresse verbinden",
   "product.profile.account.google.button": "Mit Google verbinden",
+  "product.profile.account.email.headline": "Angemeldet als:",
+  "product.profile.logout": "Abmelden",
   "product.profile.language": "Sprache",
   "product.profile.notification": "Benachrichtigungen",
   "product.profile.notification.description": "Benachrichtigungen erhalten",
@@ -38,11 +43,12 @@
 
   "product.profile.email.connect.headline": "E-Mail verbinden",
   "product.profile.email.connect.placeholder": "E-Mail",
+  "product.profile.email.connect.newsletter": "Sind Sie damit einverstanden, dass wir Sie über Angebote und Neuigkeiten per E-Mail informieren? (optional)",
   "product.profile.email.connect.button": "Verbinden",
+  "product.profile.email.connect.success": "E-Mail-Verbindung war erfolgreich",
   "product.profile.email.connect.failure.email.format": "Die eingegebene E-Mail konnte nicht gefunden werden",
-  "product.profile.email.connect.failure.email.existing": "Die von Ihnen eingegebene E-Mail wird bereits von einem anderen Benutzer verwendet",
-  "product.profile.email.connect.failure.already.bound": "Ihr Konto ist bereits mit einer anderen E-Mail verknüpft",
   "product.profile.email.connect.failure.complete": "Der eingegebene Code ist falsch. Bitte versuchen Sie es erneut",
+  "product.profile.email.connect.overwrite": "Die E-Mail gehört zu einem bestehenden Benutzer. Wenn Sie dies bestätigen, werden Ihre derzeit gesammelten Karten durch die Karten des Benutzers, zu dem die E-Mail gehört, überschrieben. Sind Sie mit dieser Vorgehensweise einverstanden?",
 
   "product.profile.email.code.headline": "Verifizierungscode eingeben",
   "product.profile.email.code.description.1": "Wir haben Ihnen einen Bestätigungscode an die E-Mail ",
