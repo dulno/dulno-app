@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
+import 'package:dulno/product/profile/profile_page.dart';
 import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ProfileEmailConnectPage extends StatefulWidget {
   const ProfileEmailConnectPage({super.key});
@@ -18,6 +20,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isEmailValid = false;
   bool _hasTyped = false;
+  bool _connecting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +87,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                 child: ElevatedButton.icon(
                   style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(
-                          _isEmailValid ? Colors.blue : Colors.blue[200]),
+                          _isEmailValid ? Colors.indigo : Colors.indigo[200]),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
@@ -105,16 +108,35 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                       size: 25,
                     ),
                   ),
-                  label: LocaleText(
-                    "product.profile.email.connect.button",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LocaleText(
+                        "product.profile.email.connect.button",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      _connecting
+                          ? SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ],
                   ),
                 ),
               ),
+              SizedBox(height: 50),
             ],
           ),
         ),
@@ -123,23 +145,29 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
   }
 
   void requestBinding(context) async {
+    setState(() {
+      _connecting = true;
+    });
     var body = <String, Object>{"email": _controller.text, "newsletter": true};
     var response =
         await Request.post(url: "/user/bind/request/", body: body).send();
     var responseBody = jsonDecode(response.body);
-    debugPrint(response.statusCode.toString());
-    debugPrint(response.body);
     if (!responseBody["success"]) {
       displayRequestBindingFailure(context, responseBody);
+      setState(() {
+        _connecting = false;
+      });
       return;
     }
+    var codeController = TextEditingController();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ProfileEmailCodePage(
+          controller: codeController,
           email: _controller.text,
           callback: (code) async {
-            completeBinding(code);
+            completeBinding(context, codeController, code);
           },
         ),
       ),
@@ -149,37 +177,39 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
   void displayRequestBindingFailure(context, responseBody) {
     var description = "";
     if (responseBody["error"] == 1000) {
-      description = Locales.string(
-          context, "product.profile.email.connect.failure.email.format");
+      description = "product.profile.email.connect.failure.email.format";
     } else if (responseBody["error"] == 1001) {
-      description = Locales.string(
-          context, "product.profile.email.connect.failure.email.existing");
+      description = "product.profile.email.connect.failure.email.existing";
     } else if (responseBody["error"] == 1002) {
-      description = Locales.string(
-          context, "product.profile.email.connect.failure.already.bound");
+      description = "product.profile.email.connect.failure.already.bound";
     }
     Alert(
-      context: context,
-      type: AlertType.error,
-      title: Locales.string(
-          context, "product.profile.email.connect.failure.title"),
-      desc: description,
-      buttons: [
-        DialogButton(
-          child:
-              Text("OK", style: TextStyle(color: Colors.white, fontSize: 20)),
-          onPressed: () => Navigator.pop(context),
-          color: Colors.grey,
-        ),
-      ],
-    ).show();
+      description: description,
+      icon: CupertinoIcons.exclamationmark_triangle,
+    ).show(context);
   }
 
-  void completeBinding(code) async {
+  void completeBinding(context, codeController, code) async {
     var body = <String, Object>{"code": code};
     var response =
         await Request.post(url: "/user/bind/complete/", body: body).send();
     var responseBody = jsonDecode(response.body);
+    if (!responseBody["success"]) {
+      codeController.text = "";
+      Alert(
+        description: "product.profile.email.connect.failure.complete",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
   }
 
   void _checkEmail(String value) {

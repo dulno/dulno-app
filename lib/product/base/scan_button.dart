@@ -11,18 +11,12 @@ class ProductScanButton extends StatefulWidget {
       {super.key, required this.callback, required this.currentPageIndex});
 
   @override
-  State<ProductScanButton> createState() => _ProductScanButtonState(
-      callback: callback, currentPageIndex: currentPageIndex);
+  State<ProductScanButton> createState() => _ProductScanButtonState();
 }
 
 class _ProductScanButtonState extends State<ProductScanButton>
     with SingleTickerProviderStateMixin {
-  Function callback;
-  Function currentPageIndex;
   late AnimationController _controller;
-
-  _ProductScanButtonState(
-      {required this.callback, required this.currentPageIndex});
 
   @override
   void initState() {
@@ -51,7 +45,7 @@ class _ProductScanButtonState extends State<ProductScanButton>
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.blue.withOpacity(0.6 * min(glowValue + 0.5, 1)),
+                color: Colors.indigo.withOpacity(0.6 * min(glowValue + 0.5, 1)),
                 blurRadius: 20 * (glowValue + 0.5),
                 spreadRadius: 5 * (glowValue + 0.5),
               ),
@@ -62,7 +56,7 @@ class _ProductScanButtonState extends State<ProductScanButton>
               _showNfcPopup(context);
             },
             backgroundColor:
-                Color.lerp(Color(0xFF316DBC), Color(0xFF207EFA), glowValue),
+                Color.lerp(Color(0xFF37479F), Color(0xFF495ED3), glowValue),
             shape: CircleBorder(),
             child: Image.asset('assets/images/logo-light.png', width: 65),
           ),
@@ -106,8 +100,8 @@ class _ProductScanButtonState extends State<ProductScanButton>
                   ],
                 ),
                 child: ProductNFCScanPopup(
-                  callback: callback,
-                  currentPageIndex: currentPageIndex,
+                  callback: widget.callback,
+                  currentPageIndex: widget.currentPageIndex,
                 ),
               ),
             ),

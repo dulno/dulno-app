@@ -96,7 +96,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
                     child: LocaleText(
                       "product.card.list.login.call",
                       style: TextStyle(
-                        color: Colors.blue,
+                        color: Colors.indigo,
                         decoration: TextDecoration.underline,
                       ),
                     ),

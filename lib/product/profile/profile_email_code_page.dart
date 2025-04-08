@@ -4,19 +4,18 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class ProfileEmailCodePage extends StatefulWidget {
+  final TextEditingController controller;
   final String email;
   final Function(String) callback;
 
   const ProfileEmailCodePage(
-      {super.key, required this.email, required this.callback});
+      {super.key, required this.controller, required this.email, required this.callback});
 
   @override
   State<ProfileEmailCodePage> createState() => _ProfileEmailCodePageState();
 }
 
 class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
-  final TextEditingController _controller = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,12 +106,14 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
                 enableActiveFill: true,
                 autoFocus: true,
                 mainAxisAlignment: MainAxisAlignment.center,
-                controller: _controller,
+                controller: widget.controller,
                 keyboardType: TextInputType.datetime,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
                 ],
-                onCompleted: (v) {},
+                onCompleted: (v) {
+                  widget.callback(v);
+                },
               ),
             ],
           ),

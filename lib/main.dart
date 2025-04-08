@@ -7,12 +7,14 @@ import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dulno/config/firebase_options.dart';
 import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/request/request.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -37,21 +39,34 @@ class DulnoApp extends StatelessWidget {
     return FutureBuilder<void>(
       future: checkUserCreation(),
       builder: (context, AsyncSnapshot<void> snapshot) {
-        return LocaleBuilder(
-          builder: (locale) => MaterialApp(
-            title: 'Dulno',
-            theme: ThemeData(
-              useMaterial3: true,
-              primaryColor: Colors.black,
-              colorScheme: ColorScheme.light(
-                  primary: Color(0xFF2196F3), background: Color(0xFFE8E8E8)),
-            ),
-            home: ProductPage(),
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: Locales.delegates,
-            supportedLocales: Locales.supportedLocales,
-            locale: locale,
-          ),
+        return FutureBuilder<String>(
+          future: findLanguage(),
+          builder: (context, AsyncSnapshot<String> languageSnapshot) {
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider(
+                    create: (_) =>
+                        ProfileLanguageState(languageSnapshot.data ?? "en")),
+              ],
+              child: LocaleBuilder(
+                builder: (locale) => MaterialApp(
+                  title: 'Dulno',
+                  theme: ThemeData(
+                    useMaterial3: true,
+                    primaryColor: Colors.black,
+                    colorScheme: ColorScheme.light(
+                        primary: Color(0xFF2196F3),
+                        background: Color(0xFFE8E8E8)),
+                  ),
+                  home: ProductPage(),
+                  debugShowCheckedModeBanner: false,
+                  localizationsDelegates: Locales.delegates,
+                  supportedLocales: Locales.supportedLocales,
+                  locale: locale,
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -115,5 +130,11 @@ class DulnoApp extends StatelessWidget {
     await instance.requestPermission();
     var token = await instance.getToken();
     return token ?? "";
+  }
+
+  Future<String> findLanguage() async {
+    const storage = FlutterSecureStorage();
+    final language = await storage.read(key: "language") ?? "en";
+    return language;
   }
 }

@@ -15,19 +15,13 @@ class ProductNFCScanPopup extends StatefulWidget {
       {super.key, required this.callback, required this.currentPageIndex});
 
   @override
-  State<ProductNFCScanPopup> createState() => _ProductNFCScanPopupState(
-      callback: callback, currentPageIndex: currentPageIndex);
+  State<ProductNFCScanPopup> createState() => _ProductNFCScanPopupState();
 }
 
 class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
     with WidgetsBindingObserver {
-  Function callback;
-  Function currentPageIndex;
   bool nfcSupported = true;
   bool scanned = false;
-
-  _ProductNFCScanPopupState(
-      {required this.callback, required this.currentPageIndex});
 
   @override
   void initState() {
@@ -84,8 +78,8 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         var response =
             await Request.post(url: "/user/stamp/", body: body).send();
         var responseBody = jsonDecode(response.body);
-        if (currentPageIndex() == 0) {
-          callback();
+        if (widget.currentPageIndex() == 0) {
+          widget.callback();
           Navigator.pop(context);
         } else {
           Navigator.pushReplacement(
