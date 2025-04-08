@@ -21,5 +21,26 @@
   "product.card.link.tiktok": "TikTok",
   "product.card.locations": "Locations",
 
-  "product.discover.label": "Discover"
+  "product.discover.label": "Discover",
+
+  "product.profile.title": "Profile",
+  "product.profile.account": "Account",
+  "product.profile.account.email.button": "Connect email address",
+  "product.profile.account.google.button": "Connect with Google",
+  "product.profile.language": "Language",
+  "product.profile.imprint": "Imprint",
+  "product.profile.privacy.policy": "Privacy policy",
+  "product.profile.terms.of.service": "Terms of service",
+
+  "product.profile.email.connect.headline": "Connect email",
+  "product.profile.email.connect.placeholder": "Email",
+  "product.profile.email.connect.button": "Connect",
+  "product.profile.email.connect.failure.title": "Failure",
+  "product.profile.email.connect.failure.email.format": "The email you entered could not be found",
+  "product.profile.email.connect.failure.email.existing": "The email you entered is already being used by another user",
+  "product.profile.email.connect.failure.email.already.bound": "Your account is already linked to another email",
+
+  "product.profile.email.code.headline": "Enter verification code",
+  "product.profile.email.code.description.1": "We have sent you a confirmation code to the email ",
+  "product.profile.email.code.description.2": ". Please enter it below to confirm your identity."
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/card/card_element.dart';
 import 'package:dulno/product/card/card_page.dart';
-import 'package:dulno/product/profile/profile_dart.dart';
+import 'package:dulno/product/profile/profile_page.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';

@@ -1,4 +1,4 @@
-import 'package:dulno/product/profile/profile_dart.dart';
+import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
