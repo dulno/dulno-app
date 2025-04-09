@@ -17,14 +17,18 @@
 
   "product.card.about": "About this card",
   "product.card.links": "Links",
-  "product.card.links.empty": "No links found",
-  "product.card.link.website": "Website",
-  "product.card.link.instagram": "Instagram",
-  "product.card.link.facebook": "Facebook",
-  "product.card.link.tiktok": "TikTok",
   "product.card.locations": "Locations",
 
   "product.discover.label": "Discover",
+
+  "product.partner.popup.address": "Address",
+  "product.partner.popup.links": "Links",
+
+  "product.partner.links.empty": "No links found",
+  "product.partner.link.website": "Website",
+  "product.partner.link.instagram": "Instagram",
+  "product.partner.link.facebook": "Facebook",
+  "product.partner.link.tiktok": "TikTok",
 
   "product.profile.title": "Profile",
   "product.profile.account": "Account",

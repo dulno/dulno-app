@@ -17,14 +17,18 @@
 
   "product.card.about": "Über diese Karte",
   "product.card.links": "Links",
-  "product.card.links.empty": "Keine Links gefunden",
-  "product.card.link.website": "Website",
-  "product.card.link.instagram": "Instagram",
-  "product.card.link.facebook": "Facebook",
-  "product.card.link.tiktok": "TikTok",
   "product.card.locations": "Standorte",
 
   "product.discover.label": "Entdecken",
+
+  "product.partner.popup.address": "Adresse",
+  "product.partner.popup.links": "Links",
+
+  "product.partner.links.empty": "Keine Links gefunden",
+  "product.partner.link.website": "Website",
+  "product.partner.link.instagram": "Instagram",
+  "product.partner.link.facebook": "Facebook",
+  "product.partner.link.tiktok": "TikTok",
 
   "product.profile.title": "Profil",
   "product.profile.account": "Konto",

@@ -1,3 +1,4 @@
+import 'package:dulno/product/partner/partner_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
@@ -6,7 +7,7 @@ import 'package:latlong2/latlong.dart';
 class OSMMap extends StatefulWidget {
   const OSMMap(
       {super.key,
-      required this.data,
+      required this.partners,
       required this.mapController,
       required this.latitude,
       required this.longitude,
@@ -14,7 +15,7 @@ class OSMMap extends StatefulWidget {
       this.isFirstOpen = true,
       this.initialZoom = 6.0});
 
-  final List<LatLng> data;
+  final List<dynamic> partners;
   final MapController mapController;
   final double latitude;
   final double longitude;
@@ -50,6 +51,9 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
 
   // Control visibility of the bottom sheet using ValueNotifier
   final ValueNotifier<bool> _showBottomSheet = ValueNotifier(false);
+
+  Map<String, dynamic> _selectedPartner = {};
+  Map<String, dynamic> _selectedLocation = {};
 
   double _calculateZoom() {
     if (widget.radius <= 5) return 15; // Close zoom for very small radius
@@ -157,35 +161,39 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
       });
     }
 
-    // Convert the points into markers
-    final List<Marker> markers = widget.data
-        .map(
-          (coordinates) => Marker(
-            point: coordinates,
-            height: 100.0,
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  shouldAnimateToWidgetPosition =
-                      false; // Disable widget animation
-                });
+    var markers = <Marker>[];
+    for (var partner in widget.partners) {
+      for (var location in partner["locations"]) {
+        var latLng = LatLng(location["latitude"], location["longitude"]);
+        markers.add(Marker(
+          point: latLng,
+          height: 100.0,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                shouldAnimateToWidgetPosition =
+                false; // Disable widget animation
+                _selectedPartner = partner;
+                _selectedLocation = location;
+              });
 
-                // Animate the map to the selected marker's location
-                _animateMapMove(coordinates, targetElementZoom);
-              },
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: Image.asset(
-                  'assets/images/pin.png',
-                  height: 100,
-                ),
+              // Animate the map to the selected marker's location
+              _animateMapMove(latLng, targetElementZoom);
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Image.asset(
+                'assets/images/pin.png',
+                height: 100,
               ),
             ),
           ),
-        )
-        .toList();
+        ),);
+      }
+    }
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         FlutterMap(
           mapController: widget.mapController,
@@ -208,6 +216,9 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
             ),
           ],
         ),
+        _selectedPartner.isNotEmpty
+            ? PartnerPopup(partner: _selectedPartner, location: _selectedLocation)
+            : SizedBox.shrink()
       ],
     );
   }

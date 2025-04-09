@@ -156,13 +156,13 @@ class ProductCardElement extends StatelessWidget {
       return null;
     }
     final dir = await getApplicationDocumentsDirectory();
-    final folder = Directory(path.join(dir.path, 'dulno'));
+    final folder = Directory(path.join(dir.path, 'dulno/card'));
     if (!await folder.exists()) {
       await folder.create(recursive: true);
     }
     var cardId = content["cardId"];
     var currentLogoId = content["logoId"];
-    final file = File(path.join(dir.path, 'dulno', "$cardId:$currentLogoId"));
+    final file = File(path.join(dir.path, 'dulno/card', "$cardId-$currentLogoId"));
     if (await file.exists()) {
       return await file.readAsBytes();
     }
@@ -178,7 +178,7 @@ class ProductCardElement extends StatelessWidget {
         await file.delete();
       }
     }
-    final newFile = File(path.join(folder.path, "$cardId:$newLogoId"));
+    final newFile = File(path.join(folder.path, "$cardId-$newLogoId"));
     await newFile.writeAsBytes(newLogo);
     return newLogo;
   }

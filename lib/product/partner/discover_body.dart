@@ -15,11 +15,11 @@ class DiscoverBody extends ProductPageBody {
 
   @override
   Widget content(BuildContext context) {
-    return FutureBuilder<List<LatLng>>(
-      future: findPartnerLocations(),
-      builder: (context, AsyncSnapshot<List<LatLng>> snapshot) {
+    return FutureBuilder<dynamic>(
+      future: findPartners(),
+      builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return OSMMap(
-          data: snapshot.data ?? [],
+          partners: snapshot.data ?? [],
           mapController: controller,
           latitude: 51.1657,
           longitude: 10.4515,
@@ -29,15 +29,9 @@ class DiscoverBody extends ProductPageBody {
     );
   }
 
-  Future<List<LatLng>> findPartnerLocations() async {
+  Future<dynamic> findPartners() async {
     var response = await Request.get(url: "/user/partners/").send();
     var responseBody = jsonDecode(response.body);
-    var locations = <LatLng>[];
-    for (var partner in responseBody["partners"]) {
-      for (var location in partner["locations"]) {
-        locations.add(LatLng(location["latitude"], location["longitude"]));
-      }
-    }
-    return locations;
+    return responseBody["partners"];
   }
 }
