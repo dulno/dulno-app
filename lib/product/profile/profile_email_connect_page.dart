@@ -62,6 +62,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
               SizedBox(height: 10),
               TextField(
                 controller: _controller,
+                keyboardType: TextInputType.emailAddress,
                 onChanged: _checkEmail,
                 decoration: InputDecoration(
                   hintStyle: TextStyle(color: Colors.grey[500]),

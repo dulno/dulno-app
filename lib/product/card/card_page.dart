@@ -76,8 +76,6 @@ class CardPage extends StatelessWidget {
           Text(
             utf8.decode(content["partnerName"].toString().codeUnits),
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
           ),
           SizedBox(
             height: 5,

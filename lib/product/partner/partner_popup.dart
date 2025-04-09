@@ -22,8 +22,8 @@ class PartnerPopup extends StatefulWidget {
 }
 
 class _DraggablePopupState extends State<PartnerPopup> {
-  double _popupHeight = 200.0;
-  double _startDragHeight = 200.0;
+  double _popupHeight = 300.0;
+  double _startDragHeight = 300.0;
   double _startVerticalDrag = 0.0;
   Widget? _logo;
 
@@ -79,49 +79,63 @@ class _DraggablePopupState extends State<PartnerPopup> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 4),
+                            SizedBox(height: 5),
                             Align(
-                              alignment: Alignment.center,
+                              alignment: Alignment.centerRight,
                               child: _logo == null
                                   ? Skeleton.leaf(
-                                child: Container(
-                                  height: 96,
-                                  width: 96,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                ),
-                              )
-                                  : _logo!,
+                                      child: Container(
+                                        height: 90,
+                                        width: 90,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 135,
+                                        maxHeight: 90,
+                                      ),
+                                      child: _logo!,
+                                    ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 40),
                             Text(
-                              utf8.decode(widget.partner["name"].toString().codeUnits),
-                              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
+                              utf8.decode(
+                                  widget.partner["name"].toString().codeUnits),
+                              style: TextStyle(
+                                  fontSize: 23, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 5),
                             Text(
-                              utf8.decode(widget.partner["description"].toString().codeUnits),
-                              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                              utf8.decode(widget.partner["description"]
+                                  .toString()
+                                  .codeUnits),
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.grey[600]),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 30),
                             LocaleText(
                               "product.partner.popup.address",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
                             ),
                             Text(
-                              utf8.decode(widget.location["address"].toString().codeUnits),
+                              utf8.decode(widget.location["address"]
+                                  .toString()
+                                  .codeUnits),
                               style: TextStyle(fontSize: 16),
                             ),
                             SizedBox(height: 20),
                             LocaleText(
                               "product.partner.popup.links",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
                             ),
                             PartnerLinkList(partner: widget.partner),
                             SizedBox(height: 40),
@@ -153,7 +167,7 @@ class _DraggablePopupState extends State<PartnerPopup> {
     final file =
         File(path.join(dir.path, 'dulno/partner', "$partnerId-$currentLogoId"));
     if (await file.exists()) {
-      return Image.memory(await file.readAsBytes(), height: 96);
+      return Image.memory(await file.readAsBytes(), fit: BoxFit.contain);
     }
     var body = <String, Object>{"partner": partnerId};
     var response =
@@ -169,6 +183,6 @@ class _DraggablePopupState extends State<PartnerPopup> {
     }
     final newFile = File(path.join(folder.path, "$partnerId-$newLogoId"));
     await newFile.writeAsBytes(newLogo);
-    return Image.memory(newLogo, height: 96);
+    return Image.memory(newLogo, fit: BoxFit.contain);
   }
 }
