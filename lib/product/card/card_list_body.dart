@@ -87,7 +87,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
                       Center(
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
+                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                             minimumSize: Size(50, 30),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             alignment: Alignment.centerLeft,

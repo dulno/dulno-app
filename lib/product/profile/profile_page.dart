@@ -26,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
       serverClientId:
           "1057662416151-qt2uppuh1k3e6voe5d5gtpusck95oab1.apps.googleusercontent.com");
+  Widget? accountContentElement;
 
   Future<void> _processGoogleSignIn() async {
     await _googleSignIn.signOut();
@@ -44,9 +45,9 @@ class _ProfilePageState extends State<ProfilePage> {
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       Alert(
-              description: "product.profile.google.connect.failure",
-              icon: CupertinoIcons.exclamationmark_triangle)
-          .show(context);
+        description: "product.profile.google.connect.failure",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
       return;
     }
     if (responseBody["user"] != null &&
@@ -115,85 +116,93 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 30),
-              LocaleText(
-                "product.profile.account",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.left,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 30),
+                  LocaleText(
+                    "product.profile.account",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: 5),
+                  accountContent(),
+                  SizedBox(height: 30),
+                  LocaleText(
+                    "product.profile.language",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: 10),
+                  _LanguageSelection(),
+                  SizedBox(height: 30),
+                  LocaleText(
+                    "product.profile.notification",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: 10),
+                  _NotificationToggle(),
+                  Spacer(),
+                  SizedBox(height: 80),
+                  new Divider(
+                    color: Colors.grey[300],
+                    height: 2,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Wrap(
+                      spacing: 16.0,
+                      runSpacing: 8.0,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        _LinkText("product.profile.imprint",
+                            "https://dulno.com/imprint/"),
+                        _LinkText("product.profile.privacy.policy",
+                            "https://dulno.com/privacy-policy/"),
+                        _LinkText("product.profile.terms.of.service",
+                            "https://dulno.com/terms-of-service/"),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: FutureBuilder<PackageInfo>(
+                      future: PackageInfo.fromPlatform(),
+                      builder: (context, AsyncSnapshot<PackageInfo> package) {
+                        return Text(
+                          "Version ${package.data?.version ?? ""}",
+                          style: TextStyle(fontSize: 12),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                ],
               ),
-              SizedBox(height: 5),
-              accountContent(),
-              SizedBox(height: 30),
-              LocaleText(
-                "product.profile.language",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.left,
-              ),
-              SizedBox(height: 10),
-              _LanguageSelection(),
-              SizedBox(height: 30),
-              LocaleText(
-                "product.profile.notification",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.left,
-              ),
-              SizedBox(height: 10),
-              NotificationToggle(),
-              SizedBox(height: 80),
-              new Divider(
-                color: Colors.grey[300],
-                height: 2,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Wrap(
-                  spacing: 16.0,
-                  runSpacing: 8.0,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    _LinkText("product.profile.imprint",
-                        "https://dulno.com/imprint/"),
-                    _LinkText("product.profile.privacy.policy",
-                        "https://dulno.com/privacy-policy/"),
-                    _LinkText("product.profile.terms.of.service",
-                        "https://dulno.com/terms-of-service/"),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: FutureBuilder<PackageInfo>(
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, AsyncSnapshot<PackageInfo> package) {
-                    return Text(
-                      "Version ${package.data?.version ?? ""}",
-                      style: TextStyle(fontSize: 12),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -201,16 +210,20 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget accountContent() {
+    if (accountContentElement != null) {
+      return accountContentElement!;
+    }
     const storage = FlutterSecureStorage();
     return FutureBuilder<String?>(
       future: storage.read(key: "email"),
       builder: (context, AsyncSnapshot<String?> notifications) {
         if (notifications.connectionState == ConnectionState.done) {
           if (notifications.data != null && notifications.data != "") {
-            return accountConnectedContent(notifications.data);
+            accountContentElement = accountConnectedContent(notifications.data);
           } else {
-            return accountConnectContent();
+            accountContentElement = accountConnectContent();
           }
+          return accountContentElement!;
         }
         return Skeletonizer(
           enabled: notifications.connectionState != ConnectionState.done,
@@ -447,40 +460,33 @@ class _LanguageSelection extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(10),
       child: TextButton(
-          style: TextButton.styleFrom(
-            backgroundColor: selected ? Colors.indigo[50] : Colors.white,
-            padding: EdgeInsets.all(10),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                side: BorderSide(
-                    color: selected
-                        ? Colors.indigo[100] ?? Colors.indigo
-                        : Colors.grey[300] ?? Colors.grey,
-                    width: selected ? 2 : 1)),
-          ),
-          onPressed: () async {
-            changeLanguage(languageState, language);
-            await Locales.change(context, language);
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) =>
-                      ProfilePage(),
-                  transitionDuration: Duration.zero,
-                  reverseTransitionDuration: Duration.zero),
-            );
-          },
-          child: Container(
-            width: 130,
-            height: 70,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              image: DecorationImage(
-                image: AssetImage(flag),
-                fit: BoxFit.cover,
-              ),
+        style: TextButton.styleFrom(
+          backgroundColor: selected ? Colors.indigo[50] : Colors.white,
+          padding: EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              side: BorderSide(
+                  color: selected
+                      ? Colors.indigo[100] ?? Colors.indigo
+                      : Colors.grey[300] ?? Colors.grey,
+                  width: selected ? 2 : 1)),
+        ),
+        onPressed: () async {
+          changeLanguage(languageState, language);
+          await Locales.change(context, language);
+        },
+        child: Container(
+          width: 130,
+          height: 70,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            image: DecorationImage(
+              image: AssetImage(flag),
+              fit: BoxFit.cover,
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -491,14 +497,14 @@ class _LanguageSelection extends StatelessWidget {
   }
 }
 
-class NotificationToggle extends StatefulWidget {
-  const NotificationToggle({super.key});
+class _NotificationToggle extends StatefulWidget {
+  const _NotificationToggle({super.key});
 
   @override
-  State<NotificationToggle> createState() => _NotificationToggleState();
+  State<_NotificationToggle> createState() => _NotificationToggleState();
 }
 
-class _NotificationToggleState extends State<NotificationToggle> {
+class _NotificationToggleState extends State<_NotificationToggle> {
   bool _notificationsEnabled = true;
 
   void _toggleNotifications(bool value) async {
