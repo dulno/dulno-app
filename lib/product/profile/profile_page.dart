@@ -115,97 +115,84 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 30),
-                  LocaleText(
-                    "product.profile.account",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.left,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: 30),
+                      LocaleText(
+                        "product.profile.account",
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 5),
+                      accountContent(),
+                      SizedBox(height: 30),
+                      LocaleText(
+                        "product.profile.language",
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 10),
+                      _LanguageSelection(),
+                      SizedBox(height: 30),
+                      LocaleText(
+                        "product.profile.notification",
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 10),
+                      _NotificationToggle(),
+                      Expanded(child: SizedBox()),
+                      SizedBox(height: 50),
+                      Divider(
+                        color: Colors.grey[300],
+                        height: 2,
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Wrap(
+                          spacing: 16.0,
+                          runSpacing: 8.0,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            _LinkText("product.profile.imprint",
+                                "https://dulno.com/imprint/"),
+                            _LinkText("product.profile.privacy.policy",
+                                "https://dulno.com/privacy-policy/"),
+                            _LinkText("product.profile.terms.of.service",
+                                "https://dulno.com/terms-of-service/"),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      Align(
+                        alignment: Alignment.center,
+                        child: FutureBuilder<PackageInfo>(
+                          future: PackageInfo.fromPlatform(),
+                          builder: (context, AsyncSnapshot<PackageInfo> package) {
+                            return Text(
+                              "Version ${package.data?.version ?? ""}",
+                              style: TextStyle(fontSize: 12),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                    ],
                   ),
-                  SizedBox(height: 5),
-                  accountContent(),
-                  SizedBox(height: 30),
-                  LocaleText(
-                    "product.profile.language",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(height: 10),
-                  _LanguageSelection(),
-                  SizedBox(height: 30),
-                  LocaleText(
-                    "product.profile.notification",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  SizedBox(height: 10),
-                  _NotificationToggle(),
-                  Spacer(),
-                  SizedBox(height: 80),
-                  new Divider(
-                    color: Colors.grey[300],
-                    height: 2,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Wrap(
-                      spacing: 16.0,
-                      runSpacing: 8.0,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        _LinkText("product.profile.imprint",
-                            "https://dulno.com/imprint/"),
-                        _LinkText("product.profile.privacy.policy",
-                            "https://dulno.com/privacy-policy/"),
-                        _LinkText("product.profile.terms.of.service",
-                            "https://dulno.com/terms-of-service/"),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: FutureBuilder<PackageInfo>(
-                      future: PackageInfo.fromPlatform(),
-                      builder: (context, AsyncSnapshot<PackageInfo> package) {
-                        return Text(
-                          "Version ${package.data?.version ?? ""}",
-                          style: TextStyle(fontSize: 12),
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
-      ),
+      )
     );
   }
 
