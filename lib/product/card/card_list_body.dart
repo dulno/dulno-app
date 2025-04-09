@@ -7,6 +7,7 @@ import 'package:dulno/product/profile/profile_page.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CardListBody extends ProductPageBody {
@@ -68,42 +69,48 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
       _cards = responseBody["cards"];
     }
     if (_cards.isEmpty) {
+      const storage = FlutterSecureStorage();
+      var storedEmail = await storage.read(key: "email");
       return Container(
         alignment: Alignment.center,
         margin: const EdgeInsets.only(top: 20, bottom: 75),
         child: Stack(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: LocaleText("product.card.list.login.description"),
-                ),
-                Center(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size(50, 30),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.centerLeft,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ProfilePage()),
-                      );
-                    },
-                    child: LocaleText(
-                      "product.card.list.login.call",
-                      style: TextStyle(
-                        color: Colors.indigo,
-                        decoration: TextDecoration.underline,
+            storedEmail == null
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child:
+                            LocaleText("product.card.list.login.description"),
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                      Center(
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size(50, 30),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            alignment: Alignment.centerLeft,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilePage()),
+                            );
+                          },
+                          child: LocaleText(
+                            "product.card.list.login.call",
+                            style: TextStyle(
+                              color: Colors.indigo,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : SizedBox.shrink(),
             CardListScanArrow(),
           ],
         ),
