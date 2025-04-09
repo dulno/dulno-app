@@ -184,15 +184,6 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       ).show(context);
       return;
     }
-    if (responseBody["alreadyExists"]) {
-      Alert(
-        description: "product.profile.email.connect.overwrite",
-        icon: CupertinoIcons.exclamationmark_triangle,
-        cancelButton: true,
-        callback: () => displayBindingCodePage(context),
-      ).show(context);
-      return;
-    }
     displayBindingCodePage(context);
   }
 

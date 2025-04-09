@@ -50,16 +50,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ).show(context);
       return;
     }
-    if (responseBody["user"] != null &&
-        responseBody["authenticationKey"] != null) {
-      Alert(
-        description: "product.profile.google.connect.overwrite",
-        icon: CupertinoIcons.exclamationmark_triangle,
-        cancelButton: true,
-        callback: () => completeGoogleSignIn(context, responseBody),
-      ).show(context);
-      return;
-    }
     completeGoogleSignIn(context, responseBody);
   }
 
