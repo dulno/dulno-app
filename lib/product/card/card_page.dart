@@ -7,10 +7,7 @@ import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class CardPage extends StatelessWidget {
   final Map<String, dynamic> content;
@@ -166,7 +163,7 @@ class CardPage extends StatelessWidget {
         ),
       );
     }
-    var firstLocation = partner["locations"];
+    var firstLocation = partner["locations"][0];
     return Container(
       height: 300,
       decoration: BoxDecoration(
