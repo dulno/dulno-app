@@ -28,20 +28,38 @@ class _ProfilePageState extends State<ProfilePage> {
           "1057662416151-qt2uppuh1k3e6voe5d5gtpusck95oab1.apps.googleusercontent.com");
   Widget? accountContentElement;
 
-  Future<void> _processGoogleSignIn() async {
-    await _googleSignIn.signOut();
-    final account = await _googleSignIn.signIn();
-    if (account == null) {
-      return;
+  Future<void> _processGoogleSignIn(context) async {
+    try {
+      await _googleSignIn.signOut();
+      final account = await _googleSignIn.signIn();
+      if (account == null) {
+        return;
+      }
+      final auth = await account.authentication;
+      final idToken = auth.idToken;
+      if (idToken == null) {
+        return;
+      }
+      await sendInternalGoogleSignInRequest(context, idToken);
+    } catch (exception) {
+      Alert(
+        description: "connection.failed",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
     }
-    final auth = await account.authentication;
-    final idToken = auth.idToken;
-    if (idToken == null) {
-      return;
-    }
+  }
+
+  Future<void> sendInternalGoogleSignInRequest(context, idToken) async {
     var body = <String, Object>{"token": idToken};
     var response =
         await Request.post(url: "/user/bind/google/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      Alert(
+        description: "connection.failed",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       Alert(
@@ -391,7 +409,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: WidgetStateProperty.all(EdgeInsets.all(15)),
                 alignment: Alignment.centerLeft),
             onPressed: () async {
-              await _processGoogleSignIn();
+              await _processGoogleSignIn(context);
             },
             icon: Container(
               margin: EdgeInsets.symmetric(horizontal: 10),

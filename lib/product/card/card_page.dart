@@ -17,9 +17,9 @@ class CardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<dynamic>(
       future: findPartner(),
-      builder: (context, AsyncSnapshot<Map<String, dynamic>> partner) {
+      builder: (context, AsyncSnapshot<dynamic> partner) {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -50,7 +50,7 @@ class CardPage extends StatelessWidget {
     );
   }
 
-  Widget createCardPageContent(AsyncSnapshot<Map<String, dynamic>> partner) {
+  Widget createCardPageContent(AsyncSnapshot<dynamic> partner) {
     return Skeletonizer(
       enabled: !partner.hasData,
       child: Column(
@@ -190,9 +190,12 @@ class CardPage extends StatelessWidget {
     );
   }
 
-  Future<Map<String, dynamic>> findPartner() async {
+  Future<dynamic> findPartner() async {
     var body = <String, Object>{"partner": content["partnerId"]};
     var response = await Request.post(url: "/user/partner/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      return null;
+    }
     return jsonDecode(response.body);
   }
 }

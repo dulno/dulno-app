@@ -23,7 +23,7 @@ class Request {
       : url = "https://${EnvironmentOptions.environment.endpoint}/v1$url",
         method = "POST";
 
-  Future<Response> send() async {
+  Future<Response?> send() async {
     Map<String, String> headers = Map.from(this.headers);
     headers["Content-Type"] = "application/json; charset=UTF-8";
     const storage = FlutterSecureStorage();
@@ -52,13 +52,21 @@ class Request {
     return {"hash": hash};
   }
 
-  Future<Response> generateResponse(headers) async {
+  Future<Response?> generateResponse(headers) async {
     if (method == "GET") {
-      return await get(Uri.parse(url), headers: headers);
+      try {
+        return await get(Uri.parse(url), headers: headers);
+      } catch (exception) {
+        return null;
+      }
     } else if (method == "POST") {
-      Map<String, Object> body = Map.from(this.body);
-      return await post(Uri.parse(url),
-          headers: headers, body: jsonEncode(body));
+      try {
+        Map<String, Object> body = Map.from(this.body);
+        return await post(Uri.parse(url),
+            headers: headers, body: jsonEncode(body));
+      } catch (exception) {
+        return null;
+      }
     } else {
       throw UnsupportedError("Unsupported HTTP method: $method");
     }

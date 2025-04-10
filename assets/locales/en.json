@@ -2,11 +2,14 @@
   "alert.ok": "OK",
   "alert.cancel": "Cancel",
 
+  "connection.failed": "No connection could be established. Please try again later",
+
   "product.scan.popup.title": "Ready to scan",
   "product.scan.popup.description": "The NFC sensor is usually located in the middle of the upper third of the back of your smartphone",
   "product.scan.unsupported.title": "Error",
   "product.scan.unsupported.description": "Unfortunately, your smartphone doesn't support NFC, so you can't collect stamps",
   "product.scan.popup.cancel": "Cancel",
+  "product.scan.error.nfc.tag": "The scanned NFC tag is not a Dulno stamp",
   "product.scan.error.stamp.existence": "The scanned stamp could not be found",
   "product.scan.error.stamp.state": "The scanned stamp was either deactivated or not assigned to a stamp card",
   "product.scan.error.scan.validation": "There was an error authorizing the stamp scan. Please try again",

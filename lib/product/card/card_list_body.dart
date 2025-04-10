@@ -61,12 +61,14 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
   Future<Widget> createCardElements(value) async {
     if (!_fetched) {
       var response = await Request.get(url: "/user/cards/").send();
-      var responseBody = jsonDecode(response.body);
-      setState(() {
-        _loaded = true;
-        _fetched = true;
-      });
-      _cards = responseBody["cards"];
+      if (response != null && response.statusCode != 409) {
+        var responseBody = jsonDecode(response.body);
+        setState(() {
+          _loaded = true;
+          _fetched = true;
+        });
+        _cards = responseBody["cards"];
+      }
     }
     if (_cards.isEmpty) {
       const storage = FlutterSecureStorage();

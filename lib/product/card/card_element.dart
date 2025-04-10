@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProductCardElement extends StatelessWidget {
@@ -169,6 +169,9 @@ class ProductCardElement extends StatelessWidget {
     var body = <String, Object>{"card": cardId};
     var response =
         await Request.post(url: "/user/card/logo/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      return SizedBox.shrink();
+    }
     var responseBody = jsonDecode(response.body);
     var newLogoId = responseBody["logoId"];
     var newLogo = base64Decode(responseBody["logo"]);

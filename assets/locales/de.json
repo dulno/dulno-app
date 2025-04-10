@@ -2,11 +2,14 @@
   "alert.ok": "OK",
   "alert.cancel": "Abbrechen",
 
+  "connection.failed": "Es konnte keine Verbindung hergestellt werden. Bitte versuchen Sie es später erneut",
+
   "product.scan.popup.title": "Bereit zum Scannen",
   "product.scan.popup.description": "Der NFC-Sensor befindet sich meistens mittig im oberen Drittel auf der Rückseite Ihres Smartphones",
   "product.scan.unsupported.title": "Fehler",
   "product.scan.unsupported.description": "Leider unterstützt Ihr Smartphone kein NFC, daher können Sie keine Stempel sammeln",
   "product.scan.popup.cancel": "Abbrechen",
+  "product.scan.error.nfc.tag": "Der gescannte NFC-Tag ist kein Dulno-Stempel",
   "product.scan.error.stamp.existence": "Der gescannte Stempel konnte nicht gefunden werden",
   "product.scan.error.stamp.state": "Der gescannte Stempel wurde entweder deaktiviert oder keiner Stempelkarte zugewiesen",
   "product.scan.error.scan.validation": "Es gab einen Fehler bei der Autorisierung des Stempel-Scans. Bitte versuche es erneut",

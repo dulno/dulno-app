@@ -3,11 +3,10 @@ import 'dart:io';
 
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/request/request.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class PartnerPopup extends StatefulWidget {
@@ -172,6 +171,9 @@ class _DraggablePopupState extends State<PartnerPopup> {
     var body = <String, Object>{"partner": partnerId};
     var response =
         await Request.post(url: "/user/partner/logo/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      return SizedBox.shrink();
+    }
     var responseBody = jsonDecode(response.body);
     var newLogoId = responseBody["logoId"];
     var newLogo = base64Decode(responseBody["logo"]);

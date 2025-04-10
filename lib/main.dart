@@ -93,6 +93,10 @@ class DulnoApp extends StatelessWidget {
     };
     body.addAll(await findDeviceInfo());
     var response = await Request.post(url: "/user/signup/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      //TODO: CHANGE
+      return;
+    }
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       return;

@@ -76,30 +76,44 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         String stamp = uri.queryParameters['stamp'] ?? "";
         String picc = uri.queryParameters['picc'] ?? "";
         String cmac = uri.queryParameters['cmac'] ?? "";
-        var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
-        var response =
-            await Request.post(url: "/user/stamp/", body: body).send();
-        var responseBody = jsonDecode(response.body);
-        if (!responseBody["success"]) {
+        if (stamp == "" || picc == "" || cmac == "") {
           Navigator.pop(context);
-          displayScanError(responseBody["error"]);
+          displayScanError("product.scan.error.nfc.tag");
           return;
         }
-        if (widget.currentPageIndex() == 0) {
-          widget.callback();
-          Navigator.pop(context);
-        } else {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  ProductPage(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        }
+        redeemStamp(context, stamp, picc, cmac);
       }
+    }
+  }
+
+  void redeemStamp(context, stamp, picc, cmac) async {
+    var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
+    var response = await Request.post(url: "/user/stamp/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      //TODO: CHANGE
+      Navigator.pop(context);
+      displayScanError("");
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (!responseBody["success"]) {
+      Navigator.pop(context);
+      displayScanError(responseBody["error"]);
+      return;
+    }
+    if (widget.currentPageIndex() == 0) {
+      widget.callback();
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              ProductPage(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
     }
   }
 

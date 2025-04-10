@@ -173,10 +173,17 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     };
     var response =
         await Request.post(url: "/user/bind/request/", body: body).send();
-    var responseBody = jsonDecode(response.body);
     setState(() {
       _connecting = false;
     });
+    if (response == null || response.statusCode == 409) {
+      Alert(
+        description: "connection.failed",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       Alert(
         description: "product.profile.email.connect.failure.email.format",
@@ -207,6 +214,13 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     var body = <String, Object>{"code": code};
     var response =
         await Request.post(url: "/user/bind/complete/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      Alert(
+        description: "connection.failed",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       codeController.text = "";
