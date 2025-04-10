@@ -4,6 +4,9 @@
 
   "connection.failed": "No connection could be established. Please try again later",
 
+  "scan.redemption.successful": "Cached scans have now been successfully redeemed retrospectively",
+  "scan.redemption.failed": "An attempt was made to redeem temporarily saved scans retrospectively. An error has occurred. Therefore the scans were unfortunately not transferred",
+
   "product.scan.popup.title": "Ready to scan",
   "product.scan.popup.description": "The NFC sensor is usually located in the middle of the upper third of the back of your smartphone",
   "product.scan.unsupported.title": "Error",
@@ -17,6 +20,7 @@
   "product.scan.error.value.absent": "You have no further units that you can redeem",
   "product.scan.error.member.absent": "You are not a member and therefore your membership cannot be revoked",
   "product.scan.error.already.member": "You are already a member",
+  "product.scan.connection.cache": "As no connection could be established at the moment, the stamp will be temporarily stored on your device and redeemed at a later time",
 
   "product.card.list.label": "Cards",
   "product.card.list.login.description": "You already had stamps?",

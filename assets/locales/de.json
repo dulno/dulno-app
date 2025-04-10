@@ -4,6 +4,9 @@
 
   "connection.failed": "Es konnte keine Verbindung hergestellt werden. Bitte versuchen Sie es später erneut",
 
+  "scan.redemption.successful": "Zwischengespeicherte Scans wurden nun erfolgreich rückwirkend eingelöst",
+  "scan.redemption.failed": "Es wurde versucht, vorübergehend gespeicherte Scans im Nachhinein einzulösen. Dabei ist ein Fehler aufgetreten. Daher konnten die Scans leider nicht übertragen werden",
+
   "product.scan.popup.title": "Bereit zum Scannen",
   "product.scan.popup.description": "Der NFC-Sensor befindet sich meistens mittig im oberen Drittel auf der Rückseite Ihres Smartphones",
   "product.scan.unsupported.title": "Fehler",
@@ -17,6 +20,7 @@
   "product.scan.error.value.absent": "Du hast keine weiteren Einheiten, die du einlösen kannst",
   "product.scan.error.member.absent": "Du bist kein Mitglied und daher kann deine Mitgliedschaft nicht widerrufen werden",
   "product.scan.error.already.member": "Du bist bereits Mitglied",
+  "product.scan.connection.cache": "Da im Moment keine Verbindung hergestellt werden konnte, wird der Stempel vorübergehend auf Ihrem Gerät gespeichert und zu einem späteren Zeitpunkt eingelöst",
 
   "product.card.list.label": "Karten",
   "product.card.list.login.description": "Sie hatten bereits Stempel?",

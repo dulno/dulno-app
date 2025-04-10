@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProductNFCScanPopup extends StatefulWidget {
   Function callback;
@@ -78,21 +79,32 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         String cmac = uri.queryParameters['cmac'] ?? "";
         if (stamp == "" || picc == "" || cmac == "") {
           Navigator.pop(context);
-          displayScanError("product.scan.error.nfc.tag");
+          Alert(
+            description: "product.scan.error.nfc.tag",
+            icon: CupertinoIcons.exclamationmark_triangle,
+          ).show(context);
           return;
         }
-        redeemStamp(context, stamp, picc, cmac);
+        await redeemStamp(context, stamp, picc, cmac);
       }
     }
   }
 
-  void redeemStamp(context, stamp, picc, cmac) async {
+  Future<void> redeemStamp(context, stamp, picc, cmac) async {
     var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
     var response = await Request.post(url: "/user/stamp/", body: body).send();
     if (response == null || response.statusCode == 409) {
-      //TODO: CHANGE
+      var scan = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
+      const storage = FlutterSecureStorage();
+      final scanCache = await storage.read(key: "scan_cache");
+      var scans = scanCache == null ? [] : jsonDecode(scanCache);
+      scans.add(scan);
+      storage.write(key: "scan_cache", value: jsonEncode(scans));
       Navigator.pop(context);
-      displayScanError("");
+      Alert(
+        description: "product.scan.connection.cache",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
       return;
     }
     var responseBody = jsonDecode(response.body);
