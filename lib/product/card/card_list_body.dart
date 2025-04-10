@@ -22,8 +22,8 @@ class CardListBody extends ProductPageBody {
     return CardListBodyContent(key: _key);
   }
 
-  void refresh() {
-    _key.currentState?.refresh();
+  void reload() {
+    _key.currentState?.reload();
   }
 }
 
@@ -35,40 +35,55 @@ class CardListBodyContent extends StatefulWidget {
 }
 
 class _CardListBodyContentState extends State<CardListBodyContent> {
-  late Future<Widget> Function(String) _cardElementsFuture;
   bool _loaded = false;
-  bool _fetched = false;
   final TextEditingController _controller = TextEditingController();
   List<dynamic> _cards = [];
 
   @override
   void initState() {
     super.initState();
-    _cardElementsFuture = (value) => createCardElements(value);
     _controller.addListener(() {
       setState(() {});
     });
   }
 
+  void reload() async {
+    const storage = FlutterSecureStorage();
+    final cardCache = await storage.read(key: "card_cache");
+    _cards = cardCache == null ? [] : jsonDecode(cardCache);
+    setState(() {});
+  }
+
   Future<void> refresh() async {
+    await fetchCards(false);
     setState(() {
-      _fetched = false;
       _controller.text = "";
-      _cardElementsFuture("");
     });
   }
 
+  Future<void> fetchCards(reloadAfterwards) async {
+    var response = await Request.get(url: "/user/cards/").send();
+    if (response == null || response.statusCode == 409) {
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    _cards = responseBody["cards"];
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "card_cache", value: jsonEncode(_cards));
+    if (reloadAfterwards) {
+      setState(() {});
+    }
+  }
+
   Future<Widget> createCardElements(value) async {
-    if (!_fetched) {
-      var response = await Request.get(url: "/user/cards/").send();
-      if (response != null && response.statusCode != 409) {
-        var responseBody = jsonDecode(response.body);
-        setState(() {
-          _loaded = true;
-          _fetched = true;
-        });
-        _cards = responseBody["cards"];
-      }
+    if (!_loaded) {
+      const storage = FlutterSecureStorage();
+      final cardCache = await storage.read(key: "card_cache");
+      _cards = cardCache == null ? [] : jsonDecode(cardCache);
+      fetchCards(true);
+      setState(() {
+        _loaded = true;
+      });
     }
     if (_cards.isEmpty) {
       const storage = FlutterSecureStorage();
@@ -89,7 +104,8 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
                       Center(
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 0),
                             minimumSize: Size(50, 30),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             alignment: Alignment.centerLeft,
@@ -175,7 +191,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
         valueListenable: _controller,
         builder: (context, value, child) {
           return FutureBuilder<Widget>(
-            future: _cardElementsFuture(value.text),
+            future: createCardElements(value.text),
             builder: (context, AsyncSnapshot<Widget> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting &&
                   !_loaded) {

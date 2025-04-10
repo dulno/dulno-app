@@ -99,7 +99,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
       final scanCache = await storage.read(key: "scan_cache");
       var scans = scanCache == null ? [] : jsonDecode(scanCache);
       scans.add(scan);
-      storage.write(key: "scan_cache", value: jsonEncode(scans));
+      await storage.write(key: "scan_cache", value: jsonEncode(scans));
       Navigator.pop(context);
       Alert(
         description: "product.scan.connection.cache",
@@ -113,6 +113,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
       displayScanError(responseBody["error"]);
       return;
     }
+    await updateCardCache(responseBody);
     if (widget.currentPageIndex() == 0) {
       widget.callback();
       Navigator.pop(context);
@@ -127,6 +128,24 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         ),
       );
     }
+  }
+
+  Future<void> updateCardCache(responseBody) async {
+    const storage = FlutterSecureStorage();
+    final cardCache = await storage.read(key: "card_cache");
+    var cards = cardCache == null ? [] : jsonDecode(cardCache);
+    var action = responseBody["action"];
+    responseBody.remove("success");
+    responseBody.remove("action");
+    if (action == "CREATE") {
+      cards.add(responseBody);
+    } else {
+      cards.removeWhere((card) => card["userCardId"] == responseBody["userCardId"]);
+      if (action == "UPDATE") {
+        cards.add(responseBody);
+      }
+    }
+    await storage.write(key: "card_cache", value: jsonEncode(cards));
   }
 
   void displayScanError(error) {

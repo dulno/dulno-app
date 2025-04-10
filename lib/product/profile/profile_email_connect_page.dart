@@ -233,8 +233,8 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     const storage = FlutterSecureStorage();
     await storage.write(key: "email", value: _controller.text);
     if (responseBody["user"] != null && responseBody["authenticationKey"] != null) {
-      storage.write(key: "user", value: responseBody["user"]);
-      storage.write(
+      await storage.write(key: "user", value: responseBody["user"]);
+      await storage.write(
           key: "authenticationKey", value: responseBody["authenticationKey"]);
     }
     Alert(

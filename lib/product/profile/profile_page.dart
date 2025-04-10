@@ -76,8 +76,8 @@ class _ProfilePageState extends State<ProfilePage> {
     await storage.write(key: "email", value: responseBody["email"]);
     if (responseBody["user"] != null &&
         responseBody["authenticationKey"] != null) {
-      storage.write(key: "user", value: responseBody["user"]);
-      storage.write(
+      await storage.write(key: "user", value: responseBody["user"]);
+      await storage.write(
           key: "authenticationKey", value: responseBody["authenticationKey"]);
     }
     Alert(

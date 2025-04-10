@@ -140,8 +140,8 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (!responseBody["success"]) {
       return;
     }
-    storage.write(key: "user", value: responseBody["id"]);
-    storage.write(
+    await storage.write(key: "user", value: responseBody["id"]);
+    await storage.write(
         key: "authenticationKey", value: responseBody["authenticationKey"]);
   }
 
@@ -207,7 +207,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
         failedResults++;
       }
     }
-    storage.write(key: "scan_cache", value: jsonEncode(remainingScans));
+    await storage.write(key: "scan_cache", value: jsonEncode(remainingScans));
     if (remainingScans.isEmpty) {
       Alert(
         description: "scan.redemption.successful",

@@ -38,7 +38,7 @@ class _ProductPageState extends State<ProductPage> {
           .content(context),
       backgroundColor: Color(0xFFFAFAFA),
       floatingActionButton: ProductScanButton(
-        callback: (pageBodies[0] as CardListBody).refresh,
+        callback: (pageBodies[0] as CardListBody).reload,
         currentPageIndex: () => _selectedIndex,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
