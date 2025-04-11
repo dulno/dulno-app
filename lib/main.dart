@@ -31,7 +31,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen(firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.instance.subscribeToTopic("dulno-workspace-monitor");
+  FirebaseMessaging.instance.subscribeToTopic("dulno");
 }
 
 class DulnoApp extends StatefulWidget {
@@ -77,42 +77,38 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitDown,
     ]);
     return FutureBuilder<void>(
-      future: checkUserCreation(),
-      builder: (context, AsyncSnapshot<void> userCreationSnapshot) {
-        return FutureBuilder<void>(
-            future: checkStampRedemption(context),
-            builder: (context, AsyncSnapshot<void> redemptionSnapshot) {
-              return FutureBuilder<String>(
-                future: findLanguage(),
-                builder: (context, AsyncSnapshot<String> languageSnapshot) {
-                  return MultiProvider(
-                    providers: [
-                      ChangeNotifierProvider(
-                          create: (_) => ProfileLanguageState(
-                              languageSnapshot.data ?? "de")),
-                    ],
-                    child: LocaleBuilder(
-                      builder: (locale) => MaterialApp(
-                        title: 'Dulno',
-                        theme: ThemeData(
-                          useMaterial3: true,
-                          primaryColor: Colors.black,
-                          colorScheme: ColorScheme.light(
-                              primary: Color(0xFF2196F3),
-                              background: Color(0xFFE8E8E8)),
-                        ),
-                        home: ProductPage(),
-                        debugShowCheckedModeBanner: false,
-                        localizationsDelegates: Locales.delegates,
-                        supportedLocales: Locales.supportedLocales,
-                        locale: locale,
-                        navigatorKey: navigatorKey,
-                      ),
-                    ),
-                  );
-                },
-              );
-            });
+      future: checkStampRedemption(context),
+      builder: (context, AsyncSnapshot<void> redemptionSnapshot) {
+        return FutureBuilder<String>(
+          future: findLanguage(),
+          builder: (context, AsyncSnapshot<String> languageSnapshot) {
+            return MultiProvider(
+              providers: [
+                ChangeNotifierProvider(
+                    create: (_) =>
+                        ProfileLanguageState(languageSnapshot.data ?? "de")),
+              ],
+              child: LocaleBuilder(
+                builder: (locale) => MaterialApp(
+                  title: 'Dulno',
+                  theme: ThemeData(
+                    useMaterial3: true,
+                    primaryColor: Colors.black,
+                    colorScheme: ColorScheme.light(
+                        primary: Color(0xFF2196F3),
+                        background: Color(0xFFE8E8E8)),
+                  ),
+                  home: ProductPage(),
+                  debugShowCheckedModeBanner: false,
+                  localizationsDelegates: Locales.delegates,
+                  supportedLocales: Locales.supportedLocales,
+                  locale: locale,
+                  navigatorKey: navigatorKey,
+                ),
+              ),
+            );
+          },
+        );
       },
     );
   }
@@ -128,8 +124,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     var language = ui.PlatformDispatcher.instance.locale.languageCode;
     var body = <String, Object>{
       "language": language,
-      "legalAccepted": true,
-      "firebaseIdentifier": await findFirebaseToken()
+      "legalAccepted": true
     };
     body.addAll(await findDeviceInfo());
     var response = await Request.post(url: "/user/signup/", body: body).send();
@@ -169,15 +164,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       };
     }
     return {};
-  }
-
-  Future<String> findFirebaseToken() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-    var instance = FirebaseMessaging.instance;
-    await instance.requestPermission();
-    var token = await instance.getToken();
-    return token ?? "";
   }
 
   Future<String> findLanguage() async {

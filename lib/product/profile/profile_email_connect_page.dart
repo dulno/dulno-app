@@ -225,14 +225,15 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     if (!responseBody["success"]) {
       codeController.text = "";
       Alert(
-              description: "product.profile.email.connect.failure.complete",
-              icon: CupertinoIcons.exclamationmark_triangle)
-          .show(context);
+        description: "product.profile.email.connect.failure.complete",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
       return;
     }
     const storage = FlutterSecureStorage();
     await storage.write(key: "email", value: _controller.text);
-    if (responseBody["user"] != null && responseBody["authenticationKey"] != null) {
+    if (responseBody["user"] != null &&
+        responseBody["authenticationKey"] != null) {
       await storage.write(key: "user", value: responseBody["user"]);
       await storage.write(
           key: "authenticationKey", value: responseBody["authenticationKey"]);
@@ -244,8 +245,9 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
         Navigator.pushAndRemoveUntil(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(),
-            transitionDuration: Duration.zero
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                ProfilePage(),
+            transitionDuration: Duration.zero,
           ),
           ModalRoute.withName('/'),
         );

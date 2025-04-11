@@ -140,7 +140,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
     if (action == "CREATE") {
       cards.add(responseBody);
     } else {
-      cards.removeWhere((card) => card["userCardId"] == responseBody["userCardId"]);
+      cards.removeWhere((card) => card["itemId"] == responseBody["itemId"]);
       if (action == "UPDATE") {
         cards.add(responseBody);
       }
