@@ -63,11 +63,17 @@
 
   "product.profile.email.connect.headline": "Connect email",
   "product.profile.email.connect.placeholder": "Email",
-  "product.profile.email.connect.newsletter": "Do you agree that we inform you about offers and news by email? (optional)",
   "product.profile.email.connect.button": "Connect",
   "product.profile.email.connect.success": "Email connection was successful",
   "product.profile.email.connect.failure.email.format": "The email you entered could not be found",
   "product.profile.email.connect.failure.complete": "The code entered is incorrect. Please try again",
+
+  "product.legal.compliant.1": "Do you agree to our and ",
+  "product.legal.terms.of.service": "terms of service",
+  "product.legal.compliant.2": " and ",
+  "product.legal.privacy.policy": "privacy policy",
+  "product.legal.compliant.3": "?",
+  "product.legal.newsletter": "Do you agree that we inform you about offers and news by email? (optional)",
 
   "product.profile.email.code.headline": "Enter verification code",
   "product.profile.email.code.description.1": "We have sent you a confirmation code to the email ",

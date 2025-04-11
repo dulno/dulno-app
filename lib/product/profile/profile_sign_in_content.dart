@@ -14,7 +14,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class ProfileSignInContent extends StatelessWidget {
   final GoogleSignIn googleSignIn;
 
-  ProfileSignInContent({super.key, required this.googleSignIn});
+  const ProfileSignInContent({super.key, required this.googleSignIn});
 
   Future<void> _processGoogleSignIn(context) async {
     try {
@@ -40,7 +40,7 @@ class ProfileSignInContent extends StatelessWidget {
   Future<void> sendInternalGoogleSignInRequest(context, idToken) async {
     var body = <String, Object>{"token": idToken};
     var response =
-    await Request.post(url: "/user/bind/google/", body: body).send();
+        await Request.post(url: "/user/bind/google/", body: body).send();
     if (response == null || response.statusCode == 409) {
       Alert(
         description: "connection.failed",

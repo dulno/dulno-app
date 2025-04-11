@@ -9,7 +9,10 @@ class ProfileEmailCodePage extends StatefulWidget {
   final Function(String) callback;
 
   const ProfileEmailCodePage(
-      {super.key, required this.controller, required this.email, required this.callback});
+      {super.key,
+      required this.controller,
+      required this.email,
+      required this.callback});
 
   @override
   State<ProfileEmailCodePage> createState() => _ProfileEmailCodePageState();
@@ -69,8 +72,9 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
                   ),
                   children: [
                     TextSpan(
-                        text: Locales.string(context,
-                            "product.profile.email.code.description.1")),
+                      text: Locales.string(
+                          context, "product.profile.email.code.description.1"),
+                    ),
                     TextSpan(
                       text: widget.email,
                       style: TextStyle(
@@ -78,8 +82,9 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
                       ),
                     ),
                     TextSpan(
-                        text: Locales.string(context,
-                            "product.profile.email.code.description.2")),
+                      text: Locales.string(
+                          context, "product.profile.email.code.description.2"),
+                    ),
                   ],
                 ),
               ),

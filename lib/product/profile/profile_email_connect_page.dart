@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
 import 'package:dulno/product/profile/profile_page.dart';
+import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileEmailConnectPage extends StatefulWidget {
   const ProfileEmailConnectPage({super.key});
@@ -19,6 +22,7 @@ class ProfileEmailConnectPage extends StatefulWidget {
 
 class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
   final TextEditingController _controller = TextEditingController();
+  bool _legalChecked = false;
   bool _newsletterChecked = false;
   bool _isEmailValid = false;
   bool _hasTyped = false;
@@ -86,8 +90,67 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
               ),
               SizedBox(height: 10),
               CheckboxListTile(
+                title: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                    children: [
+                      TextSpan(
+                        text: Locales.string(
+                            context, "product.legal.compliant.1"),
+                      ),
+                      TextSpan(
+                        text: Locales.string(
+                            context, "product.legal.terms.of.service"),
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            await launchUrl(Uri.parse(
+                                "https://dulno.com/terms-of-service/"));
+                          },
+                      ),
+                      TextSpan(
+                        text: Locales.string(
+                            context, "product.legal.compliant.2"),
+                      ),
+                      TextSpan(
+                        text: Locales.string(
+                            context, "product.legal.privacy.policy"),
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () async {
+                            await launchUrl(
+                                Uri.parse("https://dulno.com/privacy-policy/"));
+                          },
+                      ),
+                      TextSpan(
+                        text: Locales.string(
+                            context, "product.legal.compliant.3"),
+                      ),
+                    ],
+                  ),
+                ),
+                value: _legalChecked,
+                onChanged: (bool? newValue) {
+                  setState(() {
+                    _legalChecked = newValue!;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+                // checkbox before text
+                activeColor: Colors.indigo, // optional styling
+              ),
+              CheckboxListTile(
                 title: LocaleText(
-                  "product.profile.email.connect.newsletter",
+                  "product.legal.newsletter",
                   style: TextStyle(fontSize: 12),
                 ),
                 value: _newsletterChecked,
@@ -106,7 +169,9 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                 child: ElevatedButton.icon(
                   style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(
-                          _isEmailValid ? Colors.indigo : Colors.indigo[200]),
+                          (_isEmailValid && _legalChecked)
+                              ? Colors.indigo
+                              : Colors.indigo[200]),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
@@ -114,7 +179,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                       padding: WidgetStateProperty.all(
                           EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
                       alignment: Alignment.center),
-                  onPressed: _isEmailValid
+                  onPressed: (_isEmailValid && _legalChecked)
                       ? () {
                           requestBinding(context);
                         }
@@ -167,10 +232,9 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     setState(() {
       _connecting = true;
     });
-    var body = <String, Object>{
-      "email": _controller.text,
-      "newsletter": _newsletterChecked
-    };
+    var body = <String, Object>{"email": _controller.text};
+    body.addAll(
+        await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
     var response =
         await Request.post(url: "/user/bind/request/", body: body).send();
     setState(() {
@@ -191,10 +255,10 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       ).show(context);
       return;
     }
-    displayBindingCodePage(context);
+    displayBindingCodePage(context, responseBody["user"]);
   }
 
-  void displayBindingCodePage(context) {
+  void displayBindingCodePage(context, user) {
     var codeController = TextEditingController();
     Navigator.push(
       context,
@@ -203,15 +267,15 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
           controller: codeController,
           email: _controller.text,
           callback: (code) async {
-            completeBinding(context, codeController, code);
+            completeBinding(context, codeController, user, code);
           },
         ),
       ),
     );
   }
 
-  void completeBinding(context, codeController, code) async {
-    var body = <String, Object>{"code": code};
+  void completeBinding(context, codeController, user, code) async {
+    var body = <String, Object>{"code": code, "user": user};
     var response =
         await Request.post(url: "/user/bind/complete/", body: body).send();
     if (response == null || response.statusCode == 409) {

@@ -103,11 +103,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               ProfileFooterLink("product.profile.imprint",
                                   "https://dulno.com/imprint/"),
                               ProfileFooterLink(
-                                  "product.profile.privacy.policy",
-                                  "https://dulno.com/privacy-policy/"),
-                              ProfileFooterLink(
                                   "product.profile.terms.of.service",
                                   "https://dulno.com/terms-of-service/"),
+                              ProfileFooterLink(
+                                  "product.profile.privacy.policy",
+                                  "https://dulno.com/privacy-policy/"),
                             ],
                           ),
                         ),

@@ -8,7 +8,8 @@ class ProfileAccountContent extends StatelessWidget {
   final GoogleSignIn googleSignIn;
   final String email;
 
-  ProfileAccountContent({super.key, required this.googleSignIn, required this.email});
+  const ProfileAccountContent(
+      {super.key, required this.googleSignIn, required this.email});
 
   @override
   Widget build(BuildContext context) {

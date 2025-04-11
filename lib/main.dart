@@ -1,10 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'dart:ui' as ui;
 
-import 'package:android_id/android_id.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/config/firebase_options.dart';
 import 'package:dulno/product/base/page.dart';
@@ -62,12 +58,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (state != AppLifecycleState.resumed) {
       return;
     }
-    checkAppIntegrity();
-  }
-
-  Future<void> checkAppIntegrity() async {
-    await checkUserCreation();
-    await checkStampRedemption(navigatorKey.currentContext);
+    checkStampRedemption(navigatorKey.currentContext);
   }
 
   @override
@@ -113,59 +104,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> checkUserCreation() async {
-    const storage = FlutterSecureStorage();
-    final user = await storage.read(key: "user") ?? "";
-    final authenticationKey =
-        await storage.read(key: "authenticationKey") ?? "";
-    if (user != "" && authenticationKey != "") {
-      return;
-    }
-    var language = ui.PlatformDispatcher.instance.locale.languageCode;
-    var body = <String, Object>{
-      "language": language,
-      "legalAccepted": true
-    };
-    body.addAll(await findDeviceInfo());
-    var response = await Request.post(url: "/user/signup/", body: body).send();
-    if (response == null || response.statusCode == 409) {
-      return;
-    }
-    var responseBody = jsonDecode(response.body);
-    if (!responseBody["success"]) {
-      return;
-    }
-    await storage.write(key: "user", value: responseBody["id"]);
-    await storage.write(
-        key: "authenticationKey", value: responseBody["authenticationKey"]);
-  }
-
-  Future<Map<String, String>> findDeviceInfo() async {
-    final deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      final androidInfo = await deviceInfo.androidInfo;
-      return {
-        "id": await const AndroidId().getId() ?? "",
-        "operatingSystem": "Android",
-        "operatingSystemVersion": androidInfo.version.release ?? "",
-        "brand": androidInfo.brand ?? "",
-        "model": androidInfo.model ?? "",
-        "name": androidInfo.device ?? "",
-      };
-    } else if (Platform.isIOS) {
-      final iosInfo = await deviceInfo.iosInfo;
-      return {
-        "id": iosInfo.identifierForVendor ?? "",
-        "operatingSystem": "IOS",
-        "operatingSystemVersion": iosInfo.systemVersion ?? "",
-        "brand": "Apple",
-        "model": iosInfo.utsname.machine ?? "",
-        "name": iosInfo.name ?? "",
-      };
-    }
-    return {};
-  }
-
   Future<String> findLanguage() async {
     const storage = FlutterSecureStorage();
     final language = await storage.read(key: "language") ?? "de";
@@ -174,7 +112,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
 
   Future<void> checkStampRedemption(context) async {
     const storage = FlutterSecureStorage();
-    final scanCache = await storage.read(key: "scan_cache");
+    final scanCache = await storage.read(key: "scans");
     if (scanCache == null) {
       return;
     }
@@ -193,7 +131,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
         failedResults++;
       }
     }
-    await storage.write(key: "scan_cache", value: jsonEncode(remainingScans));
+    await storage.write(key: "scans", value: jsonEncode(remainingScans));
     if (remainingScans.isEmpty) {
       Alert(
         description: "scan.redemption.successful",
@@ -208,7 +146,15 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   }
 
   Future<int> redeemStamp(stamp, picc, cmac) async {
+    const storage = FlutterSecureStorage();
     var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
+    if (await storage.read(key: "user") == null) {
+      final cardCache = await storage.read(key: "cards");
+      var cards = (cardCache == null ? [] : jsonDecode(cardCache))
+          .map((card) => card["itemId"])
+          .toList();
+      body["cards"] = cards;
+    }
     var response = await Request.post(url: "/user/stamp/", body: body).send();
     if (response == null || response.statusCode == 409) {
       return 0;

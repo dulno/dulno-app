@@ -91,15 +91,22 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
   }
 
   Future<void> redeemStamp(context, stamp, picc, cmac) async {
+    const storage = FlutterSecureStorage();
     var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
+    if (await storage.read(key: "user") == null) {
+      final cardCache = await storage.read(key: "cards");
+      var cards = (cardCache == null ? [] : jsonDecode(cardCache))
+          .map((card) => card["itemId"])
+          .toList();
+      body["cards"] = cards;
+    }
     var response = await Request.post(url: "/user/stamp/", body: body).send();
     if (response == null || response.statusCode == 409) {
       var scan = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
-      const storage = FlutterSecureStorage();
-      final scanCache = await storage.read(key: "scan_cache");
+      final scanCache = await storage.read(key: "scans");
       var scans = scanCache == null ? [] : jsonDecode(scanCache);
       scans.add(scan);
-      await storage.write(key: "scan_cache", value: jsonEncode(scans));
+      await storage.write(key: "scans", value: jsonEncode(scans));
       Navigator.pop(context);
       Alert(
         description: "product.scan.connection.cache",
@@ -132,7 +139,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
 
   Future<void> updateCardCache(responseBody) async {
     const storage = FlutterSecureStorage();
-    final cardCache = await storage.read(key: "card_cache");
+    final cardCache = await storage.read(key: "cards");
     var cards = cardCache == null ? [] : jsonDecode(cardCache);
     var action = responseBody["action"];
     responseBody.remove("success");
@@ -145,7 +152,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         cards.add(responseBody);
       }
     }
-    await storage.write(key: "card_cache", value: jsonEncode(cards));
+    await storage.write(key: "cards", value: jsonEncode(cards));
   }
 
   void displayScanError(error) {
