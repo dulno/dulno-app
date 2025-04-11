@@ -1,5 +1,6 @@
 {
   "alert.ok": "OK",
+  "alert.continue": "Weiter",
   "alert.cancel": "Abbrechen",
 
   "connection.failed": "Es konnte keine Verbindung hergestellt werden. Bitte versuchen Sie es später erneut",

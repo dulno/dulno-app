@@ -7,7 +7,8 @@ class ProfileNotificationToggle extends StatefulWidget {
   const ProfileNotificationToggle({super.key});
 
   @override
-  State<ProfileNotificationToggle> createState() => ProfileNotificationToggleState();
+  State<ProfileNotificationToggle> createState() =>
+      ProfileNotificationToggleState();
 }
 
 class ProfileNotificationToggleState extends State<ProfileNotificationToggle> {

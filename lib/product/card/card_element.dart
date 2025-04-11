@@ -162,7 +162,8 @@ class ProductCardElement extends StatelessWidget {
     }
     var cardId = content["cardId"];
     var currentLogoId = content["logoId"];
-    final file = File(path.join(dir.path, 'dulno/card', "$cardId-$currentLogoId"));
+    final file =
+        File(path.join(dir.path, 'dulno/card', "$cardId-$currentLogoId"));
     if (await file.exists()) {
       return await file.readAsBytes();
     }

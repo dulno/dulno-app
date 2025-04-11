@@ -39,7 +39,6 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ],
-
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),
         child: Container(

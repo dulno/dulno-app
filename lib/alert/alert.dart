@@ -2,33 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
 class Alert extends StatefulWidget {
-  final String description;
   final IconData icon;
+  String? description;
+  Widget? content;
   bool? cancelButton;
   String? cancelButtonText;
   String? confirmButtonText;
+  bool Function()? confirmButtonEnabled;
   Function()? callback;
 
   Alert(
       {super.key,
-      required this.description,
       required this.icon,
+      this.description,
+      this.content,
       this.cancelButton,
       this.cancelButtonText,
       this.confirmButtonText,
+      this.confirmButtonEnabled,
       this.callback});
 
   @override
-  State<Alert> createState() => _AlertState();
+  State<Alert> createState() => AlertState();
 
   show(context) {
     showDialog(context: context, builder: (BuildContext context) => this);
   }
 }
 
-class _AlertState extends State<Alert> {
+class AlertState extends State<Alert> {
+  void reload() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    var confirmationDisabled =
+        widget.confirmButtonEnabled != null && !widget.confirmButtonEnabled!();
     return AlertDialog(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15.0))),
@@ -44,13 +54,15 @@ class _AlertState extends State<Alert> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Container(
-            padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
-            child: LocaleText(
-              widget.description,
-              textAlign: TextAlign.center,
-            ),
-          ),
+          widget.description != null
+              ? Container(
+                  padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
+                  child: LocaleText(
+                    widget.description ?? "",
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : widget.content ?? SizedBox.shrink(),
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -58,21 +70,24 @@ class _AlertState extends State<Alert> {
               widget.cancelButton == true
                   ? Container(
                       margin: EdgeInsets.only(top: 15, bottom: 15, right: 10),
-                      width: 90,
-                      height: 30,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
                         style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.all(Colors.grey),
-                            shape: WidgetStateProperty.all(
-                                const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(5.0)))),
-                            padding: WidgetStateProperty.all(EdgeInsets.zero)),
-                        child: LocaleText(widget.cancelButtonText ?? "alert.cancel",
+                          backgroundColor: WidgetStateProperty.all(Colors.grey),
+                          shape: WidgetStateProperty.all(
+                              const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5.0)))),
+                          padding: WidgetStateProperty.all(EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10)),
+                          minimumSize: WidgetStateProperty.all(Size(0, 0)),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        child: LocaleText(
+                            widget.cancelButtonText ?? "alert.cancel",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 15)),
                       ),
@@ -80,20 +95,27 @@ class _AlertState extends State<Alert> {
                   : SizedBox.shrink(),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 15),
-                width: 40,
-                height: 30,
                 child: ElevatedButton(
                   onPressed: () {
+                    if (confirmationDisabled) {
+                      return;
+                    }
                     Navigator.pop(context);
                     widget.callback?.call();
                   },
                   style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
-                      shape: WidgetStateProperty.all(
-                          const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)))),
-                      padding: WidgetStateProperty.all(EdgeInsets.zero)),
+                    backgroundColor: WidgetStateProperty.all(
+                        confirmationDisabled
+                            ? Colors.indigo[200]
+                            : Colors.indigo),
+                    shape: WidgetStateProperty.all(const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)))),
+                    padding: WidgetStateProperty.all(
+                        EdgeInsets.symmetric(horizontal: 15, vertical: 10)),
+                    minimumSize: WidgetStateProperty.all(Size(0, 0)),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
                   child: LocaleText(widget.confirmButtonText ?? "alert.ok",
                       style: TextStyle(color: Colors.white, fontSize: 15)),
                 ),

@@ -1,8 +1,8 @@
-import 'package:dulno/product/profile/profile_sign_in_content.dart';
 import 'package:dulno/product/profile/profile_account_content.dart';
 import 'package:dulno/product/profile/profile_footer_link.dart';
 import 'package:dulno/product/profile/profile_language_selection.dart';
 import 'package:dulno/product/profile/profile_notification_toggle.dart';
+import 'package:dulno/product/profile/profile_sign_in_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

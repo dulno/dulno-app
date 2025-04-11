@@ -165,30 +165,32 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
     for (var partner in widget.partners) {
       for (var location in partner["locations"]) {
         var latLng = LatLng(location["latitude"], location["longitude"]);
-        markers.add(Marker(
-          point: latLng,
-          height: 100.0,
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                shouldAnimateToWidgetPosition =
-                false; // Disable widget animation
-                _selectedPartner = partner;
-                _selectedLocation = location;
-              });
+        markers.add(
+          Marker(
+            point: latLng,
+            height: 100.0,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  shouldAnimateToWidgetPosition =
+                      false; // Disable widget animation
+                  _selectedPartner = partner;
+                  _selectedLocation = location;
+                });
 
-              // Animate the map to the selected marker's location
-              _animateMapMove(latLng, targetElementZoom);
-            },
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Image.asset(
-                'assets/images/pin.png',
-                height: 100,
+                // Animate the map to the selected marker's location
+                _animateMapMove(latLng, targetElementZoom);
+              },
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Image.asset(
+                  'assets/images/pin.png',
+                  height: 100,
+                ),
               ),
             ),
           ),
-        ),);
+        );
       }
     }
 
@@ -217,7 +219,8 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
           ],
         ),
         _selectedPartner.isNotEmpty
-            ? PartnerPopup(partner: _selectedPartner, location: _selectedLocation)
+            ? PartnerPopup(
+                partner: _selectedPartner, location: _selectedLocation)
             : SizedBox.shrink()
       ],
     );

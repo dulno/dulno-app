@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
+import 'package:dulno/alert/alert_loader.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
@@ -149,9 +150,18 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                 activeColor: Colors.indigo, // optional styling
               ),
               CheckboxListTile(
-                title: LocaleText(
-                  "product.legal.newsletter",
-                  style: TextStyle(fontSize: 12),
+                title: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                    children: [
+                      TextSpan(
+                        text: Locales.string(context, "product.legal.newsletter"),
+                      ),
+                    ],
+                  ),
                 ),
                 value: _newsletterChecked,
                 onChanged: (bool? newValue) {
@@ -232,9 +242,12 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     setState(() {
       _connecting = true;
     });
-    var body = <String, Object>{"email": _controller.text};
-    body.addAll(
-        await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
+    const storage = FlutterSecureStorage();
+    var language = await storage.read(key: "language") ?? "de";
+    var body = <String, Object>{
+      "email": _controller.text,
+      "language": language
+    };
     var response =
         await Request.post(url: "/user/bind/request/", body: body).send();
     setState(() {
@@ -275,9 +288,13 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
   }
 
   void completeBinding(context, codeController, user, code) async {
+    AlertLoader().show(context);
     var body = <String, Object>{"code": code, "user": user};
+    body.addAll(
+        await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
     var response =
         await Request.post(url: "/user/bind/complete/", body: body).send();
+    Navigator.pop(context);
     if (response == null || response.statusCode == 409) {
       Alert(
         description: "connection.failed",
