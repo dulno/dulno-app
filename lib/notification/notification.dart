@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:dulno/config/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DulnoNotification {
@@ -11,7 +13,7 @@ class DulnoNotification {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     await initializeLocalNotifications();
-    await FirebaseMessaging.instance.subscribeToTopic("dulno");
+    FirebaseMessaging.instance.subscribeToTopic("dulno");
     FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
@@ -52,6 +54,10 @@ Future<void> processFirebaseMessage(RemoteMessage message) async {
 }
 
 Future<void> showLocalNotification(String? title, String? body) async {
+  const storage = FlutterSecureStorage();
+  if ((await storage.read(key: "notifications") ?? "") == "false") {
+    return;
+  }
   var androidDetails = AndroidNotificationDetails("dulno", "Dulno",
       importance: Importance.max,
       priority: Priority.high,

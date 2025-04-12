@@ -4,6 +4,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/request/request.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -153,6 +154,7 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
       }
     }
     await storage.write(key: "cards", value: jsonEncode(cards));
+    FirebaseMessaging.instance.subscribeToTopic(responseBody["partnerId"]);
   }
 
   void displayScanError(error) {

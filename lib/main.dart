@@ -6,6 +6,7 @@ import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/request/request.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -161,6 +162,29 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return 0;
     }
     var responseBody = jsonDecode(response.body);
-    return !responseBody["success"] ? 1 : 2;
+    if (!responseBody["success"]) {
+      return 1;
+    }
+    updateCardCache(responseBody);
+    return 2;
+  }
+
+  Future<void> updateCardCache(responseBody) async {
+    const storage = FlutterSecureStorage();
+    final cardCache = await storage.read(key: "cards");
+    var cards = cardCache == null ? [] : jsonDecode(cardCache);
+    var action = responseBody["action"];
+    responseBody.remove("success");
+    responseBody.remove("action");
+    if (action == "CREATE") {
+      cards.add(responseBody);
+    } else {
+      cards.removeWhere((card) => card["itemId"] == responseBody["itemId"]);
+      if (action == "UPDATE") {
+        cards.add(responseBody);
+      }
+    }
+    await storage.write(key: "cards", value: jsonEncode(cards));
+    FirebaseMessaging.instance.subscribeToTopic(responseBody["partnerId"]);
   }
 }

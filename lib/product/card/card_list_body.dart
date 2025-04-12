@@ -67,7 +67,16 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
   }
 
   Future<void> fetchCards(reloadAfterwards) async {
-    var response = await Request.get(url: "/user/cards/").send();
+    const storage = FlutterSecureStorage();
+    var body = <String, Object>{};
+    if (await storage.read(key: "user") == null) {
+      final cardCache = await storage.read(key: "cards");
+      var cards = (cardCache == null ? [] : jsonDecode(cardCache))
+          .map((card) => card["itemId"])
+          .toList();
+      body["cards"] = cards;
+    }
+    var response = await Request.post(url: "/user/cards/", body: body).send();
     if (response == null || response.statusCode == 409) {
       return;
     }
@@ -76,7 +85,6 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
       return;
     }
     _cards = responseBody["items"];
-    const storage = FlutterSecureStorage();
     await storage.write(key: "cards", value: jsonEncode(_cards));
     if (reloadAfterwards) {
       setState(() {});
