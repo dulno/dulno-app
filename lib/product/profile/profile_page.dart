@@ -11,7 +11,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final Function signInCallback;
+
+  const ProfilePage({super.key, required this.signInCallback});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -147,10 +149,13 @@ class _ProfilePageState extends State<ProfilePage> {
         if (notifications.connectionState == ConnectionState.done) {
           if (notifications.data != null && notifications.data != "") {
             accountContentElement = ProfileAccountContent(
-                googleSignIn: _googleSignIn, email: notifications.data ?? "");
+                googleSignIn: _googleSignIn,
+                signInCallback: widget.signInCallback,
+                email: notifications.data ?? "");
           } else {
-            accountContentElement =
-                ProfileSignInContent(googleSignIn: _googleSignIn);
+            accountContentElement = ProfileSignInContent(
+                googleSignIn: _googleSignIn,
+                signInCallback: widget.signInCallback);
           }
           return accountContentElement!;
         }

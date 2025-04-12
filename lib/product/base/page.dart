@@ -29,7 +29,9 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProductHeader(),
+      appBar: ProductHeader(
+        signInCallback: (pageBodies[0] as CardListBody).refresh,
+      ),
       bottomNavigationBar: ProductNavigator(
           selectedIndex: _selectedIndex,
           updateIndex: _onItemTapped,

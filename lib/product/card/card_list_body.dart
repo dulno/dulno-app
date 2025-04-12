@@ -26,6 +26,10 @@ class CardListBody extends ProductPageBody {
   void reload() {
     _key.currentState?.reload();
   }
+
+  void refresh() {
+    _key.currentState?.refresh();
+  }
 }
 
 class CardListBodyContent extends StatefulWidget {
@@ -118,7 +122,10 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ProfilePage()),
+                                  builder: (context) =>
+                                      ProfilePage(signInCallback: () {
+                                        refresh();
+                                      })),
                             );
                           },
                           child: LocaleText(

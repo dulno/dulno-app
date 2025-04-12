@@ -6,10 +6,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileAccountContent extends StatelessWidget {
   final GoogleSignIn googleSignIn;
+  final Function signInCallback;
   final String email;
 
   const ProfileAccountContent(
-      {super.key, required this.googleSignIn, required this.email});
+      {super.key,
+      required this.googleSignIn,
+      required this.email,
+      required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +71,9 @@ class ProfileAccountContent extends StatelessWidget {
                       context,
                       PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) =>
-                              ProfilePage(),
+                              ProfilePage(
+                                signInCallback: signInCallback,
+                              ),
                           transitionDuration: Duration.zero,
                           reverseTransitionDuration: Duration.zero),
                     );

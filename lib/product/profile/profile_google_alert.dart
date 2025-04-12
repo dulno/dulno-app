@@ -15,8 +15,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ProfileGoogleAlert {
   final GoogleSignIn googleSignIn;
+  final Function signInCallback;
 
-  ProfileGoogleAlert({required this.googleSignIn});
+  ProfileGoogleAlert(
+      {required this.googleSignIn, required this.signInCallback});
 
   show(context) {
     GlobalKey<ProfileGoogleAlertContentState> contentKey =
@@ -116,12 +118,13 @@ class ProfileGoogleAlert {
           context,
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  ProfilePage(),
+                  ProfilePage(signInCallback: signInCallback),
               transitionDuration: Duration.zero),
           ModalRoute.withName('/'),
         );
       },
     ).show(context);
+    signInCallback();
   }
 }
 

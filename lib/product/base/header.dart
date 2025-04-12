@@ -2,7 +2,9 @@ import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
-  const ProductHeader({super.key});
+  final Function signInCallback;
+
+  const ProductHeader({super.key, required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,10 @@ class ProductHeader extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                  MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                            signInCallback: signInCallback,
+                          )),
                 );
               },
             ),

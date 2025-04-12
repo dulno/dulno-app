@@ -14,7 +14,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileEmailConnectPage extends StatefulWidget {
-  const ProfileEmailConnectPage({super.key});
+  final Function signInCallback;
+
+  const ProfileEmailConnectPage({super.key, required this.signInCallback});
 
   @override
   State<ProfileEmailConnectPage> createState() =>
@@ -158,7 +160,8 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                     ),
                     children: [
                       TextSpan(
-                        text: Locales.string(context, "product.legal.newsletter"),
+                        text:
+                            Locales.string(context, "product.legal.newsletter"),
                       ),
                     ],
                   ),
@@ -279,7 +282,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
         builder: (context) => ProfileEmailCodePage(
           controller: codeController,
           email: _controller.text,
-          callback: (code) async {
+          signInCallback: (code) async {
             completeBinding(context, codeController, user, code);
           },
         ),
@@ -327,13 +330,14 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                ProfilePage(),
+                ProfilePage(signInCallback: widget.signInCallback),
             transitionDuration: Duration.zero,
           ),
           ModalRoute.withName('/'),
         );
       },
     ).show(context);
+    widget.signInCallback();
   }
 
   void _checkEmail(String value) {

@@ -136,6 +136,17 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       Alert(
         description: "scan.redemption.successful",
         icon: CupertinoIcons.check_mark_circled,
+        callback: () {
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  ProductPage(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
+        },
       ).show(context);
     } else if (failedResults > 0) {
       Alert(

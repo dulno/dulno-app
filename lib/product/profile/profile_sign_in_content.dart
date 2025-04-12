@@ -7,8 +7,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileSignInContent extends StatelessWidget {
   final GoogleSignIn googleSignIn;
+  final Function signInCallback;
 
-  const ProfileSignInContent({super.key, required this.googleSignIn});
+  const ProfileSignInContent(
+      {super.key, required this.googleSignIn, required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,9 @@ class ProfileSignInContent extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ProfileEmailConnectPage()),
+                    builder: (context) => ProfileEmailConnectPage(
+                          signInCallback: signInCallback,
+                        )),
               );
             },
             icon: Container(
@@ -94,7 +98,10 @@ class ProfileSignInContent extends StatelessWidget {
                 padding: WidgetStateProperty.all(EdgeInsets.all(15)),
                 alignment: Alignment.centerLeft),
             onPressed: () async {
-              ProfileGoogleAlert(googleSignIn: googleSignIn).show(context);
+              ProfileGoogleAlert(
+                      googleSignIn: googleSignIn,
+                      signInCallback: signInCallback)
+                  .show(context);
             },
             icon: Container(
               margin: EdgeInsets.symmetric(horizontal: 10),
