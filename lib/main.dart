@@ -2,12 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/config/firebase_options.dart';
+import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/request/request.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,19 +13,11 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  var data = message.data;
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
+  await DulnoNotification().setup();
   runApp(DulnoApp());
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessage.listen(firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.instance.subscribeToTopic("dulno");
 }
 
 class DulnoApp extends StatefulWidget {
