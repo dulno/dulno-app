@@ -11,18 +11,73 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class ProductNFCScanPopup extends StatefulWidget {
+class ProductNFCScanPopup {
   Function callback;
   Function currentPageIndex;
 
-  ProductNFCScanPopup(
+  ProductNFCScanPopup({required this.callback, required this.currentPageIndex});
+
+  show(BuildContext context, Key? key) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop(); // Close when tapping outside
+          },
+          behavior: HitTestBehavior.opaque,
+          // Ensures tap detection outside the child
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: GestureDetector(
+              onTap: () {},
+              // Prevents closing when tapping inside
+              behavior: HitTestBehavior.translucent,
+              // Ensures touch events inside are not blocked
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.95,
+                margin: EdgeInsets.only(bottom: 30),
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: ProductNFCScanPopupContent(
+                  key: key,
+                  callback: callback,
+                  currentPageIndex: currentPageIndex,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ProductNFCScanPopupContent extends StatefulWidget {
+  Function callback;
+  Function currentPageIndex;
+
+  ProductNFCScanPopupContent(
       {super.key, required this.callback, required this.currentPageIndex});
 
   @override
-  State<ProductNFCScanPopup> createState() => _ProductNFCScanPopupState();
+  State<ProductNFCScanPopupContent> createState() =>
+      ProductNFCScanPopupContentState();
 }
 
-class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
+class ProductNFCScanPopupContentState extends State<ProductNFCScanPopupContent>
     with WidgetsBindingObserver {
   bool nfcSupported = true;
   bool scanned = false;
@@ -62,6 +117,21 @@ class _ProductNFCScanPopupState extends State<ProductNFCScanPopup>
         checkNFC(context);
       });
     }
+  }
+
+  Future<void> externalStampRedemption(context, stamp, picc, cmac) async {
+    setState(() {
+      scanned = true;
+    });
+    if (stamp == "" || picc == "" || cmac == "") {
+      Navigator.pop(context);
+      Alert(
+        description: "product.scan.error.nfc.tag",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    await redeemStamp(context, stamp, picc, cmac);
   }
 
   Future<void> readNFCTag(context) async {

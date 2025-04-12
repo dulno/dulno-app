@@ -53,58 +53,15 @@ class _ProductScanButtonState extends State<ProductScanButton>
           ),
           child: FloatingActionButton(
             onPressed: () {
-              _showNfcPopup(context);
+              ProductNFCScanPopup(
+                callback: widget.callback,
+                currentPageIndex: widget.currentPageIndex,
+              ).show(context, widget.key);
             },
             backgroundColor:
                 Color.lerp(Color(0xFF37479F), Color(0xFF495ED3), glowValue),
             shape: CircleBorder(),
             child: Image.asset('assets/images/logo-light.png', width: 65),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showNfcPopup(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop(); // Close when tapping outside
-          },
-          behavior: HitTestBehavior.opaque,
-          // Ensures tap detection outside the child
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: GestureDetector(
-              onTap: () {},
-              // Prevents closing when tapping inside
-              behavior: HitTestBehavior.translucent,
-              // Ensures touch events inside are not blocked
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.95,
-                margin: EdgeInsets.only(bottom: 30),
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: ProductNFCScanPopup(
-                  callback: widget.callback,
-                  currentPageIndex: widget.currentPageIndex,
-                ),
-              ),
-            ),
           ),
         );
       },

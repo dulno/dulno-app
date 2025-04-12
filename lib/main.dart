@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:app_links/app_links.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/base/scan_popup.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/request/request.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -30,11 +32,30 @@ class DulnoApp extends StatefulWidget {
 
 class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final AppLinks _appLinks = AppLinks();
+  Uri? _deepLinkUri;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _initDeepLinks();
+  }
+
+  void _initDeepLinks() async {
+    final Uri? initialLink = await _appLinks.getInitialLink();
+    if (initialLink != null) {
+      _handleDeepLink(initialLink);
+    }
+    _appLinks.uriLinkStream.listen((Uri uri) {
+      _handleDeepLink(uri);
+    });
+  }
+
+  void _handleDeepLink(Uri uri) async {
+    setState(() {
+      _deepLinkUri = uri;
+    });
   }
 
   @override
@@ -80,7 +101,14 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
                         primary: Color(0xFF2196F3),
                         background: Color(0xFFE8E8E8)),
                   ),
-                  home: ProductPage(),
+                  home: Builder(
+                    builder: (context) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        processDeepLink(context);
+                      });
+                      return ProductPage();
+                    },
+                  ),
                   debugShowCheckedModeBanner: false,
                   localizationsDelegates: Locales.delegates,
                   supportedLocales: Locales.supportedLocales,
@@ -186,5 +214,26 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     }
     await storage.write(key: "cards", value: jsonEncode(cards));
     FirebaseMessaging.instance.subscribeToTopic(responseBody["partnerId"]);
+  }
+
+  void processDeepLink(context) {
+    if (_deepLinkUri == null || !mounted) {
+      return;
+    }
+    String stamp = _deepLinkUri!.queryParameters['stamp'] ?? "";
+    String picc = _deepLinkUri!.queryParameters['picc'] ?? "";
+    String cmac = _deepLinkUri!.queryParameters['cmac'] ?? "";
+    _deepLinkUri = null;
+    GlobalKey<ProductNFCScanPopupContentState> key =
+        GlobalKey<ProductNFCScanPopupContentState>();
+    ProductNFCScanPopup(
+      callback: () {},
+      currentPageIndex: () => -1,
+    ).show(context, key);
+    Future.delayed(Duration(milliseconds: 500), () {
+      if (key.currentState != null && key.currentState!.mounted) {
+        key.currentState!.externalStampRedemption(context, stamp, picc, cmac);
+      }
+    });
   }
 }
