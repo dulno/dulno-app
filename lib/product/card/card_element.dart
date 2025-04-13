@@ -97,14 +97,14 @@ class ProductCardElement extends StatelessWidget {
   Widget createCardContent(foregroundColor) {
     var type = content["cardType"];
     if (type == "COLLECTION" || type == "VALUE") {
-      return createStampCardContent(foregroundColor);
+      return createStampCardContent(foregroundColor, content["stampIcon"]);
     } else if (type == "MEMBER") {
-      return createMemberCardContent(foregroundColor);
+      return createMemberCardContent(foregroundColor, content["memberIcon"]);
     }
     return Container();
   }
 
-  Widget createStampCardContent(foregroundColor) {
+  Widget createStampCardContent(foregroundColor, stampIcon) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Wrap(
@@ -113,13 +113,14 @@ class ProductCardElement extends StatelessWidget {
         children: List.generate(
           10,
           (index) => Skeleton.leaf(
-            child: Container(
+            child: SizedBox(
               width: 30,
               height: 30,
-              decoration: BoxDecoration(
-                color: stampFillColor(index, foregroundColor),
-                border: Border.all(color: foregroundColor, width: 3),
-                borderRadius: BorderRadius.circular(50),
+              child: FaIcon(
+                parseIcon(
+                    stampIcon, index < content["stamps"] ? "solid" : "regular"),
+                size: 30,
+                color: foregroundColor,
               ),
             ),
           ),
@@ -138,11 +139,60 @@ class ProductCardElement extends StatelessWidget {
     return Colors.transparent;
   }
 
-  Widget createMemberCardContent(foregroundColor) {
+  Widget createMemberCardContent(foregroundColor, memberIcon) {
     return Align(
       alignment: Alignment.center,
-      child: FaIcon(FontAwesomeIcons.crown, size: 56, color: foregroundColor),
+      child: FaIcon(
+        parseIcon(memberIcon, "solid"),
+        size: 56,
+        color: foregroundColor,
+      ),
     );
+  }
+
+  IconData parseIcon(name, style) {
+    if (name == "circle" && style == "regular") {
+      return FontAwesomeIcons.circle;
+    } else if (name == "circle" && style == "solid") {
+      return FontAwesomeIcons.solidCircle;
+    } else if (name == "square" && style == "regular") {
+      return FontAwesomeIcons.square;
+    } else if (name == "square" && style == "solid") {
+      return FontAwesomeIcons.solidSquare;
+    } else if (name == "star" && style == "regular") {
+      return FontAwesomeIcons.star;
+    } else if (name == "star" && style == "solid") {
+      return FontAwesomeIcons.solidStar;
+    } else if (name == "heart" && style == "regular") {
+      return FontAwesomeIcons.heart;
+    } else if (name == "heart" && style == "solid") {
+      return FontAwesomeIcons.solidHeart;
+    } else if (name == "face-smile" && style == "regular") {
+      return FontAwesomeIcons.faceSmile;
+    } else if (name == "face-smile" && style == "solid") {
+      return FontAwesomeIcons.solidFaceSmile;
+    } else if (name == "bell" && style == "regular") {
+      return FontAwesomeIcons.bell;
+    } else if (name == "bell" && style == "solid") {
+      return FontAwesomeIcons.solidBell;
+    } else if (name == "thumbs-up" && style == "regular") {
+      return FontAwesomeIcons.thumbsUp;
+    } else if (name == "thumbs-up" && style == "solid") {
+      return FontAwesomeIcons.solidThumbsUp;
+    } else if (name == "bookmark" && style == "regular") {
+      return FontAwesomeIcons.bookmark;
+    } else if (name == "bookmark" && style == "solid") {
+      return FontAwesomeIcons.solidBookmark;
+    } else if (name == "gem" && style == "regular") {
+      return FontAwesomeIcons.gem;
+    } else if (name == "gem" && style == "solid") {
+      return FontAwesomeIcons.solidGem;
+    } else if (name == "crown" && style == "solid") {
+      return FontAwesomeIcons.crown;
+    } else if (name == "circle-user" && style == "solid") {
+      return FontAwesomeIcons.solidCircleUser;
+    }
+    return FontAwesomeIcons.circle;
   }
 
   Color parseColor(String key) {

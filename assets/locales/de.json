@@ -18,6 +18,7 @@
   "product.scan.error.stamp.state": "Der gescannte Stempel wurde entweder deaktiviert oder keiner Stempelkarte zugewiesen",
   "product.scan.error.scan.validation": "Es gab einen Fehler bei der Autorisierung des Stempel-Scans. Bitte versuche es erneut",
   "product.scan.error.already.scanned": "Das Stempel-Token wurde bereits eingelöst. Bitte scanne den Stempel erneut",
+  "product.scan.error.card.existence": "Die Karte, auf die sich dieser Stempel bezieht, existiert nicht mehr",
   "product.scan.error.value.absent": "Du hast keine weiteren Einheiten, die du einlösen kannst",
   "product.scan.error.member.absent": "Du bist kein Mitglied und daher kann deine Mitgliedschaft nicht widerrufen werden",
   "product.scan.error.already.member": "Du bist bereits Mitglied",

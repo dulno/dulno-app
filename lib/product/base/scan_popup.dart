@@ -238,10 +238,12 @@ class ProductNFCScanPopupContentState extends State<ProductNFCScanPopupContent>
     } else if (error == 1004) {
       description = "product.scan.error.already.scanned";
     } else if (error == 1005) {
-      description = "product.scan.error.value.absent";
+      description = "product.scan.error.card.existence";
     } else if (error == 1006) {
-      description = "product.scan.error.member.absent";
+      description = "product.scan.error.value.absent";
     } else if (error == 1007) {
+      description = "product.scan.error.member.absent";
+    } else if (error == 1008) {
       description = "product.scan.error.already.member";
     }
     Alert(

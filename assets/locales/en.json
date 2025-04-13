@@ -18,6 +18,7 @@
   "product.scan.error.stamp.state": "The scanned stamp was either deactivated or not assigned to a stamp card",
   "product.scan.error.scan.validation": "There was an error authorizing the stamp scan. Please try again",
   "product.scan.error.already.scanned": "The stamp token has already been redeemed. Please scan the stamp again",
+  "product.scan.error.card.existence": "The card to which this stamp refers no longer exists",
   "product.scan.error.value.absent": "You have no further units that you can redeem",
   "product.scan.error.member.absent": "You are not a member and therefore your membership cannot be revoked",
   "product.scan.error.already.member": "You are already a member",
