@@ -67,6 +67,7 @@ class ProfileAccountContent extends StatelessWidget {
                     const storage = FlutterSecureStorage();
                     await storage.delete(key: "email");
                     await googleSignIn.signOut();
+                    signInCallback();
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(

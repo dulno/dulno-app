@@ -145,13 +145,13 @@ class _ProfilePageState extends State<ProfilePage> {
     const storage = FlutterSecureStorage();
     return FutureBuilder<String?>(
       future: storage.read(key: "email"),
-      builder: (context, AsyncSnapshot<String?> notifications) {
-        if (notifications.connectionState == ConnectionState.done) {
-          if (notifications.data != null && notifications.data != "") {
+      builder: (context, AsyncSnapshot<String?> email) {
+        if (email.connectionState == ConnectionState.done) {
+          if (email.data != null && email.data != "") {
             accountContentElement = ProfileAccountContent(
                 googleSignIn: _googleSignIn,
                 signInCallback: widget.signInCallback,
-                email: notifications.data ?? "");
+                email: email.data ?? "");
           } else {
             accountContentElement = ProfileSignInContent(
                 googleSignIn: _googleSignIn,
@@ -160,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
           return accountContentElement!;
         }
         return Skeletonizer(
-          enabled: notifications.connectionState != ConnectionState.done,
+          enabled: email.connectionState != ConnectionState.done,
           child: Skeleton.leaf(
             child: Container(
               width: double.infinity,
