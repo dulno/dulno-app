@@ -16,10 +16,12 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
-  await DulnoNotification().setup();
+  await DulnoNotification(navigatorKey: navigatorKey).setup();
   runApp(DulnoApp());
 }
 
@@ -31,7 +33,6 @@ class DulnoApp extends StatefulWidget {
 }
 
 class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   final AppLinks _appLinks = AppLinks();
   Uri? _deepLinkUri;
 

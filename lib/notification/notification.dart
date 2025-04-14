@@ -1,21 +1,40 @@
 import 'dart:ui';
 
 import 'package:dulno/config/firebase_options.dart';
+import 'package:dulno/product/profile/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 class DulnoNotification {
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  DulnoNotification({required this.navigatorKey});
+
   Future<void> setup() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     await initializeLocalNotifications();
     FirebaseMessaging.instance.subscribeToTopic("dulno");
-    FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      firebaseMessagingForegroundHandler(message);
+    });
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      firebaseMessageOpenedAppHandler(initialMessage);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      firebaseMessageOpenedAppHandler(message);
+    });
   }
 
   Future<void> initializeLocalNotifications() async {
@@ -30,13 +49,26 @@ class DulnoNotification {
     );
     await flutterLocalNotificationsPlugin.initialize(initializationsSettings);
   }
-}
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+  Future<void> firebaseMessagingForegroundHandler(RemoteMessage message) async {
+    await processFirebaseMessage(message);
+    await firebaseMessageOpenedAppHandler(message);
+  }
 
-Future<void> firebaseMessagingForegroundHandler(RemoteMessage message) async {
-  await processFirebaseMessage(message);
+  Future<void> firebaseMessageOpenedAppHandler(RemoteMessage message) async {
+    String? partner = message.data["partner"];
+    String? campaign = message.data["campaign"];
+    if (partner == null || campaign == null) {
+      return;
+    }
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => ProfilePage(
+          signInCallback: () => {},
+        ),
+      ),
+    );
+  }
 }
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
