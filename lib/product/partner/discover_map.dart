@@ -5,15 +5,17 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:latlong2/latlong.dart';
 
 class OSMMap extends StatefulWidget {
-  const OSMMap(
-      {super.key,
-      required this.partners,
-      required this.mapController,
-      required this.latitude,
-      required this.longitude,
-      required this.radius,
-      this.isFirstOpen = true,
-      this.initialZoom = 6.0});
+  const OSMMap({
+    super.key,
+    required this.partners,
+    required this.mapController,
+    required this.latitude,
+    required this.longitude,
+    required this.radius,
+    this.isFirstOpen = true,
+    this.locationDetails = true,
+    this.initialZoom = 6.0,
+  });
 
   final List<dynamic> partners;
   final MapController mapController;
@@ -21,6 +23,7 @@ class OSMMap extends StatefulWidget {
   final double longitude;
   final int radius;
   final bool isFirstOpen;
+  final bool locationDetails;
   final double initialZoom;
 
   @override
@@ -171,6 +174,9 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
             height: 100.0,
             child: GestureDetector(
               onTap: () {
+                if (!widget.locationDetails) {
+                  return;
+                }
                 setState(() {
                   shouldAnimateToWidgetPosition =
                       false; // Disable widget animation

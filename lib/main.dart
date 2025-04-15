@@ -6,6 +6,7 @@ import 'package:dulno/alert/alert.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/base/scan_popup.dart';
+import 'package:dulno/product/campaign/campaign.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/request/request.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -107,7 +108,8 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         processDeepLink(context);
                       });
-                      return ProductPage();
+                      return CampaignPage(
+                          partner: "15a0d7aa-4685-4e41-9739-14b69f00b5cf", campaign: "5cc17199-34a6-46b8-bdaa-e8e2c416b0a0");
                     },
                   ),
                   debugShowCheckedModeBanner: false,

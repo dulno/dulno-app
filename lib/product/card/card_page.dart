@@ -185,6 +185,7 @@ class CardPage extends StatelessWidget {
           longitude: firstLocation["longitude"],
           radius: 1,
           initialZoom: 16,
+          locationDetails: false,
         ),
       ),
     );

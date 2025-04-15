@@ -79,5 +79,13 @@
 
   "product.profile.email.code.headline": "Enter verification code",
   "product.profile.email.code.description.1": "We have sent you a confirmation code to the email ",
-  "product.profile.email.code.description.2": ". Please enter it below to confirm your identity."
+  "product.profile.email.code.description.2": ". Please enter it below to confirm your identity.",
+
+  "product.campaign.redirect": "To the partner",
+  "product.campaign.type.default": "Campaign",
+  "product.campaign.type.discount": "Discount",
+  "product.campaign.type.event": "Event",
+  "product.campaign.type.launch": "Launch",
+  "product.campaign.type.seasonal": "Seasonal",
+  "product.campaign.type.recruiting": "Recruiting"
 }

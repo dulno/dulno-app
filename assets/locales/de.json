@@ -79,5 +79,13 @@
 
   "product.profile.email.code.headline": "Verifizierungscode eingeben",
   "product.profile.email.code.description.1": "Wir haben Ihnen einen Bestätigungscode an die E-Mail ",
-  "product.profile.email.code.description.2": " geschickt. Bitte geben Sie ihn unten ein, um Ihre Identität zu bestätigen."
+  "product.profile.email.code.description.2": " geschickt. Bitte geben Sie ihn unten ein, um Ihre Identität zu bestätigen.",
+
+  "product.campaign.redirect": "Zum Partner",
+  "product.campaign.type.default": "Kampagne",
+  "product.campaign.type.discount": "Rabatt",
+  "product.campaign.type.event": "Ereignis",
+  "product.campaign.type.launch": "Neuheit",
+  "product.campaign.type.seasonal": "Saison",
+  "product.campaign.type.recruiting": "Einstellung"
 }
