@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dulno/product/campaign/campaign_batch.dart';
+import 'package:dulno/product/campaign/campaign_time.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
-import 'package:dulno/product/partner/partner_overview.dart';
 import 'package:dulno/product/partner/partner_page.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +110,19 @@ class CampaignPage extends StatelessWidget {
                                   fontSize: 23, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 5),
+                            loading
+                                ? Skeleton.leaf(
+                                    child: Container(
+                                      height: 20,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                  )
+                                : CampaignTime(campaign: campaignSnapshot.data),
+                            SizedBox(height: 15),
                             Text(
                               !loading
                                   ? utf8.decode(campaignSnapshot
@@ -119,8 +132,6 @@ class CampaignPage extends StatelessWidget {
                                   : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
                               style: TextStyle(
                                   fontSize: 16, color: Colors.grey[600]),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 3,
                             ),
                             SizedBox(height: 80),
                             Center(
