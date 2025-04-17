@@ -185,6 +185,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
           .map((card) => card["itemId"])
           .toList();
       body["cards"] = cards;
+      body["language"] = await storage.read(key: "language") ?? "de";
     }
     var response = await Request.post(url: "/user/stamp/", body: body).send();
     if (response == null || response.statusCode == 409) {
