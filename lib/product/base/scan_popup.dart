@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:app_settings/app_settings.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/base/page.dart';
-import 'package:dulno/request/request.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:dulno/product/base/stamp_redemption.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -162,37 +161,17 @@ class ProductNFCScanPopupContentState extends State<ProductNFCScanPopupContent>
   }
 
   Future<void> redeemStamp(context, stamp, picc, cmac) async {
-    const storage = FlutterSecureStorage();
-    var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
-    if (await storage.read(key: "user") == null) {
-      final cardCache = await storage.read(key: "cards");
-      var cards = (cardCache == null ? [] : jsonDecode(cardCache))
-          .map((card) => card["itemId"])
-          .toList();
-      body["cards"] = cards;
-      body["language"] = await storage.read(key: "language") ?? "de";
-    }
-    var response = await Request.post(url: "/user/stamp/", body: body).send();
-    if (response == null || response.statusCode == 409) {
-      var scan = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
-      final scanCache = await storage.read(key: "scans");
-      var scans = scanCache == null ? [] : jsonDecode(scanCache);
-      scans.add(scan);
-      await storage.write(key: "scans", value: jsonEncode(scans));
-      Navigator.pop(context);
-      Alert(
-        description: "product.scan.connection.cache",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+    var redemption = StampRedemption(stamp: stamp, picc: picc, cmac: cmac);
+    var redemptionResult = await redemption.redeem();
+    if (redemptionResult == 0) {
+      processRedemptionUnconnected(context, stamp, picc, cmac);
       return;
     }
-    var responseBody = jsonDecode(response.body);
-    if (!responseBody["success"]) {
+    if (redemptionResult == 1) {
       Navigator.pop(context);
-      displayScanError(responseBody["error"]);
+      displayScanError(redemption.responseBody["error"]);
       return;
     }
-    await updateCardCache(responseBody);
     if (widget.currentPageIndex() == 0) {
       widget.callback();
       Navigator.pop(context);
@@ -209,23 +188,18 @@ class ProductNFCScanPopupContentState extends State<ProductNFCScanPopupContent>
     }
   }
 
-  Future<void> updateCardCache(responseBody) async {
+  Future<void> processRedemptionUnconnected(context, stamp, picc, cmac) async {
+    var scan = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
     const storage = FlutterSecureStorage();
-    final cardCache = await storage.read(key: "cards");
-    var cards = cardCache == null ? [] : jsonDecode(cardCache);
-    var action = responseBody["action"];
-    responseBody.remove("success");
-    responseBody.remove("action");
-    if (action == "CREATE") {
-      cards.add(responseBody);
-      FirebaseMessaging.instance.subscribeToTopic(responseBody["partnerId"]);
-    } else {
-      cards.removeWhere((card) => card["itemId"] == responseBody["itemId"]);
-      if (action == "UPDATE") {
-        cards.add(responseBody);
-      }
-    }
-    await storage.write(key: "cards", value: jsonEncode(cards));
+    final scanCache = await storage.read(key: "scans");
+    var scans = scanCache == null ? [] : jsonDecode(scanCache);
+    scans.add(scan);
+    await storage.write(key: "scans", value: jsonEncode(scans));
+    Navigator.pop(context);
+    Alert(
+      description: "product.scan.connection.cache",
+      icon: CupertinoIcons.antenna_radiowaves_left_right,
+    ).show(context);
   }
 
   void displayScanError(error) {

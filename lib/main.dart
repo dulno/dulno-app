@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:app_links/app_links.dart';
-import 'package:dulno/alert/alert.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/base/scan_cache.dart';
 import 'package:dulno/product/base/scan_popup.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
-import 'package:dulno/request/request.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,7 +68,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (state != AppLifecycleState.resumed) {
       return;
     }
-    checkStampRedemption(navigatorKey.currentContext);
+    ScanCache().redeem(navigatorKey.currentContext);
   }
 
   @override
@@ -81,7 +78,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitDown,
     ]);
     return FutureBuilder<void>(
-      future: checkStampRedemption(context),
+      future: ScanCache().redeem(context),
       builder: (context, AsyncSnapshot<void> redemptionSnapshot) {
         return FutureBuilder<String>(
           future: findLanguage(),
@@ -128,94 +125,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     const storage = FlutterSecureStorage();
     final language = await storage.read(key: "language") ?? "de";
     return language;
-  }
-
-  Future<void> checkStampRedemption(context) async {
-    const storage = FlutterSecureStorage();
-    final scanCache = await storage.read(key: "scans");
-    if (scanCache == null) {
-      return;
-    }
-    var scans = jsonDecode(scanCache);
-    if (scans.isEmpty) {
-      return;
-    }
-    var remainingScans = [];
-    var failedResults = 0;
-    for (var scan in scans) {
-      var redemptionResult =
-          await redeemStamp(scan["stamp"], scan["picc"], scan["cmac"]);
-      if (redemptionResult == 0) {
-        remainingScans.add(scan);
-      } else if (redemptionResult == 1) {
-        failedResults++;
-      }
-    }
-    await storage.write(key: "scans", value: jsonEncode(remainingScans));
-    if (remainingScans.isEmpty) {
-      Alert(
-        description: "scan.redemption.successful",
-        icon: CupertinoIcons.check_mark_circled,
-        callback: () {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  ProductPage(),
-              transitionDuration: Duration.zero,
-              reverseTransitionDuration: Duration.zero,
-            ),
-          );
-        },
-      ).show(context);
-    } else if (failedResults > 0) {
-      Alert(
-        description: "scan.redemption.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
-    }
-  }
-
-  Future<int> redeemStamp(stamp, picc, cmac) async {
-    const storage = FlutterSecureStorage();
-    var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
-    if (await storage.read(key: "user") == null) {
-      final cardCache = await storage.read(key: "cards");
-      var cards = (cardCache == null ? [] : jsonDecode(cardCache))
-          .map((card) => card["itemId"])
-          .toList();
-      body["cards"] = cards;
-      body["language"] = await storage.read(key: "language") ?? "de";
-    }
-    var response = await Request.post(url: "/user/stamp/", body: body).send();
-    if (response == null || response.statusCode == 409) {
-      return 0;
-    }
-    var responseBody = jsonDecode(response.body);
-    if (!responseBody["success"]) {
-      return 1;
-    }
-    updateCardCache(responseBody);
-    return 2;
-  }
-
-  Future<void> updateCardCache(responseBody) async {
-    const storage = FlutterSecureStorage();
-    final cardCache = await storage.read(key: "cards");
-    var cards = cardCache == null ? [] : jsonDecode(cardCache);
-    var action = responseBody["action"];
-    responseBody.remove("success");
-    responseBody.remove("action");
-    if (action == "CREATE") {
-      cards.add(responseBody);
-      FirebaseMessaging.instance.subscribeToTopic(responseBody["partnerId"]);
-    } else {
-      cards.removeWhere((card) => card["itemId"] == responseBody["itemId"]);
-      if (action == "UPDATE") {
-        cards.add(responseBody);
-      }
-    }
-    await storage.write(key: "cards", value: jsonEncode(cards));
   }
 
   void processDeepLink(context) {
