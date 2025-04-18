@@ -218,6 +218,7 @@ class ProductNFCScanPopupContentState extends State<ProductNFCScanPopupContent>
     responseBody.remove("action");
     if (action == "CREATE") {
       cards.add(responseBody);
+      FirebaseMessaging.instance.subscribeToTopic(responseBody["partnerId"]);
     } else {
       cards.removeWhere((card) => card["itemId"] == responseBody["itemId"]);
       if (action == "UPDATE") {
@@ -225,7 +226,6 @@ class ProductNFCScanPopupContentState extends State<ProductNFCScanPopupContent>
       }
     }
     await storage.write(key: "cards", value: jsonEncode(cards));
-    FirebaseMessaging.instance.subscribeToTopic(responseBody["partnerId"]);
   }
 
   void displayScanError(error) {
