@@ -1,14 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:dulno/request/request.dart';
+import 'package:dulno/product/card/card_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class ProductCardElement extends StatelessWidget {
+class ProductCardElement extends StatefulWidget {
   final bool isLoading;
   final Map<String, dynamic> content;
 
@@ -16,16 +11,26 @@ class ProductCardElement extends StatelessWidget {
       {super.key, required this.isLoading, required this.content});
 
   @override
+  State<ProductCardElement> createState() => _ProductCardElementState();
+}
+
+class _ProductCardElementState extends State<ProductCardElement> {
+  CardLogo? _logo;
+
+  @override
   Widget build(BuildContext context) {
+    _logo ??= CardLogo(
+        cardId: widget.content["cardId"],
+        currentLogoId: widget.content["logoId"]);
     var foregroundColor =
-        isLoading ? Colors.black : parseColor("cardForegroundColor");
+        widget.isLoading ? Colors.black : parseColor("cardForegroundColor");
     var backgroundColor =
-        isLoading ? Colors.white : parseColor("cardBackgroundColor");
+        widget.isLoading ? Colors.white : parseColor("cardBackgroundColor");
     return FutureBuilder<dynamic>(
-      future: findCardLogo(),
+      future: _logo?.fetch(),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
-          enabled: isLoading,
+          enabled: widget.isLoading,
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -54,7 +59,7 @@ class ProductCardElement extends StatelessWidget {
                     children: [
                       Align(
                         alignment: Alignment.topRight,
-                        child: (snapshot.data == null || isLoading)
+                        child: (_logo?.logo == null || widget.isLoading)
                             ? Skeleton.leaf(
                                 child: Container(
                                   height: 75,
@@ -65,9 +70,15 @@ class ProductCardElement extends StatelessWidget {
                                   ),
                                 ),
                               )
-                            : Image.memory(snapshot.data, height: 75),
+                            : Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: 135,
+                                  maxHeight: 75,
+                                ),
+                                child: _logo?.logo!,
+                              ),
                       ),
-                      isLoading
+                      widget.isLoading
                           ? Align(
                               alignment: Alignment.bottomCenter,
                               child: Skeleton.leaf(
@@ -95,11 +106,13 @@ class ProductCardElement extends StatelessWidget {
   }
 
   Widget createCardContent(foregroundColor) {
-    var type = content["cardType"];
+    var type = widget.content["cardType"];
     if (type == "COLLECTION" || type == "VALUE") {
-      return createStampCardContent(foregroundColor, content["stampIcon"]);
+      return createStampCardContent(
+          foregroundColor, widget.content["stampIcon"]);
     } else if (type == "MEMBER") {
-      return createMemberCardContent(foregroundColor, content["memberIcon"]);
+      return createMemberCardContent(
+          foregroundColor, widget.content["memberIcon"]);
     }
     return Container();
   }
@@ -117,8 +130,8 @@ class ProductCardElement extends StatelessWidget {
               width: 30,
               height: 30,
               child: FaIcon(
-                parseIcon(
-                    stampIcon, index < content["stamps"] ? "solid" : "regular"),
+                parseIcon(stampIcon,
+                    index < widget.content["stamps"] ? "solid" : "regular"),
                 size: 30,
                 color: foregroundColor,
               ),
@@ -130,10 +143,10 @@ class ProductCardElement extends StatelessWidget {
   }
 
   Color stampFillColor(index, foregroundColor) {
-    if (isLoading) {
+    if (widget.isLoading) {
       return Colors.transparent;
     }
-    if (index < content["stamps"]) {
+    if (index < widget.content["stamps"]) {
       return foregroundColor;
     }
     return Colors.transparent;
@@ -196,44 +209,8 @@ class ProductCardElement extends StatelessWidget {
   }
 
   Color parseColor(String key) {
-    var hex = content[key].toString();
+    var hex = widget.content[key].toString();
     hex = hex.replaceAll('#', '');
     return Color(int.parse('FF$hex', radix: 16));
-  }
-
-  Future findCardLogo() async {
-    if (isLoading) {
-      return null;
-    }
-    final dir = await getApplicationDocumentsDirectory();
-    final folder = Directory(path.join(dir.path, 'dulno/card'));
-    if (!await folder.exists()) {
-      await folder.create(recursive: true);
-    }
-    var cardId = content["cardId"];
-    var currentLogoId = content["logoId"];
-    final file =
-        File(path.join(dir.path, 'dulno/card', "$cardId-$currentLogoId"));
-    if (await file.exists()) {
-      return await file.readAsBytes();
-    }
-    var body = <String, Object>{"card": cardId};
-    var response =
-        await Request.post(url: "/user/card/logo/", body: body).send();
-    if (response == null || response.statusCode == 409) {
-      return SizedBox.shrink();
-    }
-    var responseBody = jsonDecode(response.body);
-    var newLogoId = responseBody["logoId"];
-    var newLogo = base64Decode(responseBody["logo"]);
-    final files = folder.listSync();
-    for (var file in files) {
-      if (file is File && file.path.contains(cardId)) {
-        await file.delete();
-      }
-    }
-    final newFile = File(path.join(folder.path, "$cardId-$newLogoId"));
-    await newFile.writeAsBytes(newLogo);
-    return newLogo;
   }
 }
