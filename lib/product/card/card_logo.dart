@@ -26,14 +26,14 @@ class CardLogo {
       await folder.create(recursive: true);
     }
     final file =
-    File(path.join(dir.path, 'dulno/card', "$cardId-$currentLogoId"));
+        File(path.join(dir.path, 'dulno/card', "$cardId-$currentLogoId"));
     if (await file.exists()) {
       logo = Image.memory(await file.readAsBytes(), fit: BoxFit.contain);
       return logo;
     }
     var body = <String, Object>{"card": cardId!};
     var response =
-    await Request.post(url: "/user/card/logo/", body: body).send();
+        await Request.post(url: "/user/card/logo/", body: body).send();
     if (response == null || response.statusCode == 409) {
       logo = SizedBox.shrink();
       return logo;

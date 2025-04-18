@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/card/card_element.dart';
-import 'package:dulno/product/card/card_list_arrow.dart';
+import 'package:dulno/product/card/card_list_empty.dart';
 import 'package:dulno/product/card/card_page.dart';
-import 'package:dulno/product/profile/profile_page.dart';
+import 'package:dulno/product/card/card_search_bar.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -43,6 +43,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
   bool _loaded = false;
   final TextEditingController _controller = TextEditingController();
   List<dynamic> _cards = [];
+  List<dynamic> _previousCards = [];
 
   @override
   void initState() {
@@ -96,62 +97,16 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
       const storage = FlutterSecureStorage();
       final cardCache = await storage.read(key: "cards");
       _cards = cardCache == null ? [] : jsonDecode(cardCache);
+      _previousCards = _cards;
       fetchCards(true);
       setState(() {
         _loaded = true;
       });
     }
     if (_cards.isEmpty) {
-      const storage = FlutterSecureStorage();
-      var storedEmail = await storage.read(key: "email");
-      return Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(top: 20, bottom: 75),
-        child: Stack(
-          children: [
-            storedEmail == null
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child:
-                            LocaleText("product.card.list.login.description"),
-                      ),
-                      Center(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 0),
-                            minimumSize: Size(50, 30),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            alignment: Alignment.centerLeft,
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProfilePage(signInCallback: () {
-                                        refresh();
-                                      })),
-                            );
-                          },
-                          child: LocaleText(
-                            "product.card.list.login.call",
-                            style: TextStyle(
-                              color: Colors.indigo,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : SizedBox.shrink(),
-            CardListScanArrow(),
-          ],
-        ),
-      );
+      return CardListEmptyContent(signInCallback: () {
+        refresh();
+      });
     }
     _cards.sort(
         (a, b) => (b["lastUpdate"] as num).compareTo(a["lastUpdate"] as num));
@@ -171,11 +126,18 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
           },
           child: Container(
             margin: const EdgeInsets.only(bottom: 20),
-            child: ProductCardElement(isLoading: false, content: card),
+            child: CardElement(
+              key: ValueKey(card["itemId"].toString()),
+              isLoading: false,
+              content: card,
+              animateLastStamp: detectCardStampUpdate(card),
+              animateCard: detectNewCard(card),
+            ),
           ),
         ));
       }
     }
+    _previousCards = _cards;
     if (elements.isEmpty) {
       elements.add(
         LocaleText(
@@ -196,10 +158,42 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
           alignment: Alignment.center,
           margin: const EdgeInsets.only(bottom: 75),
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(children: [createSearchBar(), ...elements]),
+          child: Column(children: [
+            CardSearchBar(
+              controller: _controller,
+            ),
+            ...elements
+          ]),
         ),
       ),
     );
+  }
+
+  bool detectCardStampUpdate(card) {
+    var previousCardOptional =
+        _previousCards.where((entry) => entry["itemId"] == card["itemId"]);
+    if (previousCardOptional.isEmpty) {
+      return false;
+    }
+    var previousCard = previousCardOptional.first;
+    var type = previousCard["cardType"];
+    if (type == "COLLECTION" || type == "VALUE") {
+      return previousCard["stamps"] != card["stamps"];
+    }
+    return false;
+  }
+
+  bool detectNewCard(card) {
+    var previousCardOptional =
+        _previousCards.where((entry) => entry["itemId"] == card["itemId"]);
+    if (previousCardOptional.isNotEmpty) {
+      return false;
+    }
+    var type = card["cardType"];
+    if (type == "VALUE" || type == "MEMBER") {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -236,13 +230,21 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
                         ),
                         Container(
                           margin: const EdgeInsets.only(bottom: 20),
-                          child:
-                              ProductCardElement(isLoading: true, content: {}),
+                          child: CardElement(
+                            isLoading: true,
+                            content: {},
+                            animateLastStamp: false,
+                            animateCard: false,
+                          ),
                         ),
                         Container(
                           margin: const EdgeInsets.only(bottom: 20),
-                          child:
-                              ProductCardElement(isLoading: true, content: {}),
+                          child: CardElement(
+                            isLoading: true,
+                            content: {},
+                            animateLastStamp: false,
+                            animateCard: false,
+                          ),
                         ),
                       ],
                     ),
@@ -251,42 +253,6 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
               }
               return snapshot.data ?? SizedBox.shrink();
             },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget createSearchBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: ValueListenableBuilder<TextEditingValue>(
-        valueListenable: _controller,
-        builder: (context, value, child) {
-          return TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              hintStyle: TextStyle(color: Colors.grey[500]),
-              hintText: Locales.string(context, "product.card.list.search"),
-              prefixIcon: Icon(Icons.search),
-              isDense: true,
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-              suffixIcon: value.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        _controller.clear();
-                      },
-                    )
-                  : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-            ),
           );
         },
       ),

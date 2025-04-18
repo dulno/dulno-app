@@ -1,24 +1,43 @@
+import 'package:dulno/product/card/card_animation.dart';
 import 'package:dulno/product/card/card_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class ProductCardElement extends StatefulWidget {
+class CardElement extends StatefulWidget {
   final bool isLoading;
   final Map<String, dynamic> content;
+  final bool animateLastStamp;
+  final bool animateCard;
 
-  const ProductCardElement(
-      {super.key, required this.isLoading, required this.content});
+  const CardElement(
+      {super.key,
+      required this.isLoading,
+      required this.content,
+      required this.animateLastStamp,
+      required this.animateCard});
 
   @override
-  State<ProductCardElement> createState() => _ProductCardElementState();
+  State<CardElement> createState() => _CardElementState();
 }
 
-class _ProductCardElementState extends State<ProductCardElement> {
+class _CardElementState extends State<CardElement> {
   CardLogo? _logo;
 
   @override
   Widget build(BuildContext context) {
+    var element = createCardElement();
+    if (widget.animateCard) {
+      return CardBlinkerAnimation(
+        child: element,
+        color: Colors.grey[400]!,
+        scale: 1.05,
+      );
+    }
+    return element;
+  }
+
+  Widget createCardElement() {
     _logo ??= CardLogo(
         cardId: widget.content["cardId"],
         currentLogoId: widget.content["logoId"]);
@@ -123,33 +142,35 @@ class _ProductCardElementState extends State<ProductCardElement> {
       child: Wrap(
         spacing: 5,
         runSpacing: 5,
-        children: List.generate(
-          10,
-          (index) => Skeleton.leaf(
-            child: SizedBox(
-              width: 30,
-              height: 30,
-              child: FaIcon(
-                parseIcon(stampIcon,
-                    index < widget.content["stamps"] ? "solid" : "regular"),
-                size: 30,
-                color: foregroundColor,
-              ),
-            ),
-          ),
-        ),
+        children: List.generate(10,
+            (index) => createStampElement(foregroundColor, stampIcon, index)),
       ),
     );
   }
 
-  Color stampFillColor(index, foregroundColor) {
-    if (widget.isLoading) {
-      return Colors.transparent;
+  Widget createStampElement(foregroundColor, stampIcon, index) {
+    var stamps = widget.content["stamps"];
+    var element = Skeleton.leaf(
+      child: SizedBox(
+        width: 30,
+        height: 30,
+        child: FaIcon(
+          parseIcon(stampIcon, index < stamps ? "solid" : "regular"),
+          size: 30,
+          color: foregroundColor,
+        ),
+      ),
+    );
+    if (!widget.animateLastStamp) {
+      return element;
     }
-    if (index < widget.content["stamps"]) {
-      return foregroundColor;
+    var isCollection = widget.content["cardType"] == "COLLECTION";
+    if (index == stamps + (isCollection ? -1 : 0)) {
+      return CardBlinkerAnimation(
+          child: element,
+          color: isCollection ? Colors.greenAccent : Colors.redAccent);
     }
-    return Colors.transparent;
+    return element;
   }
 
   Widget createMemberCardContent(foregroundColor, memberIcon) {

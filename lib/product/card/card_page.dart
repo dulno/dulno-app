@@ -58,9 +58,11 @@ class CardPage extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.only(bottom: 20),
-            child: ProductCardElement(
+            child: CardElement(
               isLoading: !partner.hasData,
               content: content,
+              animateLastStamp: false,
+              animateCard: false,
             ),
           ),
           new Divider(
