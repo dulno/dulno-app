@@ -13,6 +13,7 @@
   "product.scan.unsupported.title": "Error",
   "product.scan.unsupported.description": "Unfortunately, your smartphone doesn't support NFC, so you can't collect stamps",
   "product.scan.popup.cancel": "Cancel",
+  "product.scan.error.scan": "Something went wrong with the scan of the stamp. Please try again",
   "product.scan.error.nfc.tag": "The scanned NFC tag is not a Dulno stamp",
   "product.scan.error.stamp.existence": "The scanned stamp could not be found",
   "product.scan.error.stamp.state": "The scanned stamp was either deactivated or not assigned to a stamp card",

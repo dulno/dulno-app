@@ -13,6 +13,7 @@
   "product.scan.unsupported.title": "Fehler",
   "product.scan.unsupported.description": "Leider unterstützt Ihr Smartphone kein NFC, daher können Sie keine Stempel sammeln",
   "product.scan.popup.cancel": "Abbrechen",
+  "product.scan.error.scan": "Beim Scannen des Stempels ist etwas schief gelaufen. Bitte versuchen Sie es erneut",
   "product.scan.error.nfc.tag": "Der gescannte NFC-Tag ist kein Dulno-Stempel",
   "product.scan.error.stamp.existence": "Der gescannte Stempel konnte nicht gefunden werden",
   "product.scan.error.stamp.state": "Der gescannte Stempel wurde entweder deaktiviert oder keiner Stempelkarte zugewiesen",

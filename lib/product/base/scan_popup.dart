@@ -143,21 +143,37 @@ class ProductNFCScanPopupContentState extends State<ProductNFCScanPopupContent>
       if (records.isNotEmpty) {
         var payloadBytes = records[0].payload ?? <int>[];
         var payloadString = utf8.decode(payloadBytes.sublist(1));
-        Uri uri = Uri.parse(payloadString);
-        String stamp = uri.queryParameters['stamp'] ?? "";
-        String picc = uri.queryParameters['picc'] ?? "";
-        String cmac = uri.queryParameters['cmac'] ?? "";
-        if (stamp == "" || picc == "" || cmac == "") {
-          Navigator.pop(context);
-          Alert(
-            description: "product.scan.error.nfc.tag",
-            icon: CupertinoIcons.exclamationmark_triangle,
-          ).show(context);
-          return;
-        }
-        await redeemStamp(context, stamp, picc, cmac);
+        processNFCTagScan(payloadString);
+      } else {
+        displayNFCTagScanError(context);
       }
+    } else {
+      displayNFCTagScanError(context);
     }
+  }
+
+  void displayNFCTagScanError(context) {
+    Navigator.pop(context);
+    Alert(
+      description: "product.scan.error.scan",
+      icon: CupertinoIcons.exclamationmark_triangle,
+    ).show(context);
+  }
+
+  Future<void> processNFCTagScan(payloadString) async {
+    Uri uri = Uri.parse(payloadString);
+    String stamp = uri.queryParameters['stamp'] ?? "";
+    String picc = uri.queryParameters['picc'] ?? "";
+    String cmac = uri.queryParameters['cmac'] ?? "";
+    if (stamp == "" || picc == "" || cmac == "") {
+      Navigator.pop(context);
+      Alert(
+        description: "product.scan.error.nfc.tag",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    await redeemStamp(context, stamp, picc, cmac);
   }
 
   Future<void> redeemStamp(context, stamp, picc, cmac) async {
