@@ -173,7 +173,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     var previousCardOptional =
         _previousCards.where((entry) => entry["itemId"] == card["itemId"]);
     if (previousCardOptional.isEmpty) {
-      return false;
+      return card["cardType"] == "COLLECTION";
     }
     var previousCard = previousCardOptional.first;
     var type = previousCard["cardType"];
@@ -190,10 +190,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
       return false;
     }
     var type = card["cardType"];
-    if (type == "VALUE" || type == "MEMBER") {
-      return true;
-    }
-    return false;
+    return type == "VALUE" || type == "MEMBER";
   }
 
   @override
