@@ -51,6 +51,7 @@ class _CardElementState extends State<CardElement> {
         return Skeletonizer(
           enabled: widget.isLoading,
           child: Container(
+            width: 360,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: backgroundColor,
@@ -68,8 +69,6 @@ class _CardElementState extends State<CardElement> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: double.infinity,
-                  height: 140,
                   decoration: BoxDecoration(
                     color: backgroundColor,
                     borderRadius: BorderRadius.circular(8),
@@ -98,8 +97,9 @@ class _CardElementState extends State<CardElement> {
                               ),
                       ),
                       widget.isLoading
-                          ? Align(
+                          ? Container(
                               alignment: Alignment.bottomCenter,
+                              padding: EdgeInsets.only(top: 100),
                               child: Skeleton.leaf(
                                 child: Container(
                                   width: double.infinity,
@@ -137,12 +137,18 @@ class _CardElementState extends State<CardElement> {
   }
 
   Widget createStampCardContent(foregroundColor, stampIcon) {
-    return Align(
+    debugPrint(MediaQuery.of(context).size.width.toString());
+    var type = widget.content["cardType"];
+    var stampNumber = type == "COLLECTION"
+        ? widget.content["rewardNumber"]
+        : widget.content["valueNumber"];
+    return Container(
       alignment: Alignment.bottomCenter,
+      padding: EdgeInsets.only(top: 100, left: 5, right: 5),
       child: Wrap(
         spacing: 5,
         runSpacing: 5,
-        children: List.generate(10,
+        children: List.generate(stampNumber,
             (index) => createStampElement(foregroundColor, stampIcon, index)),
       ),
     );
@@ -152,11 +158,11 @@ class _CardElementState extends State<CardElement> {
     var stamps = widget.content["stamps"];
     var element = Skeleton.leaf(
       child: SizedBox(
-        width: 30,
-        height: 30,
+        width: 26,
+        height: 26,
         child: FaIcon(
           parseIcon(stampIcon, index < stamps ? "solid" : "regular"),
-          size: 30,
+          size: 26,
           color: foregroundColor,
         ),
       ),
@@ -174,8 +180,9 @@ class _CardElementState extends State<CardElement> {
   }
 
   Widget createMemberCardContent(foregroundColor, memberIcon) {
-    return Align(
+    return Container(
       alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(vertical: 40),
       child: FaIcon(
         parseIcon(memberIcon, "solid"),
         size: 56,

@@ -58,6 +58,7 @@ class CardPage extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.only(bottom: 20),
+            alignment: Alignment.center,
             child: CardElement(
               isLoading: !partner.hasData,
               content: content,

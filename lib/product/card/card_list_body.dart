@@ -157,13 +157,18 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
         child: Container(
           alignment: Alignment.center,
           margin: const EdgeInsets.only(bottom: 75),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(children: [
-            CardSearchBar(
-              controller: _controller,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: SizedBox(
+            width: 360,
+            child: Column(
+              children: [
+                CardSearchBar(
+                  controller: _controller,
+                ),
+                ...elements
+              ],
             ),
-            ...elements
-          ]),
+          ),
         ),
       ),
     );
