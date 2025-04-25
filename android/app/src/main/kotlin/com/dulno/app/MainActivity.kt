@@ -1,4 +1,4 @@
-package com.dulno.dulno
+package com.dulno.app
 
 import io.flutter.embedding.android.FlutterActivity
 
