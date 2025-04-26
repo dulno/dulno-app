@@ -131,6 +131,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (_deepLinkUri == null || !mounted) {
       return;
     }
+    if (_deepLinkUri!.scheme != 'dulno' || _deepLinkUri!.host != 'stamp') {
+      return;
+    }
     String stamp = _deepLinkUri!.queryParameters['stamp'] ?? "";
     String picc = _deepLinkUri!.queryParameters['picc'] ?? "";
     String cmac = _deepLinkUri!.queryParameters['cmac'] ?? "";
