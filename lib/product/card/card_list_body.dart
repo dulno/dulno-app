@@ -41,14 +41,15 @@ class CardListBodyContent extends StatefulWidget {
 
 class _CardListBodyContentState extends State<CardListBodyContent> {
   bool _loaded = false;
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   List<dynamic> _cards = [];
   List<dynamic> _previousCards = [];
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
+    _searchController.addListener(() {
       setState(() {});
     });
   }
@@ -57,13 +58,19 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     const storage = FlutterSecureStorage();
     final cardCache = await storage.read(key: "cards");
     _cards = cardCache == null ? [] : jsonDecode(cardCache);
-    setState(() {});
+    setState(() {
+      _scrollController.animateTo(
+        0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   Future<void> refresh() async {
     await fetchCards(false);
     setState(() {
-      _controller.text = "";
+      _searchController.text = "";
     });
   }
 
@@ -154,6 +161,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
             decelerationRate: ScrollDecelerationRate.fast,
           ),
         ),
+        controller: _scrollController,
         child: Container(
           alignment: Alignment.center,
           margin: const EdgeInsets.only(bottom: 75),
@@ -163,7 +171,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
             child: Column(
               children: [
                 CardSearchBar(
-                  controller: _controller,
+                  controller: _searchController,
                 ),
                 ...elements
               ],
@@ -203,7 +211,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     return RefreshIndicator(
       onRefresh: refresh,
       child: ValueListenableBuilder<TextEditingValue>(
-        valueListenable: _controller,
+        valueListenable: _searchController,
         builder: (context, value, child) {
           return FutureBuilder<Widget>(
             future: createCardElements(value.text),

@@ -137,7 +137,6 @@ class _CardElementState extends State<CardElement> {
   }
 
   Widget createStampCardContent(foregroundColor, stampIcon) {
-    debugPrint(MediaQuery.of(context).size.width.toString());
     var type = widget.content["cardType"];
     var stampNumber = type == "COLLECTION"
         ? widget.content["rewardNumber"]
