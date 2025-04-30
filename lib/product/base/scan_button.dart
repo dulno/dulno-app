@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 
-import 'package:dulno/product/base/scan_popup.dart';
+import 'package:dulno/product/base/android_scan_popup.dart';
+import 'package:dulno/product/base/ios_scan_popup.dart';
 import 'package:flutter/material.dart';
 
 class ProductScanButton extends StatefulWidget {
@@ -53,7 +55,14 @@ class _ProductScanButtonState extends State<ProductScanButton>
           ),
           child: FloatingActionButton(
             onPressed: () {
-              ProductNFCScanPopup(
+              if (Platform.isAndroid) {
+                ProductNFCScanPopup(
+                  callback: widget.callback,
+                  currentPageIndex: widget.currentPageIndex,
+                ).show(context, widget.key);
+                return;
+              }
+              ProductIOSNFCScanPopup(
                 callback: widget.callback,
                 currentPageIndex: widget.currentPageIndex,
               ).show(context, widget.key);

@@ -28,114 +28,108 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.transparent,
-          leading: IconButton(
-            icon: Icon(Icons.keyboard_backspace),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: LocaleText(
-            "product.profile.title",
-            style: TextStyle(fontFamily: "Arial"),
-          ),
-          centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(1.0),
-            child: Container(
-              color: Colors.black12,
-              height: 1.0,
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.keyboard_backspace),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: LocaleText(
+          "product.profile.title",
+          style: TextStyle(fontFamily: "Arial"),
+        ),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.black12,
+            height: 1.0,
           ),
         ),
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 30),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: 30),
-                        LocaleText(
-                          "product.profile.account",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 5),
-                        accountContent(),
-                        SizedBox(height: 30),
-                        LocaleText(
-                          "product.profile.language",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 10),
-                        ProfileLanguageSelection(),
-                        SizedBox(height: 30),
-                        LocaleText(
-                          "product.profile.notification",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: 10),
-                        ProfileNotificationToggle(),
-                        Expanded(child: SizedBox()),
-                        SizedBox(height: 50),
-                        Divider(
-                          color: Colors.grey[300],
-                          height: 2,
-                        ),
-                        SizedBox(height: 20),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Wrap(
-                            spacing: 16.0,
-                            runSpacing: 8.0,
-                            alignment: WrapAlignment.center,
-                            children: [
-                              ProfileFooterLink("product.profile.imprint",
-                                  "https://dulno.com/imprint/"),
-                              ProfileFooterLink(
-                                  "product.profile.terms.of.service",
-                                  "https://dulno.com/terms-of-service/"),
-                              ProfileFooterLink(
-                                  "product.profile.privacy.policy",
-                                  "https://dulno.com/privacy-policy/"),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        Align(
-                          alignment: Alignment.center,
-                          child: FutureBuilder<PackageInfo>(
-                            future: PackageInfo.fromPlatform(),
-                            builder:
-                                (context, AsyncSnapshot<PackageInfo> package) {
-                              return Text(
-                                "Version ${package.data?.version ?? ""}",
-                                style: TextStyle(fontSize: 12),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                      ],
+      ),
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: 30),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 30),
+                    LocaleText(
+                      "product.profile.account",
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.left,
                     ),
-                  ),
+                    SizedBox(height: 5),
+                    accountContent(),
+                    SizedBox(height: 30),
+                    LocaleText(
+                      "product.profile.language",
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(height: 10),
+                    ProfileLanguageSelection(),
+                    SizedBox(height: 30),
+                    LocaleText(
+                      "product.profile.notification",
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(height: 10),
+                    ProfileNotificationToggle(),
+                    SizedBox(height: 50),
+                    Divider(
+                      color: Colors.grey[300],
+                      height: 2,
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: Wrap(
+                        spacing: 16.0,
+                        runSpacing: 8.0,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          ProfileFooterLink("product.profile.imprint",
+                              "https://dulno.com/imprint/"),
+                          ProfileFooterLink("product.profile.terms.of.service",
+                              "https://dulno.com/terms-of-service/"),
+                          ProfileFooterLink("product.profile.privacy.policy",
+                              "https://dulno.com/privacy-policy/"),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    Align(
+                      alignment: Alignment.center,
+                      child: FutureBuilder<PackageInfo>(
+                        future: PackageInfo.fromPlatform(),
+                        builder: (context, snapshot) {
+                          return Text(
+                            "Version ${snapshot.data?.version ?? ""}",
+                            style: TextStyle(fontSize: 12),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                  ],
                 ),
-              );
-            },
-          ),
-        ));
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   Widget accountContent() {

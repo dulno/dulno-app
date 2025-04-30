@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:dulno/notification/notification.dart';
+import 'package:dulno/product/base/android_scan_popup.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/base/scan_cache.dart';
-import 'package:dulno/product/base/scan_popup.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
