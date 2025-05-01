@@ -2,61 +2,52 @@ import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/base/page.dart';
-import 'package:dulno/product/base/stamp_redemption.dart';
+import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
-class ProductIOSNFCScanPopup {
-  Function callback;
-  Function currentPageIndex;
+abstract class ScanPopupContent extends StatefulWidget {
+  final Function callback;
+  final Function currentPageIndex;
 
-  ProductIOSNFCScanPopup(
-      {required this.callback, required this.currentPageIndex});
+  const ScanPopupContent(
+      {super.key, required this.callback, required this.currentPageIndex});
 
-  show(BuildContext context, Key? key) {
-    readNFCTag(context);
-  }
-
-  Future<void> externalStampRedemption(context, stamp, picc, cmac) async {
-    if (stamp == "" || picc == "" || cmac == "") {
-      Alert(
-        description: "product.scan.error.nfc.tag",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
-      return;
-    }
-    await redeemStamp(context, stamp, picc, cmac);
-  }
-
-  Future<void> readNFCTag(context) async {
-    if (await NfcManager.instance.isAvailable()) {
-      NfcManager.instance.startSession(
-          invalidateAfterFirstRead: true,
-          onDiscovered: (NfcTag tag) async {
-            NfcManager.instance.stopSession();
-            try {
-              var payloadBytes =
-                  tag.data["ndef"]["cachedMessage"]["records"][0]["payload"];
-              var payloadString = utf8.decode(payloadBytes.sublist(1));
-              processNFCTagScan(context, payloadString);
-            } catch (exception) {
-              displayNFCTagScanError(context);
-            }
-          },
-          onError: (NfcError error) async {
+  Future<void> readNFCTag(
+      {required BuildContext context, Function? readCallback}) async {
+    NfcManager.instance.startSession(
+        invalidateAfterFirstRead: true,
+        onDiscovered: (NfcTag tag) async {
+          if (readCallback != null) {
+            readCallback();
+          }
+          try {
+            var payloadBytes =
+                tag.data["ndef"]["cachedMessage"]["records"][0]["payload"];
+            var payloadString = utf8.decode(payloadBytes.sublist(1));
+            processNFCTagScan(context, payloadString);
+          } catch (exception) {
             displayNFCTagScanError(context);
           }
-      );
-    } else {
-      displayNFCTagScanError(context);
-    }
+        },
+        onError: (NfcError error) async {
+          displayNFCTagScanError(context);
+        });
   }
 
   void displayNFCTagScanError(context) {
+    Navigator.pop(context);
     Alert(
       description: "product.scan.error.scan",
+      icon: CupertinoIcons.exclamationmark_triangle,
+    ).show(context);
+  }
+
+  void displayNFCTagUnsupportedError(context) {
+    Navigator.pop(context);
+    Alert(
+      description: "product.scan.unsupported.description",
       icon: CupertinoIcons.exclamationmark_triangle,
     ).show(context);
   }
@@ -67,6 +58,7 @@ class ProductIOSNFCScanPopup {
     String picc = uri.queryParameters['picc'] ?? "";
     String cmac = uri.queryParameters['cmac'] ?? "";
     if (stamp == "" || picc == "" || cmac == "") {
+      Navigator.pop(context);
       Alert(
         description: "product.scan.error.nfc.tag",
         icon: CupertinoIcons.exclamationmark_triangle,
@@ -84,11 +76,13 @@ class ProductIOSNFCScanPopup {
       return;
     }
     if (redemptionResult == 1) {
+      Navigator.pop(context);
       displayScanError(context, redemption.responseBody["error"]);
       return;
     }
     if (currentPageIndex() == 0) {
       callback();
+      Navigator.pop(context);
     } else {
       Navigator.pushReplacement(
         context,
@@ -109,6 +103,7 @@ class ProductIOSNFCScanPopup {
     var scans = scanCache == null ? [] : jsonDecode(scanCache);
     scans.add(scan);
     await storage.write(key: "scans", value: jsonEncode(scans));
+    Navigator.pop(context);
     Alert(
       description: "product.scan.connection.cache",
       icon: CupertinoIcons.antenna_radiowaves_left_right,
@@ -139,5 +134,47 @@ class ProductIOSNFCScanPopup {
       icon: CupertinoIcons.exclamationmark_triangle,
     ).show(context);
     return;
+  }
+}
+
+abstract class ScanPopupContentState<T extends ScanPopupContent>
+    extends State<T> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkNFC(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    NfcManager.instance.stopSession().catchError((_) {});
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        checkNFC(context);
+      });
+    }
+  }
+
+  Future<void> checkNFC(context);
+
+  Future<void> externalStampRedemption(context, stamp, picc, cmac) async {
+    if (stamp == "" || picc == "" || cmac == "") {
+      Navigator.pop(context);
+      Alert(
+        description: "product.scan.error.nfc.tag",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    await widget.redeemStamp(context, stamp, picc, cmac);
   }
 }

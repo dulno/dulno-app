@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/base/page.dart';
-import 'package:dulno/product/base/stamp_redemption.dart';
+import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -21,7 +21,7 @@ class ScanCache {
     var failedResults = 0;
     for (var scan in scans) {
       var redemptionResult = await StampRedemption(
-          stamp: scan["stamp"], picc: scan["picc"], cmac: scan["cmac"])
+              stamp: scan["stamp"], picc: scan["picc"], cmac: scan["cmac"])
           .redeem();
       if (redemptionResult == 0) {
         remainingScans.add(scan);
@@ -32,7 +32,8 @@ class ScanCache {
     await processRedemptionResult(context, remainingScans, failedResults);
   }
 
-  Future<void> processRedemptionResult(context, remainingScans, failedResults) async {
+  Future<void> processRedemptionResult(
+      context, remainingScans, failedResults) async {
     const storage = FlutterSecureStorage();
     await storage.write(key: "scans", value: jsonEncode(remainingScans));
     if (remainingScans.isEmpty) {
