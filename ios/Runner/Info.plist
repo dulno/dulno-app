@@ -40,6 +40,8 @@
   <array>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
   </array>
+  <key>FirebaseAppDelegateProxyEnabled</key>
+  <true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -84,5 +86,16 @@
 	</array>
 	<key>FlutterDeepLinkingEnabled</key>
   <false/>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>dulno</string>
+      </array>
+      <key>CFBundleURLName</key>
+      <string>com.dulno.app</string>
+    </dict>
+  </array>
 </dict>
 </plist>
