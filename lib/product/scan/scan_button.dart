@@ -1,20 +1,20 @@
 import 'dart:math';
 
-import 'package:dulno/product/base/scan_popup.dart';
+import 'package:dulno/product/scan/scan_popup.dart';
 import 'package:flutter/material.dart';
 
-class ProductScanButton extends StatefulWidget {
+class ScanButton extends StatefulWidget {
   Function callback;
   Function currentPageIndex;
 
-  ProductScanButton(
+  ScanButton(
       {super.key, required this.callback, required this.currentPageIndex});
 
   @override
-  State<ProductScanButton> createState() => _ProductScanButtonState();
+  State<ScanButton> createState() => _ScanButtonState();
 }
 
-class _ProductScanButtonState extends State<ProductScanButton>
+class _ScanButtonState extends State<ScanButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -53,7 +53,7 @@ class _ProductScanButtonState extends State<ProductScanButton>
           ),
           child: FloatingActionButton(
             onPressed: () {
-              ProductNFCScanPopup(
+              ScanPopup(
                 callback: widget.callback,
                 currentPageIndex: widget.currentPageIndex,
               ).show(context, widget.key);
