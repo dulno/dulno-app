@@ -43,6 +43,7 @@ dependencies:
   flutter_local_notifications: ^19.0.0
   permission_handler: ^12.0.0+1
   provider: ^6.1.4
+  nfc_manager: ^3.5.0
   flutter_nfc_kit: ^3.6.0
   app_settings: ^6.1.1
   url_launcher: ^6.3.1
@@ -120,11 +121,12 @@ flutter:
 
 flutter_launcher_icons:
   android: "launcher_icon"
+  min_sdk_android: 26
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/images/icon.png"
   adaptive_icon_background: "#ffffff"
   adaptive_icon_foreground: "assets/images/icon.png"
-  min_sdk_android: 26
 
 flutter_native_splash:
   android: true

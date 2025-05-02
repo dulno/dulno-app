@@ -1,7 +1,7 @@
 import 'package:dulno/product/base/header.dart';
 import 'package:dulno/product/base/navigator.dart';
 import 'package:dulno/product/base/page_body.dart';
-import 'package:dulno/product/base/scan_button.dart';
+import 'package:dulno/product/scan/scan_button.dart';
 import 'package:dulno/product/card/card_list_body.dart';
 import 'package:dulno/product/partner/discover_body.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class _ProductPageState extends State<ProductPage> {
       body: pageBodies[_selectedIndex > 1 ? _selectedIndex - 1 : _selectedIndex]
           .content(context),
       backgroundColor: Color(0xFFFAFAFA),
-      floatingActionButton: ProductScanButton(
+      floatingActionButton: ScanButton(
         callback: (pageBodies[0] as CardListBody).reload,
         currentPageIndex: () => _selectedIndex,
       ),

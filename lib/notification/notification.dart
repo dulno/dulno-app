@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dulno/config/firebase_options.dart';
 import 'package:dulno/product/campaign/campaign.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await _processFirebaseMessage(message);
@@ -71,7 +73,12 @@ class DulnoNotification {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await initializeLocalNotifications();
-    FirebaseMessaging.instance.subscribeToTopic("dulno");
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    await messaging.requestPermission();
+    if (Platform.isIOS) {
+      await messaging.getAPNSToken();
+    }
+    messaging.subscribeToTopic("dulno");
     FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     final details =
