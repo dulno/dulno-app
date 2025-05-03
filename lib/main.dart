@@ -7,6 +7,7 @@ import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/product/scan/scan_popup.dart';
 import 'package:dulno/product/scan/scan_popup_content.dart';
+import 'package:dulno/statistic/statistic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
+  DulnoStatistic().keep();
   await DulnoNotification(navigatorKey: navigatorKey).setup();
   runApp(DulnoApp());
 }
