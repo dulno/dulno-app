@@ -19,7 +19,7 @@ class DefaultFirebaseOptions {
     if (kIsWeb) {
       throw UnsupportedError(
         'DefaultFirebaseOptions have not been configured for web - '
-            'you can reconfigure this by running the FlutterFire CLI again.',
+        'you can reconfigure this by running the FlutterFire CLI again.',
       );
     }
     switch (defaultTargetPlatform) {
@@ -30,17 +30,17 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -50,21 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBKtTo4eVx6JvOxBwlGmzff7BA97RZ9WFc',
-    appId: '1:1057662416151:android:5f0b9b670c6160b9897352',
-    messagingSenderId: '1057662416151',
-    projectId: 'dulno-staging',
-    storageBucket: 'dulno-staging.firebasestorage.app',
+    apiKey: 'AIzaSyCilHPTx7EHJEfXfQFnbF5iEIl_ctL290k',
+    appId: '1:402643689386:android:5706460ba721d9da1b95d3',
+    messagingSenderId: '402643689386',
+    projectId: 'dulno-e5482',
+    storageBucket: 'dulno-e5482.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDM4n2wGis8D68TQsv0aA7JIQwk2aLdJMk',
-    appId: '1:1057662416151:ios:a461999e687dcf46897352',
-    messagingSenderId: '1057662416151',
-    projectId: 'dulno-staging',
-    storageBucket: 'dulno-staging.firebasestorage.app',
-    androidClientId: '1057662416151-lddt6vjrkc73qb7uasu1uhda2t0v0nm8.apps.googleusercontent.com',
-    iosClientId: '1057662416151-ucq560kpcjs7225v11upj1d2imsf1gns.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAycQ1HSBvWW4jFugIQMigrhWNnTU5WsJI',
+    appId: '1:402643689386:ios:7b7e3eb8bf7f06031b95d3',
+    messagingSenderId: '402643689386',
+    projectId: 'dulno-e5482',
+    storageBucket: 'dulno-e5482.firebasestorage.app',
+    iosClientId: '402643689386-9akgvusvisndso5hjsvors4v8krh638b.apps.googleusercontent.com',
     iosBundleId: 'com.dulno.app',
   );
 }

@@ -1,42 +1,41 @@
 {
   "project_info": {
-    "project_number": "1057662416151",
-    "project_id": "dulno-staging",
-    "storage_bucket": "dulno-staging.firebasestorage.app"
+    "project_number": "402643689386",
+    "project_id": "dulno-e5482",
+    "storage_bucket": "dulno-e5482.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1057662416151:android:5f0b9b670c6160b9897352",
+        "mobilesdk_app_id": "1:402643689386:android:5706460ba721d9da1b95d3",
         "android_client_info": {
           "package_name": "com.dulno.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1057662416151-lddt6vjrkc73qb7uasu1uhda2t0v0nm8.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dulno.app",
-            "certificate_hash": "5b2c1afcc5e9717312716d192669e6e15c51af13"
-          }
-        },
-        {
-          "client_id": "1057662416151-65gv4tfsl0nt6th29a96jqlkrlhilbrt.apps.googleusercontent.com",
+          "client_id": "402643689386-q2lhjkpf8ci2ui4keq5h8ga142ej7gmp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBKtTo4eVx6JvOxBwlGmzff7BA97RZ9WFc"
+          "current_key": "AIzaSyCilHPTx7EHJEfXfQFnbF5iEIl_ctL290k"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1057662416151-65gv4tfsl0nt6th29a96jqlkrlhilbrt.apps.googleusercontent.com",
+              "client_id": "402643689386-q2lhjkpf8ci2ui4keq5h8ga142ej7gmp.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "402643689386-9akgvusvisndso5hjsvors4v8krh638b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dulno.app"
+              }
             }
           ]
         }
