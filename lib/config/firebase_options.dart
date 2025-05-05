@@ -50,20 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCilHPTx7EHJEfXfQFnbF5iEIl_ctL290k',
-    appId: '1:402643689386:android:5706460ba721d9da1b95d3',
-    messagingSenderId: '402643689386',
-    projectId: 'dulno-e5482',
-    storageBucket: 'dulno-e5482.firebasestorage.app',
+    apiKey: 'AIzaSyAFtRy_BQ2PzRHTXx7aSUC2BezGvg1sju0',
+    appId: '1:862018629934:android:d58ddc019c7590417c4abf',
+    messagingSenderId: '862018629934',
+    projectId: 'dulno-435615',
+    storageBucket: 'dulno-435615.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAycQ1HSBvWW4jFugIQMigrhWNnTU5WsJI',
-    appId: '1:402643689386:ios:7b7e3eb8bf7f06031b95d3',
-    messagingSenderId: '402643689386',
-    projectId: 'dulno-e5482',
-    storageBucket: 'dulno-e5482.firebasestorage.app',
-    iosClientId: '402643689386-9akgvusvisndso5hjsvors4v8krh638b.apps.googleusercontent.com',
-    iosBundleId: 'com.dulno.app',
+    apiKey: 'AIzaSyBCa3FwsSZXnZHijssd6MzOMmeJlrrSelY',
+    appId: '1:862018629934:ios:16de9ea4e4e1cebd7c4abf',
+    messagingSenderId: '862018629934',
+    projectId: 'dulno-435615',
+    storageBucket: 'dulno-435615.firebasestorage.app',
+    androidClientId: '862018629934-o9hs3cnuc8fk03n8d8uf52af0eto5fa1.apps.googleusercontent.com',
+    iosClientId: '862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com',
+    iosBundleId: 'com.dulno',
   );
 }
