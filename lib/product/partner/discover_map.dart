@@ -216,7 +216,7 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
             TileLayer(
               urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
               userAgentPackageName:
-                  'com.dulno.app.kuB0u5QxTkBGK7LptkOxDoRpaZbMN1TZ',
+                  'com.dulno.kuB0u5QxTkBGK7LptkOxDoRpaZbMN1TZ',
               tileProvider: CancellableNetworkTileProvider(),
             ),
             MarkerLayer(
