@@ -22,7 +22,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
       serverClientId:
-          "1057662416151-qt2uppuh1k3e6voe5d5gtpusck95oab1.apps.googleusercontent.com");
+          "862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com");
   Widget? accountContentElement;
 
   @override

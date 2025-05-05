@@ -1,42 +1,49 @@
 {
   "project_info": {
-    "project_number": "1057662416151",
-    "project_id": "dulno-staging",
-    "storage_bucket": "dulno-staging.firebasestorage.app"
+    "project_number": "862018629934",
+    "project_id": "dulno-435615",
+    "storage_bucket": "dulno-435615.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1057662416151:android:5f0b9b670c6160b9897352",
+        "mobilesdk_app_id": "1:862018629934:android:d58ddc019c7590417c4abf",
         "android_client_info": {
-          "package_name": "com.dulno.app"
+          "package_name": "com.dulno"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1057662416151-lddt6vjrkc73qb7uasu1uhda2t0v0nm8.apps.googleusercontent.com",
+          "client_id": "862018629934-o9hs3cnuc8fk03n8d8uf52af0eto5fa1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dulno.app",
+            "package_name": "com.dulno",
             "certificate_hash": "5b2c1afcc5e9717312716d192669e6e15c51af13"
           }
         },
         {
-          "client_id": "1057662416151-65gv4tfsl0nt6th29a96jqlkrlhilbrt.apps.googleusercontent.com",
+          "client_id": "862018629934-sb94v01909vn70ilhm8qd5u4l3umh7dk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBKtTo4eVx6JvOxBwlGmzff7BA97RZ9WFc"
+          "current_key": "AIzaSyAFtRy_BQ2PzRHTXx7aSUC2BezGvg1sju0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1057662416151-65gv4tfsl0nt6th29a96jqlkrlhilbrt.apps.googleusercontent.com",
+              "client_id": "862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dulno"
+              }
             }
           ]
         }
