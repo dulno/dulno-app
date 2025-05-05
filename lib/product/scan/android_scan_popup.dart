@@ -29,12 +29,15 @@ class AndroidScanPopupContentState
       });
     } else {
       widget.readNFCTag(
-          context: context,
-          readCallback: () {
-            setState(() {
+        context: context,
+        readCallback: () {
+          setState(
+            () {
               scanned = true;
-            });
-          });
+            },
+          );
+        },
+      );
     }
   }
 

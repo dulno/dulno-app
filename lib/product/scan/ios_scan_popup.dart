@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:dulno/product/scan/scan_popup_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 class IOSScanPopupContent extends ScanPopupContent {
@@ -33,7 +34,12 @@ class IOSScanPopupContentState
   Future<void> checkNFC(context) async {
     final isAvailable = await NfcManager.instance.isAvailable();
     if (isAvailable) {
-      widget.readNFCTag(context: context);
+      widget.readNFCTag(
+        context: context,
+        readCallback: () {
+          HapticFeedback.vibrate();
+        },
+      );
     } else {
       widget.displayNFCTagUnsupportedError(context);
     }
