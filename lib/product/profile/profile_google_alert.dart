@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/alert_loader.dart';
-import 'package:dulno/product/profile/profile_page.dart';
+import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
@@ -114,13 +114,11 @@ class ProfileGoogleAlert {
       description: "product.profile.google.connect.success",
       icon: CupertinoIcons.check_mark_circled,
       callback: () {
-        Navigator.pushAndRemoveUntil(
-          context,
+        Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  ProfilePage(signInCallback: signInCallback),
-              transitionDuration: Duration.zero),
-          ModalRoute.withName('/'),
+            pageBuilder: (_, __, ___) => ProductPage(),
+          ),
+          (route) => false,
         );
       },
     ).show(context);
