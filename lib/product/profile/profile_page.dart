@@ -21,6 +21,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
+      clientId:
+          "862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com",
       serverClientId:
           "862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com");
   Widget? accountContentElement;
