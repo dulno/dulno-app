@@ -48,15 +48,17 @@ class IOSScanPopupContentState
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.transparent,
-        padding: EdgeInsets.only(top: 75),
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (_, __) {
-            double t = _controller.value; // [0.0, 1.0]
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(arrowCount, (index) {
+      color: Colors.transparent,
+      padding: EdgeInsets.only(top: 75),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (_, __) {
+          double t = _controller.value; // [0.0, 1.0]
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              arrowCount,
+              (index) {
                 double offsetY = sin(t * frequency) * amplitude;
                 return Transform.translate(
                   offset: Offset(0, offsetY),
@@ -68,9 +70,11 @@ class IOSScanPopupContentState
                             size: 50, color: Colors.white),
                       )),
                 );
-              }),
-            );
-          },
-        ));
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }
