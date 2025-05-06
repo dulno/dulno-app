@@ -96,6 +96,18 @@
       <key>CFBundleURLName</key>
       <string>com.dulno</string>
     </dict>
+    <dict>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>com.googleusercontent.apps.862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho</string>
+      </array>
+    </dict>
   </array>
+  <key>GIDClientID</key>
+  <string>862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com</string>
+  <key>GIDServerClientID</key>
+  <string>862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com</string>
 </dict>
 </plist>

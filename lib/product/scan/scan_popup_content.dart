@@ -17,23 +17,27 @@ abstract class ScanPopupContent extends StatefulWidget {
   Future<void> readNFCTag(
       {required BuildContext context, Function? readCallback}) async {
     NfcManager.instance.startSession(
-        invalidateAfterFirstRead: true,
-        onDiscovered: (NfcTag tag) async {
-          if (readCallback != null) {
-            readCallback();
-          }
-          try {
-            var payloadBytes =
-                tag.data["ndef"]["cachedMessage"]["records"][0]["payload"];
-            var payloadString = utf8.decode(payloadBytes.sublist(1));
-            processNFCTagScan(context, payloadString);
-          } catch (exception) {
-            displayNFCTagScanError(context);
-          }
-        },
-        onError: (NfcError error) async {
+      invalidateAfterFirstRead: true,
+      onDiscovered: (NfcTag tag) async {
+        if (readCallback != null) {
+          readCallback();
+        }
+        try {
+          var payloadBytes =
+              tag.data["ndef"]["cachedMessage"]["records"][0]["payload"];
+          var payloadString = utf8.decode(payloadBytes.sublist(1));
+          processNFCTagScan(context, payloadString);
+        } catch (exception) {
           displayNFCTagScanError(context);
-        });
+        }
+      },
+      onError: (NfcError error) async {
+        if (error.type == NfcErrorType.userCanceled) {
+          return;
+        }
+        displayNFCTagScanError(context);
+      },
+    );
   }
 
   void displayNFCTagScanError(context) {
