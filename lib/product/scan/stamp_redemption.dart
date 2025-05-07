@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:dulno/alert/alert.dart';
 import 'package:dulno/request/request.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StampRedemption {
@@ -68,5 +70,59 @@ class StampRedemption {
       await storage.write(key: "partners", value: jsonEncode(partners));
     }
     FirebaseMessaging.instance.subscribeToTopic(partnerId);
+  }
+
+  Future<bool> redeemProcessed(context) async {
+    var redemptionResult = await redeem();
+    if (redemptionResult == 0) {
+      processRedemptionUnconnected(context);
+      return false;
+    }
+    if (redemptionResult == 1) {
+      Navigator.pop(context);
+      displayScanError(context, responseBody["error"]);
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> processRedemptionUnconnected(context) async {
+    var scan = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
+    const storage = FlutterSecureStorage();
+    final scanCache = await storage.read(key: "scans");
+    var scans = scanCache == null ? [] : jsonDecode(scanCache);
+    scans.add(scan);
+    await storage.write(key: "scans", value: jsonEncode(scans));
+    Navigator.pop(context);
+    Alert(
+      description: "product.scan.connection.cache",
+      icon: CupertinoIcons.antenna_radiowaves_left_right,
+    ).show(context);
+  }
+
+  void displayScanError(context, error) {
+    var description = "";
+    if (error == 1000) {
+      description = "product.scan.error.stamp.existence";
+    } else if (error == 1001) {
+      description = "product.scan.error.stamp.state";
+    } else if (error == 1002 || error == 1003) {
+      description = "product.scan.error.scan.validation";
+    } else if (error == 1004) {
+      description = "product.scan.error.already.scanned";
+    } else if (error == 1005) {
+      description = "product.scan.error.card.existence";
+    } else if (error == 1006) {
+      description = "product.scan.error.value.absent";
+    } else if (error == 1007) {
+      description = "product.scan.error.member.absent";
+    } else if (error == 1008) {
+      description = "product.scan.error.already.member";
+    }
+    Alert(
+      description: description,
+      icon: CupertinoIcons.exclamationmark_triangle,
+    ).show(context);
+    return;
   }
 }
