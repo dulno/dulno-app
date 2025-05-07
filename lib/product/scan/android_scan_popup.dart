@@ -31,22 +31,14 @@ class AndroidScanPopupContentState
       widget.readNFCTag(
         context: context,
         readCallback: () {
-          setState(
-            () {
+          if (mounted) {
+            setState(() {
               scanned = true;
-            },
-          );
+            });
+          }
         },
       );
     }
-  }
-
-  @override
-  Future<void> externalStampRedemption(context, stamp, picc, cmac) async {
-    setState(() {
-      scanned = true;
-    });
-    await super.externalStampRedemption(context, stamp, picc, cmac);
   }
 
   @override

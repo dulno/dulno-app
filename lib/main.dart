@@ -1,18 +1,21 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:dulno/alert/alert.dart';
+import 'package:dulno/alert/alert_loader.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
-import 'package:dulno/product/scan/scan_popup.dart';
-import 'package:dulno/product/scan/scan_popup_content.dart';
+import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:dulno/statistic/statistic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -33,6 +36,8 @@ class DulnoApp extends StatefulWidget {
 }
 
 class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
+  final GlobalKey<ProductPageState> _productPageKey =
+      GlobalKey<ProductPageState>();
   final AppLinks _appLinks = AppLinks();
   Uri? _deepLinkUri;
 
@@ -40,6 +45,11 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    if (Platform.isAndroid) {
+      NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) async {},
+      );
+    }
     _initDeepLinks();
   }
 
@@ -105,9 +115,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
                   home: Builder(
                     builder: (context) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        processDeepLink(context);
+                        processDeepLink(context, _productPageKey);
                       });
-                      return ProductPage();
+                      return ProductPage(key: _productPageKey);
                     },
                   ),
                   debugShowCheckedModeBanner: false,
@@ -130,7 +140,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     return language;
   }
 
-  void processDeepLink(context) {
+  void processDeepLink(context, key) async {
     if (_deepLinkUri == null || !mounted) {
       return;
     }
@@ -141,15 +151,31 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     String picc = _deepLinkUri!.queryParameters['picc'] ?? "";
     String cmac = _deepLinkUri!.queryParameters['cmac'] ?? "";
     _deepLinkUri = null;
-    GlobalKey<ScanPopupContentState> key = GlobalKey<ScanPopupContentState>();
-    ScanPopup(
-      callback: () {},
-      currentPageIndex: () => -1,
-    ).show(context, key);
-    Future.delayed(Duration(milliseconds: 500), () {
-      if (key.currentState != null && key.currentState!.mounted) {
-        key.currentState!.externalStampRedemption(context, stamp, picc, cmac);
-      }
-    });
+    if (stamp == "" || picc == "" || cmac == "") {
+      Alert(
+        description: "product.scan.error.nfc.tag",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    redeemDeepLink(context, key, stamp, picc, cmac);
+  }
+
+  void redeemDeepLink(context, key, stamp, picc, cmac) {
+    AlertLoader().show(context);
+    Future.delayed(
+      Duration(milliseconds: 500),
+      () async {
+        var redemption = StampRedemption(stamp: stamp, picc: picc, cmac: cmac);
+        var redemptionResult = await redemption.redeemProcessed(context);
+        if (!redemptionResult) {
+          return;
+        }
+        if (key.currentState != null && key.currentState!.mounted) {
+          key.currentState!.findCardListBody().reload();
+          Navigator.pop(context);
+        }
+      },
+    );
   }
 }

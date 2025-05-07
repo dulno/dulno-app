@@ -58,20 +58,30 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     const storage = FlutterSecureStorage();
     final cardCache = await storage.read(key: "cards");
     _cards = cardCache == null ? [] : jsonDecode(cardCache);
-    setState(() {
+    if (mounted) {
+      setState(() {
+        scrollToTop();
+      });
+    }
+  }
+
+  void scrollToTop() {
+    if (_scrollController.hasClients) {
       _scrollController.animateTo(
         0,
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
-    });
+    }
   }
 
   Future<void> refresh() async {
     await fetchCards(false);
-    setState(() {
-      _searchController.text = "";
-    });
+    if (mounted) {
+      setState(() {
+        _searchController.text = "";
+      });
+    }
   }
 
   Future<void> fetchCards(reloadAfterwards) async {
@@ -94,7 +104,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     }
     _cards = responseBody["items"];
     await storage.write(key: "cards", value: jsonEncode(_cards));
-    if (reloadAfterwards) {
+    if (reloadAfterwards && mounted) {
       setState(() {});
     }
   }
