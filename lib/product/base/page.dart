@@ -10,12 +10,12 @@ class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
 
   @override
-  State<ProductPage> createState() => _ProductPageState();
+  State<ProductPage> createState() => ProductPageState();
 }
 
-class _ProductPageState extends State<ProductPage> {
+class ProductPageState extends State<ProductPage> {
+  final List<ProductPageBody> pageBodies = [CardListBody(), DiscoverBody()];
   int _selectedIndex = 0;
-  List<ProductPageBody> pageBodies = [CardListBody(), DiscoverBody()];
 
   void _onItemTapped(int index) {
     if (index == 1) {
@@ -30,7 +30,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ProductHeader(
-        signInCallback: (pageBodies[0] as CardListBody).refresh,
+        signInCallback: findCardListBody().refresh,
       ),
       bottomNavigationBar: ProductNavigator(
           selectedIndex: _selectedIndex,
@@ -40,10 +40,14 @@ class _ProductPageState extends State<ProductPage> {
           .content(context),
       backgroundColor: Color(0xFFFAFAFA),
       floatingActionButton: ScanButton(
-        callback: (pageBodies[0] as CardListBody).reload,
+        callback: findCardListBody().reload,
         currentPageIndex: () => _selectedIndex,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  CardListBody findCardListBody() {
+    return pageBodies[0] as CardListBody;
   }
 }
