@@ -57,6 +57,8 @@
   "product.profile.google.connect.failure": "Something went wrong when signing in with Google. Please try again",
   "product.profile.account.email.headline": "Signed in as:",
   "product.profile.logout": "Logout",
+  "product.profile.logout.alert": "Warning: Any new card you collect from now on will no longer be linked to your e-mail address until you log in again.",
+  "product.profile.logout.continue": "Log out now",
   "product.profile.language": "Language",
   "product.profile.notification": "Notifications",
   "product.profile.notification.description": "Receive notifications",
