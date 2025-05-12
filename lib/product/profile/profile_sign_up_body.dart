@@ -9,12 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class ProfileSignUpBody {
   Future<Map<String, Object>> generate(legalAccepted, newsletter) async {
     const storage = FlutterSecureStorage();
-    final user = await storage.read(key: "user") ?? "";
-    final authenticationKey =
-        await storage.read(key: "authenticationKey") ?? "";
-    if (user != "" && authenticationKey != "") {
-      return {};
-    }
     var language = ui.PlatformDispatcher.instance.locale.languageCode;
     final cardCache = await storage.read(key: "cards");
     var cards = (cardCache == null ? [] : jsonDecode(cardCache))
