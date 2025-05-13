@@ -57,6 +57,8 @@
   "product.profile.google.connect.failure": "Bei der Anmeldung bei Google ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut",
   "product.profile.account.email.headline": "Angemeldet als:",
   "product.profile.logout": "Abmelden",
+  "product.profile.logout.alert": "Achtung: Jede neue Karte, die Sie von nun an sammeln, wird nicht mehr mit Ihrer E-Mail-Adresse verknüpft, bis Sie sich erneut anmelden.",
+  "product.profile.logout.continue": "Jetzt abmelden",
   "product.profile.language": "Sprache",
   "product.profile.notification": "Benachrichtigungen",
   "product.profile.notification.description": "Benachrichtigungen erhalten",

@@ -18,17 +18,15 @@ class StampRedemption {
   Future<int> redeem() async {
     const storage = FlutterSecureStorage();
     var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
-    if (await storage.read(key: "user") == null) {
-      final cardCache = await storage.read(key: "cards");
-      var cards = (cardCache == null ? [] : jsonDecode(cardCache))
-          .map((card) => card["itemId"])
-          .toList();
-      body["cards"] = cards;
-      body["language"] = await storage.read(key: "language") ?? "de";
-      final partnerCache = await storage.read(key: "partners");
-      var partners = partnerCache == null ? [] : jsonDecode(partnerCache);
-      body["partners"] = partners;
-    }
+    final cardCache = await storage.read(key: "cards");
+    var cards = (cardCache == null ? [] : jsonDecode(cardCache))
+        .map((card) => card["itemId"])
+        .toList();
+    body["cards"] = cards;
+    body["language"] = await storage.read(key: "language") ?? "de";
+    final partnerCache = await storage.read(key: "partners");
+    var partners = partnerCache == null ? [] : jsonDecode(partnerCache);
+    body["partners"] = partners;
     var response = await Request.post(url: "/user/stamp/", body: body).send();
     if (response == null || response.statusCode == 409) {
       return 0;
