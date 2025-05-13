@@ -34,14 +34,14 @@ class IOSScanPopupContentState
   Future<void> checkNFC(context) async {
     final isAvailable = await NfcManager.instance.isAvailable();
     if (isAvailable) {
-      widget.readNFCTag(
+      readNFCTag(
         context: context,
         readCallback: () {
           HapticFeedback.vibrate();
         },
       );
     } else {
-      widget.displayNFCTagUnsupportedError(context);
+      displayNFCTagUnsupportedError(context);
     }
   }
 

@@ -28,7 +28,7 @@ class AndroidScanPopupContentState
         nfcSupported = false;
       });
     } else {
-      widget.readNFCTag(
+      readNFCTag(
         context: context,
         readCallback: () {
           if (mounted) {

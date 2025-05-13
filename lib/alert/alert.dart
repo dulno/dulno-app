@@ -7,7 +7,9 @@ class Alert extends StatefulWidget {
   Widget? content;
   bool? cancelButton;
   String? cancelButtonText;
+  Color? cancelButtonColor;
   String? confirmButtonText;
+  Color? confirmButtonColor;
   bool Function()? confirmButtonEnabled;
   Function()? callback;
 
@@ -18,7 +20,9 @@ class Alert extends StatefulWidget {
       this.content,
       this.cancelButton,
       this.cancelButtonText,
+      this.cancelButtonColor,
       this.confirmButtonText,
+      this.confirmButtonColor,
       this.confirmButtonEnabled,
       this.callback});
 
@@ -75,7 +79,8 @@ class AlertState extends State<Alert> {
                           Navigator.pop(context);
                         },
                         style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(Colors.grey),
+                          backgroundColor: WidgetStateProperty.all(
+                              widget.cancelButtonColor ?? Colors.grey),
                           shape: WidgetStateProperty.all(
                               const RoundedRectangleBorder(
                                   borderRadius:
@@ -106,8 +111,8 @@ class AlertState extends State<Alert> {
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(
                         confirmationDisabled
-                            ? Colors.indigo[200]
-                            : Colors.indigo),
+                            ? widget.confirmButtonColor ?? Colors.indigo[200]
+                            : widget.confirmButtonColor ?? Colors.indigo),
                     shape: WidgetStateProperty.all(const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0)))),
                     padding: WidgetStateProperty.all(

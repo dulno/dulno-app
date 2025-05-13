@@ -1,4 +1,6 @@
+import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/profile/profile_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -64,20 +66,16 @@ class ProfileAccountContent extends StatelessWidget {
                           EdgeInsets.symmetric(horizontal: 15, vertical: 8)),
                       alignment: Alignment.center),
                   onPressed: () async {
-                    const storage = FlutterSecureStorage();
-                    await storage.delete(key: "email");
-                    await googleSignIn.signOut();
-                    signInCallback();
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                              ProfilePage(
-                                signInCallback: signInCallback,
-                              ),
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero),
-                    );
+                    Alert(
+                      description: "product.profile.logout.alert",
+                      icon: CupertinoIcons.exclamationmark_triangle,
+                      confirmButtonText: "product.profile.logout.continue",
+                      confirmButtonColor: Colors.redAccent,
+                      cancelButton: true,
+                      callback: () {
+                        logout(context);
+                      },
+                    ).show(context);
                   },
                   icon: Container(
                     margin: EdgeInsets.only(right: 2),
@@ -105,6 +103,24 @@ class ProfileAccountContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void logout(context) async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: "email");
+    await storage.delete(key: "user");
+    await storage.delete(key: "authenticationKey");
+    await googleSignIn.signOut();
+    signInCallback();
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => ProfilePage(
+                signInCallback: signInCallback,
+              ),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero),
     );
   }
 }
