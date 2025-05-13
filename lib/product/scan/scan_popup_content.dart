@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nfc_manager/nfc_manager.dart';
@@ -13,6 +14,41 @@ abstract class ScanPopupContent extends StatefulWidget {
 
   const ScanPopupContent(
       {super.key, required this.callback, required this.currentPageIndex});
+}
+
+abstract class ScanPopupContentState<T extends ScanPopupContent>
+    extends State<T> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkNFC(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    NfcManager.instance.stopSession().catchError((_) {});
+    if (Platform.isAndroid) {
+      NfcManager.instance.startSession(
+        onDiscovered: (NfcTag tag) async {},
+      );
+    }
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        checkNFC(context);
+      });
+    }
+  }
+
+  Future<void> checkNFC(context);
 
   Future<void> readNFCTag(
       {required BuildContext context, Function? readCallback}) async {
@@ -22,6 +58,10 @@ abstract class ScanPopupContent extends StatefulWidget {
     NfcManager.instance.startSession(
       invalidateAfterFirstRead: true,
       onDiscovered: (NfcTag tag) async {
+        if (Platform.isAndroid && await ScanCooldown().isActive()) {
+          processScanCooldown(context: context, readCallback: readCallback);
+          return;
+        }
         if (readCallback != null) {
           readCallback();
         }
@@ -39,6 +79,19 @@ abstract class ScanPopupContent extends StatefulWidget {
           return;
         }
         displayNFCTagScanError(context);
+      },
+    );
+  }
+
+  void processScanCooldown(
+      {required BuildContext context, Function? readCallback}) {
+    Future.delayed(
+      Duration(milliseconds: 1000),
+      () async {
+        if (!mounted) {
+          return;
+        }
+        readNFCTag(context: context, readCallback: readCallback);
       },
     );
   }
@@ -81,8 +134,9 @@ abstract class ScanPopupContent extends StatefulWidget {
     if (!redemptionResult) {
       return;
     }
-    if (currentPageIndex() == 0) {
-      callback();
+    ScanCooldown().enable();
+    if (widget.currentPageIndex() == 0) {
+      widget.callback();
       Navigator.pop(context);
     } else {
       Navigator.pushReplacement(
@@ -96,39 +150,4 @@ abstract class ScanPopupContent extends StatefulWidget {
       );
     }
   }
-}
-
-abstract class ScanPopupContentState<T extends ScanPopupContent>
-    extends State<T> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkNFC(context);
-    });
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    NfcManager.instance.stopSession().catchError((_) {});
-    if (Platform.isAndroid) {
-      NfcManager.instance.startSession(
-        onDiscovered: (NfcTag tag) async {},
-      );
-    }
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        checkNFC(context);
-      });
-    }
-  }
-
-  Future<void> checkNFC(context);
 }

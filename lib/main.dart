@@ -8,6 +8,7 @@ import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
+import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:dulno/statistic/statistic.dart';
 import 'package:flutter/cupertino.dart';
@@ -147,6 +148,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (_deepLinkUri!.scheme != 'dulno' || _deepLinkUri!.host != 'stamp') {
       return;
     }
+    if (await ScanCooldown().isActive()) {
+      return;
+    }
     String stamp = _deepLinkUri!.queryParameters['stamp'] ?? "";
     String picc = _deepLinkUri!.queryParameters['picc'] ?? "";
     String cmac = _deepLinkUri!.queryParameters['cmac'] ?? "";
@@ -171,6 +175,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
         if (!redemptionResult) {
           return;
         }
+        ScanCooldown().enable();
         if (key.currentState != null && key.currentState!.mounted) {
           key.currentState!.findCardListBody().reload();
           Navigator.pop(context);
