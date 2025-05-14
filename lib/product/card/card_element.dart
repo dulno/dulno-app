@@ -155,15 +155,18 @@ class _CardElementState extends State<CardElement> {
 
   Widget createStampElement(foregroundColor, stampIcon, index) {
     var stamps = widget.content["stamps"];
+    var icon = parseIcon(stampIcon, index < stamps ? "solid" : "regular");
     var element = Skeleton.leaf(
       child: SizedBox(
         width: 26,
         height: 26,
-        child: FaIcon(
-          parseIcon(stampIcon, index < stamps ? "solid" : "regular"),
-          size: 26,
-          color: foregroundColor,
-        ),
+        child: icon != null
+            ? FaIcon(
+                icon,
+                size: 26,
+                color: foregroundColor,
+              )
+            : Container(),
       ),
     );
     if (!widget.animateLastStamp) {
@@ -179,18 +182,21 @@ class _CardElementState extends State<CardElement> {
   }
 
   Widget createMemberCardContent(foregroundColor, memberIcon) {
+    var icon = parseIcon(memberIcon, "solid");
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(vertical: 40),
-      child: FaIcon(
-        parseIcon(memberIcon, "solid"),
-        size: 56,
-        color: foregroundColor,
-      ),
+      child: icon != null
+          ? FaIcon(
+              icon,
+              size: 56,
+              color: foregroundColor,
+            )
+          : Container(height: 40),
     );
   }
 
-  IconData parseIcon(name, style) {
+  IconData? parseIcon(name, style) {
     if (name == "circle" && style == "regular") {
       return FontAwesomeIcons.circle;
     } else if (name == "circle" && style == "solid") {
@@ -232,7 +238,7 @@ class _CardElementState extends State<CardElement> {
     } else if (name == "circle-user" && style == "solid") {
       return FontAwesomeIcons.solidCircleUser;
     }
-    return FontAwesomeIcons.circle;
+    return null;
   }
 
   Color parseColor(String key) {
