@@ -1,12 +1,17 @@
 import 'dart:convert';
 
+import 'package:dulno/alert/alert.dart';
+import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/card/card_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CardPage extends StatelessWidget {
@@ -42,7 +47,7 @@ class CardPage extends StatelessWidget {
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(20),
-              child: createCardPageContent(partner),
+              child: createCardPageContent(context, partner),
             ),
           ),
         );
@@ -50,7 +55,7 @@ class CardPage extends StatelessWidget {
     );
   }
 
-  Widget createCardPageContent(AsyncSnapshot<dynamic> partner) {
+  Widget createCardPageContent(context, AsyncSnapshot<dynamic> partner) {
     return Skeletonizer(
       enabled: !partner.hasData,
       child: Column(
@@ -136,6 +141,56 @@ class CardPage extends StatelessWidget {
           SizedBox(
             height: 50,
           ),
+          Align(
+            alignment: Alignment.center,
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.red),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
+                  padding: WidgetStateProperty.all(
+                      EdgeInsets.symmetric(horizontal: 15, vertical: 8)),
+                  alignment: Alignment.center),
+              onPressed: () async {
+                Alert(
+                  description: "product.card.delete.alert",
+                  icon: CupertinoIcons.exclamationmark_triangle,
+                  confirmButtonText: "product.card.delete.continue",
+                  confirmButtonColor: Colors.redAccent,
+                  cancelButton: true,
+                  callback: () {
+                    AlertLoader().show(context);
+                    deleteCard(context);
+                  },
+                ).show(context);
+              },
+              icon: Container(
+                margin: EdgeInsets.only(right: 2),
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: 21,
+                ),
+              ),
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LocaleText(
+                    "product.card.delete",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 50,
+          ),
         ],
       ),
     );
@@ -192,6 +247,48 @@ class CardPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void deleteCard(context) async {
+    var body = <String, Object>{"item": content["itemId"]};
+    var response =
+        await Request.post(url: "/user/card/delete/", body: body).send();
+    if (response == null || response.statusCode == 409) {
+      Alert(
+        description: "connection.failed",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["success"] == false) {
+      Alert(
+        description: "product.card.delete.failed",
+        icon: CupertinoIcons.exclamationmark_triangle,
+      ).show(context);
+      return;
+    }
+    deletionUpdateCardCache();
+    Alert(
+      description: "product.card.delete.successful",
+      icon: CupertinoIcons.check_mark_circled,
+      callback: () {
+        Navigator.of(context).pushAndRemoveUntil(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => ProductPage(),
+          ),
+          (route) => false,
+        );
+      },
+    ).show(context);
+  }
+
+  Future<void> deletionUpdateCardCache() async {
+    const storage = FlutterSecureStorage();
+    final cardCache = await storage.read(key: "cards");
+    var cards = cardCache == null ? [] : jsonDecode(cardCache);
+    cards.removeWhere((card) => card["itemId"] == content["itemId"]);
+    await storage.write(key: "cards", value: jsonEncode(cards));
   }
 
   Future<dynamic> findPartner() async {
