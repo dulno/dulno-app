@@ -35,6 +35,11 @@
   "product.card.about": "Über diese Karte",
   "product.card.links": "Links",
   "product.card.locations": "Standorte",
+  "product.card.delete": "Löschen",
+  "product.card.delete.alert": "Sind Sie sicher, dass Sie die Karte löschen wollen? Dies kann nicht rückgängig gemacht werden. Sie haben dann keinen Zugriff mehr auf die Karte und verlieren den gesamten Stand der Karte.",
+  "product.card.delete.continue": "Jetzt löschen",
+  "product.card.delete.failed": "Beim Löschen der Karte ist etwas schief gelaufen. Bitte versuchen Sie es später noch einmal",
+  "product.card.delete.successful": "Sie haben die Karte erfolgreich gelöscht",
 
   "product.discover.label": "Entdecken",
 

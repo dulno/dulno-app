@@ -35,6 +35,11 @@
   "product.card.about": "About this card",
   "product.card.links": "Links",
   "product.card.locations": "Locations",
+  "product.card.delete": "Delete",
+  "product.card.delete.alert": "Are you sure you want to delete the card? This cannot be undone. You will then no longer have access to the card and will lose the entire status of the card.",
+  "product.card.delete.continue": "Delete now",
+  "product.card.delete.failed": "Something went wrong when deleting the card. Please try again later",
+  "product.card.delete.successful": "You have successfully deleted the card",
 
   "product.discover.label": "Discover",
 
