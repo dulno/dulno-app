@@ -34,20 +34,20 @@ class _ScanButtonState extends State<ScanButton>
       builder: (context, child) {
         double glowValue = sin(_controller.value * pi);
         return Container(
-          height: 90,
-          width: 90,
+          height: 70,
+          width: 70,
           margin: EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
               color: Colors.white,
-              width: 4,
+              width: 3,
             ),
             boxShadow: [
               BoxShadow(
                 color: Colors.indigo.withOpacity(0.6 * min(glowValue + 0.5, 1)),
-                blurRadius: 20 * (glowValue + 0.5),
-                spreadRadius: 5 * (glowValue + 0.5),
+                blurRadius: 15 * (glowValue + 0.5),
+                spreadRadius: 4 * (glowValue + 0.5),
               ),
             ],
           ),
@@ -61,7 +61,7 @@ class _ScanButtonState extends State<ScanButton>
             backgroundColor:
                 Color.lerp(Color(0xFF37479F), Color(0xFF495ED3), glowValue),
             shape: CircleBorder(),
-            child: Image.asset('assets/images/logo-light.png', width: 65),
+            child: Image.asset('assets/images/logo-light.png', width: 55),
           ),
         );
       },

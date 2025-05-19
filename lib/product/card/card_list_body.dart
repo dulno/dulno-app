@@ -6,6 +6,7 @@ import 'package:dulno/product/card/card_list_empty.dart';
 import 'package:dulno/product/card/card_page.dart';
 import 'package:dulno/product/card/card_search_bar.dart';
 import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -16,7 +17,10 @@ class CardListBody extends ProductPageBody {
       GlobalKey<_CardListBodyContentState>();
 
   CardListBody({super.key})
-      : super(name: "product.card.list.label", icon: Icon(Icons.wallet));
+      : super(
+            name: "product.card.list.label",
+            unselectedIcon: CupertinoIcons.creditcard,
+            selectedIcon: CupertinoIcons.creditcard_fill);
 
   @override
   Widget content(BuildContext context) {

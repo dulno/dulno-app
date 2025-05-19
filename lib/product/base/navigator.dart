@@ -29,8 +29,8 @@ class ProductNavigator extends StatelessWidget implements PreferredSizeWidget {
             selectedItemColor: Colors.black,
             currentIndex: selectedIndex,
             onTap: updateIndex,
-            unselectedFontSize: 14,
-            selectedFontSize: 14,
+            unselectedFontSize: 10,
+            selectedFontSize: 10,
             items: navigationBarItems(context),
           ),
           Positioned(
@@ -51,9 +51,14 @@ class ProductNavigator extends StatelessWidget implements PreferredSizeWidget {
 
   List<BottomNavigationBarItem> navigationBarItems(context) {
     List<BottomNavigationBarItem> items = [];
-    for (ProductPageBody body in pageBodies) {
+    var currentPage = selectedIndex > 2 ? selectedIndex - 1 : selectedIndex;
+    for (var i = 0; i < pageBodies.length; i++) {
+      var body = pageBodies[i];
       items.add(BottomNavigationBarItem(
-        icon: body.icon,
+        icon: Icon(
+          currentPage == i ? body.selectedIcon : body.unselectedIcon,
+          size: 30,
+        ),
         label: Locales.string(context, body.name),
       ));
     }

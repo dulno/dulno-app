@@ -41,6 +41,10 @@
   "product.card.delete.failed": "Beim Löschen der Karte ist etwas schief gelaufen. Bitte versuchen Sie es später noch einmal",
   "product.card.delete.successful": "Sie haben die Karte erfolgreich gelöscht",
 
+  "product.coupon.list.label": "Gutscheine",
+
+  "product.campaign.list.label": "Nachrichten",
+
   "product.discover.label": "Entdecken",
 
   "product.partner.popup.address": "Adresse",

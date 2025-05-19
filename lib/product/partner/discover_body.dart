@@ -3,12 +3,16 @@ import 'dart:convert';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 class DiscoverBody extends ProductPageBody {
   DiscoverBody({super.key})
-      : super(name: "product.discover.label", icon: Icon(Icons.location_pin));
+      : super(
+            name: "product.discover.label",
+            unselectedIcon: CupertinoIcons.map,
+            selectedIcon: CupertinoIcons.map_fill);
 
   final MapController controller = MapController();
 
