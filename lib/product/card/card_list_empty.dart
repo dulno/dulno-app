@@ -1,6 +1,5 @@
 import 'package:dulno/product/card/card_list_arrow.dart';
 import 'package:dulno/product/profile/profile_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

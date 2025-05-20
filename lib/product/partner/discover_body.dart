@@ -4,7 +4,6 @@ import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 class DiscoverBody extends ProductPageBody {

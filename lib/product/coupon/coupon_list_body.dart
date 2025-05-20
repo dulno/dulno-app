@@ -1,6 +1,5 @@
 import 'package:dulno/product/base/page_body.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class CouponListBody extends ProductPageBody {
   final GlobalKey<_CouponListBodyContentState> _key =

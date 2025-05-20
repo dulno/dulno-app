@@ -2,10 +2,10 @@ import 'package:dulno/product/base/header.dart';
 import 'package:dulno/product/base/navigator.dart';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/campaign/campaign_list_body.dart';
-import 'package:dulno/product/coupon/coupon_list_body.dart';
-import 'package:dulno/product/scan/scan_button.dart';
 import 'package:dulno/product/card/card_list_body.dart';
+import 'package:dulno/product/coupon/coupon_list_body.dart';
 import 'package:dulno/product/partner/discover_body.dart';
+import 'package:dulno/product/scan/scan_button.dart';
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {

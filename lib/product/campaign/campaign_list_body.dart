@@ -1,6 +1,5 @@
 import 'package:dulno/product/base/page_body.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class CampaignListBody extends ProductPageBody {
   final GlobalKey<_CampaignListBodyContentState> _key =
