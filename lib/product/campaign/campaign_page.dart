@@ -7,17 +7,25 @@ import 'package:dulno/product/partner/partner_page.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CampaignPage extends StatelessWidget {
   final String partner;
   final String campaign;
+  final Function()? callback;
   PartnerLogo? _logo;
 
-  CampaignPage({super.key, required this.partner, required this.campaign});
+  CampaignPage({
+    super.key,
+    required this.partner,
+    required this.campaign,
+    this.callback,
+  });
 
   @override
   Widget build(BuildContext context) {
+    storeViewedCampaign();
     return FutureBuilder<dynamic>(
       future: findCampaign(),
       builder: (context, AsyncSnapshot<dynamic> campaignSnapshot) {
@@ -178,5 +186,16 @@ class CampaignPage extends StatelessWidget {
       return null;
     }
     return jsonDecode(response.body);
+  }
+
+  Future<void> storeViewedCampaign() async {
+    const storage = FlutterSecureStorage();
+    final viewedCampaignsCache = await storage.read(key: "viewedCampaigns");
+    var viewedCampaigns =
+        viewedCampaignsCache == null ? [] : jsonDecode(viewedCampaignsCache);
+    viewedCampaigns.add(campaign);
+    await storage.write(
+        key: "viewedCampaigns", value: jsonEncode(viewedCampaigns));
+    callback?.call();
   }
 }

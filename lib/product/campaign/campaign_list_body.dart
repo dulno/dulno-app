@@ -83,6 +83,7 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
                 builder: (context) => CampaignPage(
                   partner: campaign["partner"]["id"],
                   campaign: campaign["id"],
+                  callback: () => setState(() {}),
                 ),
               ),
             );
