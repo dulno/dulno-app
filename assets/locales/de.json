@@ -42,8 +42,22 @@
   "product.card.delete.successful": "Sie haben die Karte erfolgreich gelöscht",
 
   "product.coupon.list.label": "Gutscheine",
+  "product.coupon.list.login.description": "Sie hatten bereits Gutscheine?",
+  "product.coupon.list.login.call": "Jetzt anmelden",
+  "product.coupon.list.search": "Nach Gutschein suchen...",
+  "product.coupon.list.empty": "Keine Gutscheine gefunden.",
+
+  "product.coupon.about": "Über diesen Gutschein",
+  "product.coupon.links": "Links",
+  "product.coupon.locations": "Standorte",
+  "product.coupon.delete": "Löschen",
+  "product.coupon.delete.alert": "Sind Sie sicher, dass Sie den Gutschein löschen wollen? Dies kann nicht rückgängig gemacht werden.",
+  "product.coupon.delete.continue": "Jetzt löschen",
+  "product.coupon.delete.failed": "Beim Löschen des Gutschein ist etwas schief gelaufen. Bitte versuchen Sie es später noch einmal",
+  "product.coupon.delete.successful": "Sie haben den Gutschein erfolgreich gelöscht",
 
   "product.campaign.list.label": "Nachrichten",
+  "product.campaign.list.empty": "Keine Nachrichten gefunden.",
 
   "product.discover.label": "Entdecken",
 

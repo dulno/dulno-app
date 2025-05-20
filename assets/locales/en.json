@@ -42,8 +42,22 @@
   "product.card.delete.successful": "You have successfully deleted the card",
 
   "product.coupon.list.label": "Coupons",
+  "product.coupon.list.login.description": "You already had coupons?",
+  "product.coupon.list.login.call": "Sign in now",
+  "product.coupon.list.search": "Search for coupon...",
+  "product.coupon.list.empty": "No coupons found.",
+
+  "product.coupon.about": "About this coupon",
+  "product.coupon.links": "Links",
+  "product.coupon.locations": "Locations",
+  "product.coupon.delete": "Delete",
+  "product.coupon.delete.alert": "Are you sure you want to delete the coupon? This cannot be undone.",
+  "product.coupon.delete.continue": "Delete now",
+  "product.coupon.delete.failed": "Something went wrong when deleting the coupon. Please try again later",
+  "product.coupon.delete.successful": "You have successfully deleted the coupon",
 
   "product.campaign.list.label": "Messages",
+  "product.campaign.list.empty": "No messages found.",
 
   "product.discover.label": "Discover",
 

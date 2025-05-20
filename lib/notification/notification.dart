@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dulno/config/firebase_options.dart';
-import 'package:dulno/product/campaign/campaign.dart';
+import 'package:dulno/product/campaign/campaign_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
