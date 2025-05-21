@@ -47,7 +47,7 @@ class Request {
     var salt =
         String.fromCharCodes(List.generate(16, (_) => random.nextInt(94) + 33));
     var hash = argon2i(args['content'].codeUnits, salt.codeUnits,
-            security: Argon2Security('dulno', m: 65536, p: 1, t: 3))
+            security: Argon2Security('dulno', m: 32768, p: 1, t: 2))
         .encoded();
     return {"hash": hash};
   }
