@@ -7,6 +7,19 @@ import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+Future<List<dynamic>> fetchCampaigns() async {
+  var response = await Request.get(url: "/user/campaigns/").send();
+  if (response == null || response.statusCode == 409) {
+    return [];
+  }
+  var responseBody = jsonDecode(response.body);
+  if (responseBody.isEmpty) {
+    return [];
+  }
+  return responseBody["campaigns"];
+}
 
 class CampaignListBody extends ProductPageBody {
   const CampaignListBody({super.key})
@@ -18,6 +31,22 @@ class CampaignListBody extends ProductPageBody {
   @override
   Widget content(BuildContext context) {
     return CampaignListBodyContent();
+  }
+
+  @override
+  Future<int> notifications() async {
+    List<dynamic> campaigns = await fetchCampaigns();
+    const storage = FlutterSecureStorage();
+    var viewedCampaignsCache = await storage.read(key: "viewedCampaigns");
+    var viewedCampaigns = viewedCampaignsCache != null ?
+      jsonDecode(viewedCampaignsCache) : [];
+    var count = 0;
+    for (var campaign in campaigns) {
+      if (!viewedCampaigns.contains(campaign["id"])) {
+        count++;
+      }
+    }
+    return count;
   }
 }
 
@@ -40,27 +69,15 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
   }
 
   Future<void> refresh() async {
-    await fetchCampaigns(false);
-  }
-
-  Future<void> fetchCampaigns(reloadAfterwards) async {
-    var response = await Request.get(url: "/user/campaigns/").send();
-    if (response == null || response.statusCode == 409) {
-      return;
-    }
-    var responseBody = jsonDecode(response.body);
-    if (responseBody.isEmpty) {
-      return;
-    }
-    _campaigns = responseBody["campaigns"];
-    if (reloadAfterwards && mounted) {
+    _campaigns = await fetchCampaigns();
+    if (mounted) {
       setState(() {});
     }
   }
 
   Future<Widget> createCampaignElements() async {
     if (!_loaded) {
-      await fetchCampaigns(true);
+      _campaigns = await fetchCampaigns();
       setState(() {
         _loaded = true;
       });
@@ -70,8 +87,8 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
         child: LocaleText("product.campaign.list.empty"),
       );
     }
-    /*_campaigns.sort(
-        (a, b) => (b["lastUpdate"] as num).compareTo(a["lastUpdate"] as num));*/
+    _campaigns.sort(
+        (a, b) => (a["start"] as num).compareTo(b["start"] as num));
     var elements = <Widget>[];
     for (var campaign in _campaigns) {
       elements.add(

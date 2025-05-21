@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 abstract class ProductPageBody extends StatelessWidget {
-  const ProductPageBody({super.key, required this.name,
-    required this.unselectedIcon, required this.selectedIcon});
+  const ProductPageBody(
+      {super.key,
+      required this.name,
+      required this.unselectedIcon,
+      required this.selectedIcon});
 
   final String name;
   final IconData unselectedIcon;
@@ -14,4 +17,8 @@ abstract class ProductPageBody extends StatelessWidget {
   }
 
   Widget content(BuildContext context);
+
+  Future<int> notifications() async {
+    return 0;
+  }
 }

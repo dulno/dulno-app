@@ -105,7 +105,10 @@ class _CampaignElementState extends State<CampaignElement> {
                                   Text(
                                     widget.isLoading
                                         ? "Lorem ipsum"
-                                        : widget.content["partner"]["name"],
+                                        : utf8.decode(widget.content["partner"]
+                                                ["name"]
+                                            .toString()
+                                            .codeUnits),
                                     style: TextStyle(fontSize: 16),
                                   ),
                                   widget.isLoading
@@ -135,7 +138,9 @@ class _CampaignElementState extends State<CampaignElement> {
                             child: Text(
                               widget.isLoading
                                   ? "Lorem ipsum"
-                                  : widget.content["title"],
+                                  : utf8.decode(widget.content["title"]
+                                      .toString()
+                                      .codeUnits),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),
@@ -145,7 +150,9 @@ class _CampaignElementState extends State<CampaignElement> {
                             child: Text(
                               widget.isLoading
                                   ? "Lorem ipsum dolor sit amet, consetetur"
-                                  : widget.content["description"],
+                                  : utf8.decode(widget.content["description"]
+                                      .toString()
+                                      .codeUnits),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -167,7 +174,8 @@ class _CampaignElementState extends State<CampaignElement> {
                         ),
                       ),
                     ),
-                    widget.isLoading || viewedCampaigns == null ||
+                    widget.isLoading ||
+                            viewedCampaigns == null ||
                             viewedCampaigns.contains(widget.content["id"])
                         ? SizedBox.shrink()
                         : Positioned(

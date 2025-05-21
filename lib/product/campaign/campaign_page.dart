@@ -5,6 +5,7 @@ import 'package:dulno/product/campaign/campaign_time.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
 import 'package:dulno/product/partner/partner_page.dart';
 import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -100,7 +101,7 @@ class CampaignPage extends StatelessWidget {
                                   ),
                           ],
                         ),
-                        SizedBox(height: 60),
+                        SizedBox(height: 40),
                         Text(
                           !loading
                               ? utf8.decode(campaignSnapshot.data["title"]
@@ -134,8 +135,21 @@ class CampaignPage extends StatelessWidget {
                               TextStyle(fontSize: 16, color: Colors.grey[600]),
                         ),
                         SizedBox(height: 80),
-                        Center(
-                          child: ElevatedButton(
+                        Align(
+                          alignment: Alignment.center,
+                          child: ElevatedButton.icon(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStateProperty.all(Colors.indigo),
+                                shape: WidgetStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                ),
+                                padding: WidgetStateProperty.all(
+                                    EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 8)),
+                                alignment: Alignment.center),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -146,23 +160,21 @@ class CampaignPage extends StatelessWidget {
                                 ),
                               );
                             },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  WidgetStateProperty.all(Colors.indigo),
-                              shape: WidgetStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5.0)))),
-                              padding: WidgetStateProperty.all(
-                                  EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 15)),
-                              minimumSize: WidgetStateProperty.all(Size(0, 0)),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: VisualDensity.compact,
+                            icon: Container(
+                              margin: EdgeInsets.only(right: 2),
+                              child: Icon(
+                                CupertinoIcons.house_fill,
+                                color: Colors.white,
+                                size: 21,
+                              ),
                             ),
-                            child: LocaleText("product.campaign.redirect",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20)),
+                            label: LocaleText(
+                              "product.campaign.redirect",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(height: 40),
