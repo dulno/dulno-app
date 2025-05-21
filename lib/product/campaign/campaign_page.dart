@@ -54,132 +54,128 @@ class CampaignPage extends StatelessWidget {
                   ),
                 ),
               ),
-              body: Container(
-                padding: EdgeInsets.all(20),
-                child: Skeletonizer(
-                  enabled: loading,
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 30),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            !loading
-                                ? CampaignBadge(
-                                    type: campaignSnapshot.data["type"])
-                                : Skeleton.leaf(
-                                    child: Container(
-                                      height: 30,
-                                      width: 90,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
+              body: Skeletonizer(
+                enabled: loading,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 50),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          loading
+                              ? Skeleton.leaf(
+                                  child: Container(
+                                    height: 90,
+                                    width: 90,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(25),
                                     ),
                                   ),
-                            loading
-                                ? Skeleton.leaf(
-                                    child: Container(
-                                      height: 90,
-                                      width: 90,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(25),
-                                      ),
-                                    ),
-                                  )
-                                : Container(
-                                    constraints: BoxConstraints(
-                                      maxWidth: 135,
-                                      maxHeight: 90,
-                                    ),
-                                    child: _logo?.logo!,
+                                )
+                              : Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 135,
+                                    maxHeight: 90,
                                   ),
-                          ],
-                        ),
-                        SizedBox(height: 40),
-                        Text(
+                                  child: _logo?.logo!,
+                                ),
                           !loading
-                              ? utf8.decode(campaignSnapshot.data["title"]
-                                  .toString()
-                                  .codeUnits)
-                              : "Lorem ipsum",
-                          style: TextStyle(
-                              fontSize: 23, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 5),
-                        loading
-                            ? Skeleton.leaf(
-                                child: Container(
-                                  height: 20,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(5),
+                              ? CampaignBadge(
+                                  type: campaignSnapshot.data["type"])
+                              : Skeleton.leaf(
+                                  child: Container(
+                                    height: 30,
+                                    width: 90,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
                                   ),
                                 ),
-                              )
-                            : CampaignTime(campaign: campaignSnapshot.data),
-                        SizedBox(height: 15),
-                        Text(
-                          !loading
-                              ? utf8.decode(campaignSnapshot.data["description"]
-                                  .toString()
-                                  .codeUnits)
-                              : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
-                          style:
-                              TextStyle(fontSize: 16, color: Colors.grey[600]),
-                        ),
-                        SizedBox(height: 80),
-                        Align(
-                          alignment: Alignment.center,
-                          child: ElevatedButton.icon(
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    WidgetStateProperty.all(Colors.indigo),
-                                shape: WidgetStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
+                        ],
+                      ),
+                      SizedBox(height: 40),
+                      Text(
+                        !loading
+                            ? utf8.decode(campaignSnapshot.data["title"]
+                                .toString()
+                                .codeUnits)
+                            : "Lorem ipsum",
+                        style: TextStyle(
+                            fontSize: 23, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5),
+                      loading
+                          ? Skeleton.leaf(
+                              child: Container(
+                                height: 20,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                                padding: WidgetStateProperty.all(
-                                    EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 8)),
-                                alignment: Alignment.center),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PartnerPage(
-                                    partner: campaignSnapshot.data["partner"],
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: Container(
-                              margin: EdgeInsets.only(right: 2),
-                              child: Icon(
-                                CupertinoIcons.house_fill,
-                                color: Colors.white,
-                                size: 21,
                               ),
+                            )
+                          : CampaignTime(campaign: campaignSnapshot.data),
+                      SizedBox(height: 15),
+                      Text(
+                        !loading
+                            ? utf8.decode(campaignSnapshot.data["description"]
+                                .toString()
+                                .codeUnits)
+                            : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                      ),
+                      SizedBox(height: 80),
+                      Align(
+                        alignment: Alignment.center,
+                        child: ElevatedButton.icon(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.all(Colors.indigo),
+                              shape: WidgetStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                              ),
+                              padding: WidgetStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 8)),
+                              alignment: Alignment.center),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PartnerPage(
+                                  partner: campaignSnapshot.data["partner"],
+                                ),
+                              ),
+                            );
+                          },
+                          icon: Container(
+                            margin: EdgeInsets.only(right: 2),
+                            child: Icon(
+                              CupertinoIcons.house_fill,
+                              color: Colors.white,
+                              size: 21,
                             ),
-                            label: LocaleText(
-                              "product.campaign.redirect",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
+                          ),
+                          label: LocaleText(
+                            "product.campaign.redirect",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
                             ),
                           ),
                         ),
-                        SizedBox(height: 40),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 40),
+                    ],
                   ),
                 ),
               ),

@@ -39,7 +39,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
                 children: [
                   SizedBox(height: 40),
                   Align(
-                    alignment: Alignment.centerRight,
+                    alignment: Alignment.center,
                     child: _logo?.logo == null
                         ? Skeleton.leaf(
                             child: Container(
@@ -53,8 +53,8 @@ class _PartnerOverviewState extends State<PartnerOverview> {
                           )
                         : Container(
                             constraints: BoxConstraints(
-                              maxWidth: 135,
-                              maxHeight: 90,
+                              maxWidth: 180,
+                              maxHeight: 120,
                             ),
                             child: _logo?.logo!,
                           ),
@@ -114,7 +114,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
         child: OSMMap(
           partners: [partner],
           mapController: mapController,
-          latitude: firstLocation["latitude"],
+          latitude: firstLocation["latitude"] + 0.00075,
           longitude: firstLocation["longitude"],
           radius: 1,
           initialZoom: 16,

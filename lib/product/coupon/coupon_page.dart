@@ -232,7 +232,7 @@ class CouponPage extends StatelessWidget {
         child: OSMMap(
           partners: [partner],
           mapController: mapController,
-          latitude: firstLocation["latitude"],
+          latitude: firstLocation["latitude"] + 0.00075,
           longitude: firstLocation["longitude"],
           radius: 1,
           initialZoom: 16,

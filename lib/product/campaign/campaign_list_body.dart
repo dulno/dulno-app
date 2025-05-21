@@ -9,20 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-Future<List<dynamic>> fetchCampaigns() async {
-  var response = await Request.get(url: "/user/campaigns/").send();
-  if (response == null || response.statusCode == 409) {
-    return [];
-  }
-  var responseBody = jsonDecode(response.body);
-  if (responseBody.isEmpty) {
-    return [];
-  }
-  return responseBody["campaigns"];
-}
-
 class CampaignListBody extends ProductPageBody {
-  const CampaignListBody({super.key})
+  CampaignListBody({super.key})
       : super(
             name: "product.campaign.list.label",
             unselectedIcon: CupertinoIcons.bell,
@@ -30,7 +18,19 @@ class CampaignListBody extends ProductPageBody {
 
   @override
   Widget content(BuildContext context) {
-    return CampaignListBodyContent();
+    return CampaignListBodyContent(body: this);
+  }
+
+  Future<List<dynamic>> fetchCampaigns() async {
+    var response = await Request.get(url: "/user/campaigns/").send();
+    if (response == null || response.statusCode == 409) {
+      return [];
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody.isEmpty) {
+      return [];
+    }
+    return responseBody["campaigns"];
   }
 
   @override
@@ -51,7 +51,9 @@ class CampaignListBody extends ProductPageBody {
 }
 
 class CampaignListBodyContent extends StatefulWidget {
-  const CampaignListBodyContent({super.key});
+  CampaignListBody body;
+
+  CampaignListBodyContent({super.key, required this.body});
 
   @override
   State<CampaignListBodyContent> createState() =>
@@ -69,7 +71,7 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
   }
 
   Future<void> refresh() async {
-    _campaigns = await fetchCampaigns();
+    _campaigns = await widget.body.fetchCampaigns();
     if (mounted) {
       setState(() {});
     }
@@ -77,7 +79,7 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
 
   Future<Widget> createCampaignElements() async {
     if (!_loaded) {
-      _campaigns = await fetchCampaigns();
+      _campaigns = await widget.body.fetchCampaigns();
       setState(() {
         _loaded = true;
       });
@@ -100,7 +102,10 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
                 builder: (context) => CampaignPage(
                   partner: campaign["partner"]["id"],
                   campaign: campaign["id"],
-                  callback: () => setState(() {}),
+                  callback: () {
+                    widget.body.navigatorCallback!();
+                    setState(() {});
+                  },
                 ),
               ),
             );

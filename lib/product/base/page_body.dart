@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract class ProductPageBody extends StatelessWidget {
-  const ProductPageBody(
+  ProductPageBody(
       {super.key,
       required this.name,
       required this.unselectedIcon,
@@ -10,6 +10,7 @@ abstract class ProductPageBody extends StatelessWidget {
   final String name;
   final IconData unselectedIcon;
   final IconData selectedIcon;
+  void Function()? navigatorCallback;
 
   @override
   Widget build(BuildContext context) {

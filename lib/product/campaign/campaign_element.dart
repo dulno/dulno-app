@@ -39,9 +39,12 @@ class _CampaignElementState extends State<CampaignElement> {
         return FutureBuilder<String?>(
           future: storage.read(key: "viewedCampaigns"),
           builder: (context, AsyncSnapshot<String?> viewedCampaignsSnapshot) {
-            var viewedCampaigns = viewedCampaignsSnapshot.data == null
+            var viewedCampaigns = viewedCampaignsSnapshot.connectionState ==
+                    ConnectionState.waiting
                 ? null
-                : jsonDecode(viewedCampaignsSnapshot.data!);
+                : viewedCampaignsSnapshot.data == null
+                    ? []
+                    : jsonDecode(viewedCampaignsSnapshot.data!);
             return Skeletonizer(
               enabled: widget.isLoading,
               child: Container(
@@ -141,6 +144,8 @@ class _CampaignElementState extends State<CampaignElement> {
                                   : utf8.decode(widget.content["title"]
                                       .toString()
                                       .codeUnits),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),

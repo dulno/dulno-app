@@ -27,6 +27,16 @@ class _ProductNavigatorState extends State<ProductNavigator> {
   void initState() {
     super.initState();
     loadNotifications();
+    for (var i = 0; i < widget.pageBodies.length; i++) {
+      var pageBody = widget.pageBodies[i];
+      pageBody.navigatorCallback = () {
+        pageBody.notifications().then((count) {
+          setState(() {
+            notificationCounts[i] = count;
+          });
+        });
+      };
+    }
   }
 
   @override
@@ -65,6 +75,7 @@ class _ProductNavigatorState extends State<ProductNavigator> {
       ),
     );
   }
+
   void loadNotifications() {
     for (var i = 0; i < widget.pageBodies.length; i++) {
       widget.pageBodies[i].notifications().then((count) {
@@ -83,13 +94,17 @@ class _ProductNavigatorState extends State<ProductNavigator> {
     for (var i = 0; i < widget.pageBodies.length; i++) {
       var body = widget.pageBodies[i];
       bool isSelected = currentPage == i;
+      final count = notificationCounts[i];
       List<Widget> iconChildren = [
-        Icon(
-          isSelected ? body.selectedIcon : body.unselectedIcon,
-          size: 30,
+        Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: (count != null && count > 9) ? 5 : 0),
+          child: Icon(
+            isSelected ? body.selectedIcon : body.unselectedIcon,
+            size: 30,
+          ),
         ),
       ];
-      final count = notificationCounts[i];
       if (count != null && count > 0) {
         iconChildren.add(createNotificationBadge(count));
       }
@@ -110,12 +125,14 @@ class _ProductNavigatorState extends State<ProductNavigator> {
       child: Container(
         width: count < 10 ? 16 : null,
         height: 16,
-        padding: count < 10 ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 4),
+        padding: count < 10
+            ? EdgeInsets.zero
+            : const EdgeInsets.symmetric(horizontal: 4),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(10),
-        ),
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white, width: 1)),
         child: Text(
           count.toString(),
           style: const TextStyle(
