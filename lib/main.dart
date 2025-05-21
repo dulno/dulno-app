@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
@@ -7,9 +8,11 @@ import 'package:dulno/alert/alert_loader.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
+import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
+import 'package:dulno/request/request.dart';
 import 'package:dulno/statistic/statistic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +55,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       );
     }
     _initDeepLinks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkAuthorization(context);
+    });
   }
 
   void _initDeepLinks() async {
@@ -181,6 +187,31 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
           Navigator.pop(context);
         }
       },
+    );
+  }
+
+  Future<void> checkAuthorization(context) async {
+    const storage = FlutterSecureStorage();
+    var email = await storage.read(key: "email");
+    if (email == null) {
+      return;
+    }
+    var response = await Request.get(url: "/user/authorized/").send();
+    if (response == null || response.statusCode == 409) {
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["authorized"]) {
+      return;
+    }
+    await ProfileLogout().logout();
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => ProductPage(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
     );
   }
 }

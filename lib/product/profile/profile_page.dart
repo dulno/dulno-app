@@ -6,7 +6,6 @@ import 'package:dulno/product/profile/profile_sign_in_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -20,11 +19,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-      clientId:
-          "862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com",
-      serverClientId:
-          "862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com");
   Widget? accountContentElement;
 
   @override
@@ -145,13 +139,10 @@ class _ProfilePageState extends State<ProfilePage> {
         if (email.connectionState == ConnectionState.done) {
           if (email.data != null && email.data != "") {
             accountContentElement = ProfileAccountContent(
-                googleSignIn: _googleSignIn,
-                signInCallback: widget.signInCallback,
-                email: email.data ?? "");
+                signInCallback: widget.signInCallback, email: email.data ?? "");
           } else {
-            accountContentElement = ProfileSignInContent(
-                googleSignIn: _googleSignIn,
-                signInCallback: widget.signInCallback);
+            accountContentElement =
+                ProfileSignInContent(signInCallback: widget.signInCallback);
           }
           return accountContentElement!;
         }

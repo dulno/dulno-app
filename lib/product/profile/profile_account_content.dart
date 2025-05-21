@@ -1,21 +1,16 @@
 import 'package:dulno/alert/alert.dart';
+import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileAccountContent extends StatelessWidget {
-  final GoogleSignIn googleSignIn;
   final Function signInCallback;
   final String email;
 
   const ProfileAccountContent(
-      {super.key,
-      required this.googleSignIn,
-      required this.email,
-      required this.signInCallback});
+      {super.key, required this.email, required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -107,11 +102,7 @@ class ProfileAccountContent extends StatelessWidget {
   }
 
   void logout(context) async {
-    const storage = FlutterSecureStorage();
-    await storage.delete(key: "email");
-    await storage.delete(key: "user");
-    await storage.delete(key: "authenticationKey");
-    await googleSignIn.signOut();
+    ProfileLogout().logout();
     signInCallback();
     Navigator.pushReplacement(
       context,
