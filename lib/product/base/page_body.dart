@@ -19,7 +19,7 @@ abstract class ProductPageBody extends StatelessWidget {
 
   Widget content(BuildContext context);
 
-  Future<int> notifications() async {
+  Future<int> notifications(context) async {
     return 0;
   }
 }

@@ -23,7 +23,7 @@ class CouponPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findPartner(),
+      future: findPartner(context),
       builder: (context, AsyncSnapshot<dynamic> partner) {
         return Scaffold(
           appBar: AppBar(
@@ -244,8 +244,8 @@ class CouponPage extends StatelessWidget {
 
   void deleteCoupon(context) async {
     var body = <String, Object>{"item": content["itemId"]};
-    var response =
-        await Request.post(url: "/user/coupon/delete/", body: body).send();
+    var response = await Request.post(url: "/user/coupon/delete/", body: body)
+        .send(context);
     if (response == null || response.statusCode == 409) {
       Alert(
         description: "connection.failed",
@@ -284,9 +284,10 @@ class CouponPage extends StatelessWidget {
     await storage.write(key: "coupons", value: jsonEncode(coupons));
   }
 
-  Future<dynamic> findPartner() async {
+  Future<dynamic> findPartner(context) async {
     var body = <String, Object>{"partner": content["partnerId"]};
-    var response = await Request.post(url: "/user/partner/", body: body).send();
+    var response =
+        await Request.post(url: "/user/partner/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return null;
     }

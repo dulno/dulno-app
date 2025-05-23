@@ -26,17 +26,19 @@ class _ProductNavigatorState extends State<ProductNavigator> {
   @override
   void initState() {
     super.initState();
-    loadNotifications();
-    for (var i = 0; i < widget.pageBodies.length; i++) {
-      var pageBody = widget.pageBodies[i];
-      pageBody.navigatorCallback = () {
-        pageBody.notifications().then((count) {
-          setState(() {
-            notificationCounts[i] = count;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadNotifications(context);
+      for (var i = 0; i < widget.pageBodies.length; i++) {
+        var pageBody = widget.pageBodies[i];
+        pageBody.navigatorCallback = () {
+          pageBody.notifications(context).then((count) {
+            setState(() {
+              notificationCounts[i] = count;
+            });
           });
-        });
-      };
-    }
+        };
+      }
+    });
   }
 
   @override
@@ -76,9 +78,9 @@ class _ProductNavigatorState extends State<ProductNavigator> {
     );
   }
 
-  void loadNotifications() {
+  void loadNotifications(context) {
     for (var i = 0; i < widget.pageBodies.length; i++) {
-      widget.pageBodies[i].notifications().then((count) {
+      widget.pageBodies[i].notifications(context).then((count) {
         setState(() {
           notificationCounts[i] = count;
         });

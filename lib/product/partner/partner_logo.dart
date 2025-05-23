@@ -13,7 +13,7 @@ class PartnerLogo {
 
   PartnerLogo({required this.partnerId, required this.currentLogoId});
 
-  Future fetch() async {
+  Future fetch(context) async {
     if (logo != null) {
       return logo;
     }
@@ -29,8 +29,8 @@ class PartnerLogo {
       return logo;
     }
     var body = <String, Object>{"partner": partnerId};
-    var response =
-        await Request.post(url: "/user/partner/logo/", body: body).send();
+    var response = await Request.post(url: "/user/partner/logo/", body: body)
+        .send(context);
     if (response == null || response.statusCode == 409) {
       logo = SizedBox.shrink();
       return logo;

@@ -4,6 +4,7 @@
   "alert.cancel": "Abbrechen",
 
   "connection.failed": "Es konnte keine Verbindung hergestellt werden. Bitte versuchen Sie es später erneut",
+  "connection.logout": "Bei der Authentifizierung ist ein Fehler aufgetreten. Sie wurden deshalb automatisch abgemeldet. Bitte melden Sie sich erneut an",
 
   "scan.redemption.successful": "Zwischengespeicherte Scans wurden nun erfolgreich rückwirkend eingelöst",
   "scan.redemption.failed": "Es wurde versucht, vorübergehend gespeicherte Scans im Nachhinein einzulösen. Dabei ist ein Fehler aufgetreten. Daher konnten die Scans leider nicht übertragen werden",

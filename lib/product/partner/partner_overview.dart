@@ -27,7 +27,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
         partnerId: widget.partner["id"],
         currentLogoId: widget.partner["logoId"]);
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(),
+      future: _logo?.fetch(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
           enabled: _logo?.logo == null,

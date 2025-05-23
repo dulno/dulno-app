@@ -15,7 +15,7 @@ class StampRedemption {
   StampRedemption(
       {required this.stamp, required this.picc, required this.cmac});
 
-  Future<int> redeem() async {
+  Future<int> redeem(context) async {
     const storage = FlutterSecureStorage();
     var body = <String, Object>{"stamp": stamp, "picc": picc, "cmac": cmac};
     final cardCache = await storage.read(key: "cards");
@@ -27,7 +27,8 @@ class StampRedemption {
     final partnerCache = await storage.read(key: "partners");
     var partners = partnerCache == null ? [] : jsonDecode(partnerCache);
     body["partners"] = partners;
-    var response = await Request.post(url: "/user/stamp/", body: body).send();
+    var response =
+        await Request.post(url: "/user/stamp/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return 0;
     }
@@ -71,7 +72,7 @@ class StampRedemption {
   }
 
   Future<bool> redeemProcessed(context) async {
-    var redemptionResult = await redeem();
+    var redemptionResult = await redeem(context);
     if (redemptionResult == 0) {
       processRedemptionUnconnected(context);
       return false;

@@ -4,6 +4,7 @@
   "alert.cancel": "Cancel",
 
   "connection.failed": "No connection could be established. Please try again later",
+  "connection.logout": "An error occurred during authentication. You were therefore automatically logged out. Please log in again",
 
   "scan.redemption.successful": "Cached scans have now been successfully redeemed retrospectively",
   "scan.redemption.failed": "An attempt was made to redeem temporarily saved scans retrospectively. An error has occurred. Therefore the scans were unfortunately not transferred",

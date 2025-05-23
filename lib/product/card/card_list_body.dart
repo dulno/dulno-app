@@ -31,8 +31,8 @@ class CardListBody extends ProductPageBody {
     _key.currentState?.reload();
   }
 
-  void refresh() {
-    _key.currentState?.refresh();
+  void refresh(context) {
+    _key.currentState?.refresh(context);
   }
 }
 
@@ -79,8 +79,8 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     }
   }
 
-  Future<void> refresh() async {
-    await fetchCards(false);
+  Future<void> refresh(context) async {
+    await fetchCards(context, false);
     if (mounted) {
       setState(() {
         _searchController.text = "";
@@ -88,7 +88,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     }
   }
 
-  Future<void> fetchCards(reloadAfterwards) async {
+  Future<void> fetchCards(context, reloadAfterwards) async {
     const storage = FlutterSecureStorage();
     var body = <String, Object>{};
     final cardCache = await storage.read(key: "cards");
@@ -96,7 +96,8 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
         .map((card) => card["itemId"])
         .toList();
     body["cards"] = cards;
-    var response = await Request.post(url: "/user/cards/", body: body).send();
+    var response =
+        await Request.post(url: "/user/cards/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return;
     }
@@ -111,20 +112,20 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     }
   }
 
-  Future<Widget> createCardElements(value) async {
+  Future<Widget> createCardElements(context, value) async {
     if (!_loaded) {
       const storage = FlutterSecureStorage();
       final cardCache = await storage.read(key: "cards");
       _cards = cardCache == null ? [] : jsonDecode(cardCache);
       _previousCards = _cards;
-      fetchCards(true);
+      fetchCards(context, true);
       setState(() {
         _loaded = true;
       });
     }
     if (_cards.isEmpty) {
       return CardListEmptyContent(signInCallback: () {
-        refresh();
+        refresh(context);
       });
     }
     _cards.sort(
@@ -221,12 +222,12 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: refresh,
+      onRefresh: () => refresh(context),
       child: ValueListenableBuilder<TextEditingValue>(
         valueListenable: _searchController,
         builder: (context, value, child) {
           return FutureBuilder<Widget>(
-            future: createCardElements(value.text),
+            future: createCardElements(context, value.text),
             builder: (context, AsyncSnapshot<Widget> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting &&
                   !_loaded) {

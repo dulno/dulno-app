@@ -1,4 +1,5 @@
 import 'package:dulno/alert/alert.dart';
+import 'package:dulno/alert/alert_loader.dart';
 import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -102,16 +103,17 @@ class ProfileAccountContent extends StatelessWidget {
   }
 
   void logout(context) async {
-    ProfileLogout().logout();
+    AlertLoader().show(context);
+    await ProfileLogout().logout(context);
     signInCallback();
-    Navigator.pushReplacement(
-      context,
+    Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) => ProfilePage(
                 signInCallback: signInCallback,
               ),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero),
+      (Route<dynamic> route) => route.isFirst,
     );
   }
 }

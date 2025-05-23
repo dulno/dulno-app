@@ -80,7 +80,7 @@ class ProfileGoogleAlert {
     body.addAll(
         await ProfileSignUpBody().generate(legalChecked, newsletterChecked));
     var response =
-        await Request.post(url: "/user/bind/google/", body: body).send();
+        await Request.post(url: "/user/bind/google/", body: body).send(context);
     Navigator.pop(context);
     if (response == null || response.statusCode == 409) {
       Alert(
@@ -101,14 +101,7 @@ class ProfileGoogleAlert {
   }
 
   void completeGoogleSignIn(context, responseBody) async {
-    const storage = FlutterSecureStorage();
-    await storage.write(key: "email", value: responseBody["email"]);
-    if (responseBody["user"] != null &&
-        responseBody["authenticationKey"] != null) {
-      await storage.write(key: "user", value: responseBody["user"]);
-      await storage.write(
-          key: "authenticationKey", value: responseBody["authenticationKey"]);
-    }
+    await storeSignInResponse(responseBody);
     Alert(
       description: "product.profile.google.connect.success",
       icon: CupertinoIcons.check_mark_circled,
@@ -122,6 +115,21 @@ class ProfileGoogleAlert {
       },
     ).show(context);
     signInCallback();
+  }
+
+  Future<void> storeSignInResponse(responseBody) async {
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "email", value: responseBody["email"]);
+    if (responseBody["user"] != null &&
+        responseBody["authenticationToken"] != null &&
+        responseBody["refreshToken"] != null) {
+      await storage.write(key: "user", value: responseBody["user"]);
+      await storage.write(
+          key: "authenticationToken",
+          value: responseBody["authenticationToken"]);
+      await storage.write(
+          key: "refreshToken", value: responseBody["refreshToken"]);
+    }
   }
 }
 

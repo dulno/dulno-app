@@ -48,8 +48,7 @@ class AndroidScanPopupContentState
       await TorchLight.enableTorch();
       await Future.delayed(Duration(milliseconds: 200));
       await TorchLight.disableTorch();
-    } catch (exception) {
-    }
+    } catch (exception) {}
   }
 
   @override

@@ -16,8 +16,12 @@ class ProductPage extends StatefulWidget {
 }
 
 class ProductPageState extends State<ProductPage> {
-  final List<ProductPageBody> pageBodies = [CardListBody(), CouponListBody(),
-    CampaignListBody(), DiscoverBody()];
+  final List<ProductPageBody> pageBodies = [
+    CardListBody(),
+    CouponListBody(),
+    CampaignListBody(),
+    DiscoverBody()
+  ];
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -33,7 +37,7 @@ class ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ProductHeader(
-        signInCallback: findCardListBody().refresh,
+        signInCallback: () => findCardListBody().refresh(context),
       ),
       bottomNavigationBar: ProductNavigator(
           selectedIndex: _selectedIndex,

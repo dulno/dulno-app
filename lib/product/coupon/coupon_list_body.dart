@@ -5,7 +5,6 @@ import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/coupon/coupon_list_empty.dart';
 import 'package:dulno/product/coupon/coupon_page.dart';
 import 'package:dulno/product/coupon/coupon_search_bar.dart';
-import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -31,8 +30,8 @@ class CouponListBody extends ProductPageBody {
     _key.currentState?.reload();
   }
 
-  void refresh() {
-    _key.currentState?.refresh();
+  void refresh(context) {
+    _key.currentState?.refresh(context);
   }
 }
 
@@ -79,8 +78,8 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
     }
   }
 
-  Future<void> refresh() async {
-    await fetchCoupons(false);
+  Future<void> refresh(context) async {
+    await fetchCoupons(context, false);
     if (mounted) {
       setState(() {
         _searchController.text = "";
@@ -88,7 +87,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
     }
   }
 
-  Future<void> fetchCoupons(reloadAfterwards) async {
+  Future<void> fetchCoupons(context, reloadAfterwards) async {
     /*const storage = FlutterSecureStorage();
     var body = <String, Object>{};
     final couponCache = await storage.read(key: "coupons");
@@ -96,7 +95,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
         .map((coupon) => coupon["itemId"])
         .toList();
     body["coupons"] = coupons;
-    var response = await Request.post(url: "/user/coupons/", body: body).send();
+    var response = await Request.post(url: "/user/coupons/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return;
     }
@@ -111,20 +110,20 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
     }*/
   }
 
-  Future<Widget> createCouponElements(value) async {
+  Future<Widget> createCouponElements(context, value) async {
     if (!_loaded) {
       const storage = FlutterSecureStorage();
       final couponCache = await storage.read(key: "coupons");
       _coupons = couponCache == null ? [] : jsonDecode(couponCache);
       _previousCoupons = _coupons;
-      fetchCoupons(true);
+      fetchCoupons(context, true);
       setState(() {
         _loaded = true;
       });
     }
     if (_coupons.isEmpty) {
       return CouponListEmptyContent(signInCallback: () {
-        refresh();
+        refresh(context);
       });
     }
     _coupons.sort(
@@ -221,12 +220,12 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: refresh,
+      onRefresh: () => refresh(context),
       child: ValueListenableBuilder<TextEditingValue>(
         valueListenable: _searchController,
         builder: (context, value, child) {
           return FutureBuilder<Widget>(
-            future: createCouponElements(value.text),
+            future: createCouponElements(context, value.text),
             builder: (context, AsyncSnapshot<Widget> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting &&
                   !_loaded) {

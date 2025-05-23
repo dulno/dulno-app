@@ -45,7 +45,7 @@ class _CouponElementState extends State<CouponElement> {
     var backgroundColor =
         widget.isLoading ? Colors.white : parseColor("couponBackgroundColor");
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(),
+      future: _logo?.fetch(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
           enabled: widget.isLoading,

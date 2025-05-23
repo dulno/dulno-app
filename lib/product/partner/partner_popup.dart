@@ -30,7 +30,7 @@ class _DraggablePopupState extends State<PartnerPopup> {
         partnerId: widget.partner["id"],
         currentLogoId: widget.partner["logoId"]);
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(),
+      future: _logo?.fetch(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Positioned(
           bottom: 0,

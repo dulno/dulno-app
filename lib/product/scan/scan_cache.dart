@@ -22,7 +22,7 @@ class ScanCache {
     for (var scan in scans) {
       var redemptionResult = await StampRedemption(
               stamp: scan["stamp"], picc: scan["picc"], cmac: scan["cmac"])
-          .redeem();
+          .redeem(context);
       if (redemptionResult == 0) {
         remainingScans.add(scan);
       } else if (redemptionResult == 1) {

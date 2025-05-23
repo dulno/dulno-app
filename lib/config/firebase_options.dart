@@ -63,8 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '862018629934',
     projectId: 'dulno-435615',
     storageBucket: 'dulno-435615.firebasestorage.app',
-    androidClientId: '862018629934-o9hs3cnuc8fk03n8d8uf52af0eto5fa1.apps.googleusercontent.com',
-    iosClientId: '862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com',
+    androidClientId:
+        '862018629934-o9hs3cnuc8fk03n8d8uf52af0eto5fa1.apps.googleusercontent.com',
+    iosClientId:
+        '862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com',
     iosBundleId: 'com.dulno',
   );
 }

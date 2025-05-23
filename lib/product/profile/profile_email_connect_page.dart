@@ -251,8 +251,8 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       "email": _controller.text,
       "language": language
     };
-    var response =
-        await Request.post(url: "/user/bind/request/", body: body).send();
+    var response = await Request.post(url: "/user/bind/request/", body: body)
+        .send(context);
     setState(() {
       _connecting = false;
     });
@@ -295,8 +295,8 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     var body = <String, Object>{"code": code, "user": user};
     body.addAll(
         await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
-    var response =
-        await Request.post(url: "/user/bind/complete/", body: body).send();
+    var response = await Request.post(url: "/user/bind/complete/", body: body)
+        .send(context);
     Navigator.pop(context);
     if (response == null || response.statusCode == 409) {
       Alert(
@@ -314,14 +314,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       ).show(context);
       return;
     }
-    const storage = FlutterSecureStorage();
-    await storage.write(key: "email", value: _controller.text);
-    if (responseBody["user"] != null &&
-        responseBody["authenticationKey"] != null) {
-      await storage.write(key: "user", value: responseBody["user"]);
-      await storage.write(
-          key: "authenticationKey", value: responseBody["authenticationKey"]);
-    }
+    await storeSignInResponse(responseBody);
     Alert(
       description: "product.profile.email.connect.success",
       icon: CupertinoIcons.check_mark_circled,
@@ -335,6 +328,21 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       },
     ).show(context);
     widget.signInCallback();
+  }
+
+  Future<void> storeSignInResponse(responseBody) async {
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "email", value: _controller.text);
+    if (responseBody["user"] != null &&
+        responseBody["authenticationToken"] != null &&
+        responseBody["refreshToken"] != null) {
+      await storage.write(key: "user", value: responseBody["user"]);
+      await storage.write(
+          key: "authenticationToken",
+          value: responseBody["authenticationToken"]);
+      await storage.write(
+          key: "refreshToken", value: responseBody["refreshToken"]);
+    }
   }
 
   void _checkEmail(String value) {

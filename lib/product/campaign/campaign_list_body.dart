@@ -21,8 +21,8 @@ class CampaignListBody extends ProductPageBody {
     return CampaignListBodyContent(body: this);
   }
 
-  Future<List<dynamic>> fetchCampaigns() async {
-    var response = await Request.get(url: "/user/campaigns/").send();
+  Future<List<dynamic>> fetchCampaigns(context) async {
+    var response = await Request.get(url: "/user/campaigns/").send(context);
     if (response == null || response.statusCode == 409) {
       return [];
     }
@@ -34,12 +34,12 @@ class CampaignListBody extends ProductPageBody {
   }
 
   @override
-  Future<int> notifications() async {
-    List<dynamic> campaigns = await fetchCampaigns();
+  Future<int> notifications(context) async {
+    List<dynamic> campaigns = await fetchCampaigns(context);
     const storage = FlutterSecureStorage();
     var viewedCampaignsCache = await storage.read(key: "viewedCampaigns");
-    var viewedCampaigns = viewedCampaignsCache != null ?
-      jsonDecode(viewedCampaignsCache) : [];
+    var viewedCampaigns =
+        viewedCampaignsCache != null ? jsonDecode(viewedCampaignsCache) : [];
     var count = 0;
     for (var campaign in campaigns) {
       if (!viewedCampaigns.contains(campaign["id"])) {
@@ -70,16 +70,16 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
     super.initState();
   }
 
-  Future<void> refresh() async {
-    _campaigns = await widget.body.fetchCampaigns();
+  Future<void> refresh(context) async {
+    _campaigns = await widget.body.fetchCampaigns(context);
     if (mounted) {
       setState(() {});
     }
   }
 
-  Future<Widget> createCampaignElements() async {
+  Future<Widget> createCampaignElements(context) async {
     if (!_loaded) {
-      _campaigns = await widget.body.fetchCampaigns();
+      _campaigns = await widget.body.fetchCampaigns(context);
       setState(() {
         _loaded = true;
       });
@@ -89,8 +89,7 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
         child: LocaleText("product.campaign.list.empty"),
       );
     }
-    _campaigns.sort(
-        (a, b) => (a["start"] as num).compareTo(b["start"] as num));
+    _campaigns.sort((a, b) => (a["start"] as num).compareTo(b["start"] as num));
     var elements = <Widget>[];
     for (var campaign in _campaigns) {
       elements.add(
@@ -156,9 +155,9 @@ class _CampaignListBodyContentState extends State<CampaignListBodyContent> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: refresh,
+      onRefresh: () => refresh(context),
       child: FutureBuilder<Widget>(
-        future: createCampaignElements(),
+        future: createCampaignElements(context),
         builder: (context, AsyncSnapshot<Widget> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting && !_loaded) {
             return Center(

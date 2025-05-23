@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
@@ -8,7 +7,6 @@ import 'package:dulno/alert/alert_loader.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
-import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
@@ -27,7 +25,6 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
-  DulnoStatistic().keep();
   await DulnoNotification(navigatorKey: navigatorKey).setup();
   runApp(DulnoApp());
 }
@@ -97,6 +94,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    DulnoStatistic().keep(context);
     return FutureBuilder<void>(
       future: ScanCache().redeem(context),
       builder: (context, AsyncSnapshot<void> redemptionSnapshot) {
@@ -196,22 +194,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (email == null) {
       return;
     }
-    var response = await Request.get(url: "/user/authorized/").send();
-    if (response == null || response.statusCode == 409) {
-      return;
-    }
-    var responseBody = jsonDecode(response.body);
-    if (responseBody["authorized"]) {
-      return;
-    }
-    await ProfileLogout().logout();
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => ProductPage(),
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );
+    await Request.get(url: "/user/authorized/").send(context);
   }
 }

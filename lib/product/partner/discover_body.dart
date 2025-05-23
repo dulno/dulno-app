@@ -18,7 +18,7 @@ class DiscoverBody extends ProductPageBody {
   @override
   Widget content(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findPartners(),
+      future: findPartners(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return OSMMap(
           partners: snapshot.data ?? [],
@@ -31,8 +31,8 @@ class DiscoverBody extends ProductPageBody {
     );
   }
 
-  Future<dynamic> findPartners() async {
-    var response = await Request.get(url: "/user/partners/").send();
+  Future<dynamic> findPartners(context) async {
+    var response = await Request.get(url: "/user/partners/").send(context);
     if (response == null || response.statusCode == 409) {
       return [];
     }

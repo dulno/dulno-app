@@ -1,10 +1,11 @@
 import 'dart:convert';
-import 'dart:math';
 
+import 'package:dulno/alert/alert.dart';
 import 'package:dulno/config/environment_options.dart';
-import 'package:flutter/foundation.dart';
+import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/profile/profile_logout.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hashlib/hashlib.dart';
 import 'package:http/http.dart';
 
 class Request {
@@ -23,33 +24,29 @@ class Request {
       : url = "https://${EnvironmentOptions.environment.endpoint}/v1$url",
         method = "POST";
 
-  Future<Response?> send() async {
+  Future<Response?> send(context) async {
     Map<String, String> headers = Map.from(this.headers);
     headers["Content-Type"] = "application/json; charset=UTF-8";
     const storage = FlutterSecureStorage();
-    String user = await storage.read(key: "user") ?? "";
-    String authenticationKey =
-        await storage.read(key: "authenticationKey") ?? "";
-    if (user != "" && authenticationKey != "") {
-      var time = DateTime.now().millisecondsSinceEpoch;
-      var content = user + authenticationKey + time.toString();
-      final hash = await compute(computeHash, {"content": content});
-      headers["User"] = user;
-      headers["Authentication"] = hash["hash"] ?? "";
-      headers["Time"] = time.toString();
+    String authenticationToken =
+        await storage.read(key: "authenticationToken") ?? "";
+    if (authenticationToken != "") {
+      headers["Authorization"] = "Bearer $authenticationToken";
     }
     var response = await generateResponse(headers);
+    if (response?.statusCode == 403) {
+      await reset(context);
+      return response;
+    }
+    if (response?.statusCode == 417) {
+      var refreshResult = await refresh(context);
+      if (refreshResult == true) {
+        return await send(context);
+      }
+      await reset(context);
+      return response;
+    }
     return response;
-  }
-
-  Map<String, String> computeHash(Map<String, dynamic> args) {
-    var random = Random.secure();
-    var salt =
-        String.fromCharCodes(List.generate(16, (_) => random.nextInt(94) + 33));
-    var hash = argon2i(args['content'].codeUnits, salt.codeUnits,
-            security: Argon2Security('dulno', m: 32768, p: 1, t: 2))
-        .encoded();
-    return {"hash": hash};
   }
 
   Future<Response?> generateResponse(headers) async {
@@ -70,5 +67,47 @@ class Request {
     } else {
       throw UnsupportedError("Unsupported HTTP method: $method");
     }
+  }
+
+  refresh(context) async {
+    const storage = FlutterSecureStorage();
+    final refreshToken = await storage.read(key: "refreshToken") ?? "";
+    if (refreshToken == "") {
+      return false;
+    }
+    var response = await Request.post(
+        url: "/user/authorization/refresh/",
+        body: <String, String>{"refreshToken": refreshToken}).send(context);
+    if (response == null || response.statusCode == 409) {
+      return false;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["success"] == false) {
+      return false;
+    }
+    await storage.write(
+        key: "authenticationToken", value: responseBody["authenticationToken"]);
+    await storage.write(
+        key: "refreshToken", value: responseBody["refreshToken"]);
+    return true;
+  }
+
+  reset(context) async {
+    await ProfileLogout().reset(context);
+    Alert(
+      description: "connection.logout",
+      icon: CupertinoIcons.exclamationmark_triangle,
+      callback: () {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                ProductPage(),
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ),
+        );
+      },
+    ).show(context);
   }
 }

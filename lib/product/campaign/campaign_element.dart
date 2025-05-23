@@ -34,7 +34,7 @@ class _CampaignElementState extends State<CampaignElement> {
     }
     const storage = FlutterSecureStorage();
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(),
+      future: _logo?.fetch(context),
       builder: (context, AsyncSnapshot<dynamic> logoSnapshot) {
         return FutureBuilder<String?>(
           future: storage.read(key: "viewedCampaigns"),

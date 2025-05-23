@@ -8,25 +8,26 @@ import 'package:package_info_plus/package_info_plus.dart';
 class DulnoStatistic {
   DulnoStatistic();
 
-  Future<void> keep() async {
-    sendAppOpen();
-    sendUserJoin();
+  Future<void> keep(context) async {
+    sendAppOpen(context);
+    sendUserJoin(context);
   }
 
-  Future<void> sendAppOpen() async {
+  Future<void> sendAppOpen(context) async {
     var body = createStatisticBody();
     var info = await PackageInfo.fromPlatform();
     body["version"] = info.version;
-    await Request.post(url: "/user/app/open/", body: body).send();
+    await Request.post(url: "/user/app/open/", body: body).send(context);
   }
 
-  Future<void> sendUserJoin() async {
+  Future<void> sendUserJoin(context) async {
     const storage = FlutterSecureStorage();
     if (await storage.read(key: "alreadyOpened") != null) {
       return;
     }
     var body = createStatisticBody();
-    var response = await Request.post(url: "/user/join/", body: body).send();
+    var response =
+        await Request.post(url: "/user/join/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return;
     }

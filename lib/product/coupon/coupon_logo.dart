@@ -13,7 +13,7 @@ class CouponLogo {
 
   CouponLogo({required this.couponId, required this.currentLogoId});
 
-  Future fetch() async {
+  Future fetch(context) async {
     if (couponId == null || currentLogoId == null) {
       return null;
     }
@@ -33,7 +33,7 @@ class CouponLogo {
     }
     var body = <String, Object>{"coupon": couponId!};
     var response =
-        await Request.post(url: "/user/coupon/logo/", body: body).send();
+        await Request.post(url: "/user/coupon/logo/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       logo = SizedBox.shrink();
       return logo;

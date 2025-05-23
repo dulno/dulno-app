@@ -28,11 +28,11 @@ class CampaignPage extends StatelessWidget {
   Widget build(BuildContext context) {
     storeViewedCampaign();
     return FutureBuilder<dynamic>(
-      future: findCampaign(),
+      future: findCampaign(context),
       builder: (context, AsyncSnapshot<dynamic> campaignSnapshot) {
         _logo ??= PartnerLogo(partnerId: partner, currentLogoId: campaign);
         return FutureBuilder<dynamic>(
-          future: _logo?.fetch(),
+          future: _logo?.fetch(context),
           builder: (context, AsyncSnapshot<dynamic> logoSnapshot) {
             var loading = !campaignSnapshot.hasData || _logo?.logo == null;
             return Scaffold(
@@ -186,10 +186,10 @@ class CampaignPage extends StatelessWidget {
     );
   }
 
-  Future<dynamic> findCampaign() async {
+  Future<dynamic> findCampaign(context) async {
     var body = <String, Object>{"campaign": campaign};
     var response =
-        await Request.post(url: "/user/campaign/", body: body).send();
+        await Request.post(url: "/user/campaign/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return null;
     }
