@@ -5,6 +5,7 @@ import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/coupon/coupon_list_empty.dart';
 import 'package:dulno/product/coupon/coupon_page.dart';
 import 'package:dulno/product/coupon/coupon_search_bar.dart';
+import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -88,14 +89,15 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
   }
 
   Future<void> fetchCoupons(context, reloadAfterwards) async {
-    /*const storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     var body = <String, Object>{};
     final couponCache = await storage.read(key: "coupons");
     var coupons = (couponCache == null ? [] : jsonDecode(couponCache))
-        .map((coupon) => coupon["itemId"])
+        .map((coupon) => coupon["redeemableId"])
         .toList();
     body["coupons"] = coupons;
-    var response = await Request.post(url: "/user/coupons/", body: body).send(context);
+    var response =
+        await Request.post(url: "/user/coupons/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return;
     }
@@ -103,11 +105,11 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
     if (responseBody.isEmpty) {
       return;
     }
-    _coupons = responseBody["items"];
+    _coupons = responseBody["coupons"];
     await storage.write(key: "coupons", value: jsonEncode(_coupons));
     if (reloadAfterwards && mounted) {
       setState(() {});
-    }*/
+    }
   }
 
   Future<Widget> createCouponElements(context, value) async {
@@ -148,7 +150,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
               key: ValueKey(coupon["itemId"].toString()),
               isLoading: false,
               content: coupon,
-              animateLastStamp: detectCouponStampUpdate(coupon),
+              state: CouponElementState.redeemable,
               animateCoupon: detectNewCoupon(coupon),
             ),
           ),
@@ -193,28 +195,10 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
     );
   }
 
-  bool detectCouponStampUpdate(coupon) {
-    var previousCouponOptional =
-        _previousCoupons.where((entry) => entry["itemId"] == coupon["itemId"]);
-    if (previousCouponOptional.isEmpty) {
-      return coupon["couponType"] == "COLLECTION";
-    }
-    var previousCoupon = previousCouponOptional.first;
-    var type = previousCoupon["couponType"];
-    if (type == "COLLECTION" || type == "VALUE") {
-      return previousCoupon["stamps"] != coupon["stamps"];
-    }
-    return false;
-  }
-
   bool detectNewCoupon(coupon) {
-    var previousCouponOptional =
-        _previousCoupons.where((entry) => entry["itemId"] == coupon["itemId"]);
-    if (previousCouponOptional.isNotEmpty) {
-      return false;
-    }
-    var type = coupon["couponType"];
-    return type == "VALUE" || type == "MEMBER";
+    var previousCouponOptional = _previousCoupons
+        .where((entry) => entry["redeemableId"] == coupon["redeemableId"]);
+    return previousCouponOptional.isEmpty;
   }
 
   @override
@@ -254,7 +238,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
                           child: CouponElement(
                             isLoading: true,
                             content: {},
-                            animateLastStamp: false,
+                            state: CouponElementState.redeemable,
                             animateCoupon: false,
                           ),
                         ),
@@ -263,7 +247,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
                           child: CouponElement(
                             isLoading: true,
                             content: {},
-                            animateLastStamp: false,
+                            state: CouponElementState.redeemable,
                             animateCoupon: false,
                           ),
                         ),

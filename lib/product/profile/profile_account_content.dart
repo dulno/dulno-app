@@ -1,5 +1,5 @@
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -103,7 +103,7 @@ class ProfileAccountContent extends StatelessWidget {
   }
 
   void logout(context) async {
-    AlertLoader().show(context);
+    LoaderAlert().show(context);
     await ProfileLogout().logout(context);
     signInCallback();
     Navigator.of(context).pushAndRemoveUntil(

@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/connection_alert.dart';
+import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/card/card_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
@@ -161,7 +162,7 @@ class CardPage extends StatelessWidget {
                   confirmButtonColor: Colors.redAccent,
                   cancelButton: true,
                   callback: () {
-                    AlertLoader().show(context);
+                    LoaderAlert().show(context);
                     deleteCard(context);
                   },
                 ).show(context);
@@ -247,10 +248,7 @@ class CardPage extends StatelessWidget {
     var response =
         await Request.post(url: "/user/card/delete/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
       return;
     }
     var responseBody = jsonDecode(response.body);

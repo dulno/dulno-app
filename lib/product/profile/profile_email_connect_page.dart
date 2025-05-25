@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/connection_alert.dart';
+import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
@@ -257,10 +258,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       _connecting = false;
     });
     if (response == null || response.statusCode == 409) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
       return;
     }
     var responseBody = jsonDecode(response.body);
@@ -291,7 +289,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
   }
 
   void completeBinding(context, codeController, user, code) async {
-    AlertLoader().show(context);
+    LoaderAlert().show(context);
     var body = <String, Object>{"code": code, "user": user};
     body.addAll(
         await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
@@ -299,10 +297,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
         .send(context);
     Navigator.pop(context);
     if (response == null || response.statusCode == 409) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
       return;
     }
     var responseBody = jsonDecode(response.body);

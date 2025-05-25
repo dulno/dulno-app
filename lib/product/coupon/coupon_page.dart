@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/connection_alert.dart';
+import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
@@ -67,7 +68,7 @@ class CouponPage extends StatelessWidget {
             child: CouponElement(
               isLoading: !partner.hasData,
               content: content,
-              animateLastStamp: false,
+              state: CouponElementState.redeemable,
               animateCoupon: false,
             ),
           ),
@@ -105,7 +106,7 @@ class CouponPage extends StatelessWidget {
             ),
           ),
           Text(
-            utf8.decode(findDescription().toString().codeUnits),
+            utf8.decode(content["couponDescription"].toString().codeUnits),
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[600],
@@ -161,7 +162,7 @@ class CouponPage extends StatelessWidget {
                   confirmButtonColor: Colors.redAccent,
                   cancelButton: true,
                   callback: () {
-                    AlertLoader().show(context);
+                    LoaderAlert().show(context);
                     deleteCoupon(context);
                   },
                 ).show(context);
@@ -194,18 +195,6 @@ class CouponPage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String findDescription() {
-    var type = content["couponType"];
-    if (type == "COLLECTION") {
-      return content["rewardDescription"];
-    } else if (type == "VALUE") {
-      return content["valueDescription"];
-    } else if (type == "MEMBER") {
-      return content["memberDescription"];
-    }
-    return "";
   }
 
   Widget createMapElement(partner) {
@@ -243,14 +232,11 @@ class CouponPage extends StatelessWidget {
   }
 
   void deleteCoupon(context) async {
-    var body = <String, Object>{"item": content["itemId"]};
+    var body = <String, Object>{"coupon": content["redeemableId"]};
     var response = await Request.post(url: "/user/coupon/delete/", body: body)
         .send(context);
     if (response == null || response.statusCode == 409) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
       return;
     }
     var responseBody = jsonDecode(response.body);
@@ -268,7 +254,7 @@ class CouponPage extends StatelessWidget {
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(
-            pageBuilder: (_, __, ___) => ProductPage(),
+            pageBuilder: (_, __, ___) => ProductPage(initialPageIndex: 1),
           ),
           (route) => false,
         );
@@ -280,7 +266,8 @@ class CouponPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final couponCache = await storage.read(key: "coupons");
     var coupons = couponCache == null ? [] : jsonDecode(couponCache);
-    coupons.removeWhere((coupon) => coupon["itemId"] == content["itemId"]);
+    coupons.removeWhere(
+        (coupon) => coupon["redeemableId"] == content["redeemableId"]);
     await storage.write(key: "coupons", value: jsonEncode(coupons));
   }
 

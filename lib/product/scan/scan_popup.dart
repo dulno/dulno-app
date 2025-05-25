@@ -7,9 +7,8 @@ import 'package:flutter/material.dart';
 
 class ScanPopup {
   Function callback;
-  Function currentPageIndex;
 
-  ScanPopup({required this.callback, required this.currentPageIndex});
+  ScanPopup({required this.callback});
 
   show(BuildContext context, Key? key) {
     ScanCooldown().reset();
@@ -36,11 +35,7 @@ class ScanPopup {
             child: GestureDetector(
               onTap: () {},
               behavior: HitTestBehavior.translucent,
-              child: AndroidScanPopupContent(
-                key: key,
-                callback: callback,
-                currentPageIndex: currentPageIndex,
-              ),
+              child: AndroidScanPopupContent(key: key, callback: callback),
             ),
           ),
         );
@@ -58,11 +53,7 @@ class ScanPopup {
       builder: (context) {
         return Align(
           alignment: Alignment.topCenter,
-          child: IOSScanPopupContent(
-            key: key,
-            callback: callback,
-            currentPageIndex: currentPageIndex,
-          ),
+          child: IOSScanPopupContent(key: key, callback: callback),
         );
       },
     );

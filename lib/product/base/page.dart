@@ -9,7 +9,9 @@ import 'package:dulno/product/scan/scan_button.dart';
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+  int? initialPageIndex = 0;
+
+  ProductPage({super.key, this.initialPageIndex});
 
   @override
   State<ProductPage> createState() => ProductPageState();
@@ -23,6 +25,12 @@ class ProductPageState extends State<ProductPage> {
     DiscoverBody()
   ];
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialPageIndex ?? 0;
+  }
 
   void _onItemTapped(int index) {
     if (index == 2) {

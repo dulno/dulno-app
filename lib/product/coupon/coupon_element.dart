@@ -1,19 +1,35 @@
+import 'dart:convert';
+
+import 'package:dulno/alert/alert.dart';
+import 'package:dulno/alert/connection_alert.dart';
+import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_animation.dart';
 import 'package:dulno/product/coupon/coupon_logo.dart';
+import 'package:dulno/product/coupon/coupon_redemption.dart';
+import 'package:dulno/product/scan/scan_cooldown.dart';
+import 'package:dulno/product/scan/scan_popup.dart';
+import 'package:dulno/request/request.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+enum CouponElementState { collectable, redeemable }
 
 class CouponElement extends StatefulWidget {
   final bool isLoading;
   final Map<String, dynamic> content;
-  final bool animateLastStamp;
+  final CouponElementState state;
   final bool animateCoupon;
 
   const CouponElement(
       {super.key,
       required this.isLoading,
       required this.content,
-      required this.animateLastStamp,
+      required this.state,
       required this.animateCoupon});
 
   @override
@@ -51,6 +67,7 @@ class _CouponElementState extends State<CouponElement> {
           enabled: widget.isLoading,
           child: Container(
             width: 360,
+            height: 130,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: backgroundColor,
@@ -67,52 +84,94 @@ class _CouponElementState extends State<CouponElement> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: (_logo?.logo == null || widget.isLoading)
-                            ? Skeleton.leaf(
-                                child: Container(
-                                  height: 75,
-                                  width: 75,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(25),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: backgroundColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: (_logo?.logo == null || widget.isLoading)
+                              ? Skeleton.leaf(
+                                  child: Container(
+                                    height: 75,
+                                    width: 75,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
                                   ),
-                                ),
-                              )
-                            : Container(
-                                constraints: BoxConstraints(
-                                  maxWidth: 135,
-                                  maxHeight: 75,
-                                ),
-                                child: _logo?.logo!,
-                              ),
-                      ),
-                      widget.isLoading
-                          ? Container(
-                              alignment: Alignment.bottomCenter,
-                              padding: EdgeInsets.only(top: 100),
-                              child: Skeleton.leaf(
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    // This helps even in non-skeleton mode
-                                    borderRadius: BorderRadius.circular(10),
+                                )
+                              : Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 135,
+                                    maxHeight: 75,
                                   ),
+                                  child: _logo?.logo!,
                                 ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: widget.isLoading
+                              ? Skeleton.leaf(
+                                  child: Container(
+                                    width: 120,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  utf8.decode(widget.content["couponReward"]
+                                      .toString()
+                                      .codeUnits),
+                                  style: TextStyle(
+                                      color: foregroundColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (widget.state ==
+                                  CouponElementState.collectable) {
+                                collectCoupon(context);
+                              } else {
+                                redeemCoupon(context);
+                              }
+                            },
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              side: widget.isLoading
+                                  ? BorderSide(width: 0)
+                                  : BorderSide(
+                                      color: foregroundColor,
+                                      width: 2,
+                                    ),
+                              foregroundColor: foregroundColor,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
                               ),
-                            )
-                          : createCouponContent(foregroundColor),
-                    ],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            child: LocaleText(
+                                widget.state == CouponElementState.collectable
+                                    ? "product.coupon.collect"
+                                    : "product.coupon.redeem"),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -123,13 +182,114 @@ class _CouponElementState extends State<CouponElement> {
     );
   }
 
-  Widget createCouponContent(foregroundColor) {
-    return Container();
-  }
-
   Color parseColor(String key) {
     var hex = widget.content[key].toString();
     hex = hex.replaceAll('#', '');
     return Color(int.parse('FF$hex', radix: 16));
+  }
+
+  Future<void> collectCoupon(context) async {
+    LoaderAlert().show(context);
+    const storage = FlutterSecureStorage();
+    var body = <String, Object>{"coupon": widget.content["couponId"]};
+    final couponCache = await storage.read(key: "coupons");
+    var coupons = (couponCache == null ? [] : jsonDecode(couponCache))
+        .map((coupon) => coupon["redeemableId"])
+        .toList();
+    body["coupons"] = coupons;
+    var response = await Request.post(url: "/user/coupon/collect/", body: body)
+        .send(context);
+    Navigator.pop(context);
+    if (response == null || response.statusCode == 409) {
+      ConnectionAlert().show(context);
+      return;
+    }
+    var responseBody = jsonDecode(response.body);
+    if (responseBody["success"] == false) {
+      displayCollectionError(context, responseBody["error"]);
+      return;
+    }
+    collectionUpdateCouponCache(responseBody);
+    checkIsNewPartner(responseBody);
+    Alert(
+      description: "product.coupon.collect.successful",
+      icon: CupertinoIcons.check_mark_circled,
+      callback: () {
+        Navigator.of(context).pushAndRemoveUntil(
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => ProductPage(initialPageIndex: 1),
+          ),
+          (route) => false,
+        );
+      },
+    ).show(context);
+  }
+
+  Future<void> collectionUpdateCouponCache(responseBody) async {
+    const storage = FlutterSecureStorage();
+    final couponCache = await storage.read(key: "coupons");
+    var coupons = couponCache == null ? [] : jsonDecode(couponCache);
+    responseBody.remove("success");
+    coupons.add(responseBody);
+    await storage.write(key: "coupons", value: jsonEncode(coupons));
+  }
+
+  void displayCollectionError(context, error) {
+    var description = "";
+    if (error == 1000) {
+      description = "product.coupon.collect.error.coupon.existence";
+    } else if (error == 1001) {
+      description = "product.coupon.collect.error.limitation";
+    } else if (error == 1002) {
+      description = "product.coupon.collect.error.already.collected";
+    }
+    Alert(
+      description: description,
+      icon: CupertinoIcons.exclamationmark_triangle,
+    ).show(context);
+    return;
+  }
+
+  Future<void> checkIsNewPartner(responseBody) async {
+    const storage = FlutterSecureStorage();
+    final partnerCache = await storage.read(key: "partners");
+    var partners = partnerCache == null ? [] : jsonDecode(partnerCache);
+    var partnerId = responseBody["partnerId"];
+    if (!partners.contains(partnerId)) {
+      partners.add(partnerId);
+      await storage.write(key: "partners", value: jsonEncode(partners));
+    }
+    FirebaseMessaging.instance.subscribeToTopic(partnerId);
+  }
+
+  Future<void> redeemCoupon(context) async {
+    ScanPopup(
+      callback: completeCouponRedemption,
+    ).show(context, widget.key);
+  }
+
+  Future<void> completeCouponRedemption(stamp, picc, cmac) async {
+    var redemption = CouponRedemption(
+      coupon: widget.content["redeemableId"],
+      stamp: stamp,
+      picc: picc,
+      cmac: cmac,
+    );
+    var redemptionResult = await redemption.redeemProcessed(context);
+    if (!redemptionResult) {
+      return;
+    }
+    ScanCooldown().enable();
+    Navigator.pop(context);
+    Navigator.of(context).pushAndRemoveUntil(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => ProductPage(initialPageIndex: 1),
+      ),
+      (route) => false,
+    );
+    Alert(
+      description: "product.coupon.redeem.successful",
+      icon: CupertinoIcons.check_mark_circled,
+    ).show(context);
   }
 }

@@ -2,43 +2,48 @@ import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/base/page.dart';
-import 'package:dulno/product/scan/stamp_redemption.dart';
+import 'package:dulno/product/coupon/coupon_redemption.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class ScanCache {
+class CouponCache {
   Future<void> redeem(context) async {
     const storage = FlutterSecureStorage();
-    final scanCache = await storage.read(key: "scans");
-    if (scanCache == null) {
+    final redemptionCache = await storage.read(key: "redemptionCache");
+    if (redemptionCache == null) {
       return;
     }
-    var scans = jsonDecode(scanCache);
-    if (scans.isEmpty) {
+    var redemptionList = jsonDecode(redemptionCache);
+    if (redemptionList.isEmpty) {
       return;
     }
-    var remainingScans = [];
+    var remainingRedemptionList = [];
     var failedResults = 0;
-    for (var scan in scans) {
-      var redemptionResult = await StampRedemption(
-              stamp: scan["stamp"], picc: scan["picc"], cmac: scan["cmac"])
-          .redeem(context);
+    for (var redemption in redemptionList) {
+      var redemptionResult = await CouponRedemption(
+        coupon: redemption["coupon"],
+        stamp: redemption["stamp"],
+        picc: redemption["picc"],
+        cmac: redemption["cmac"],
+      ).redeem(context);
       if (redemptionResult == 0) {
-        remainingScans.add(scan);
+        remainingRedemptionList.add(redemption);
       } else if (redemptionResult == 1) {
         failedResults++;
       }
     }
-    await processRedemptionResult(context, remainingScans, failedResults);
+    await processRedemptionResult(
+        context, remainingRedemptionList, failedResults);
   }
 
   Future<void> processRedemptionResult(
-      context, remainingScans, failedResults) async {
+      context, remainingRedemptionList, failedResults) async {
     const storage = FlutterSecureStorage();
-    await storage.write(key: "scans", value: jsonEncode(remainingScans));
-    if (remainingScans.isEmpty) {
+    await storage.write(
+        key: "redemptionCache", value: jsonEncode(remainingRedemptionList));
+    if (remainingRedemptionList.isEmpty) {
       Alert(
-        description: "product.scan.redemption.successful",
+        description: "product.coupon.redemption.successful",
         icon: CupertinoIcons.check_mark_circled,
         callback: () {
           Navigator.pushReplacement(
@@ -54,7 +59,7 @@ class ScanCache {
       ).show(context);
     } else if (failedResults > 0) {
       Alert(
-        description: "product.scan.redemption.failed",
+        description: "product.coupon.redemption.failed",
         icon: CupertinoIcons.exclamationmark_triangle,
       ).show(context);
     }

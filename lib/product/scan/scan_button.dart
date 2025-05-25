@@ -1,6 +1,9 @@
 import 'dart:math';
 
+import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/scan_popup.dart';
+import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:flutter/material.dart';
 
 class ScanButton extends StatefulWidget {
@@ -54,8 +57,8 @@ class _ScanButtonState extends State<ScanButton>
           child: FloatingActionButton(
             onPressed: () {
               ScanPopup(
-                callback: widget.callback,
-                currentPageIndex: widget.currentPageIndex,
+                callback: (stamp, picc, cmac) =>
+                    redeemStamp(context, stamp, picc, cmac),
               ).show(context, widget.key);
             },
             backgroundColor:
@@ -66,6 +69,29 @@ class _ScanButtonState extends State<ScanButton>
         );
       },
     );
+  }
+
+  Future<void> redeemStamp(context, stamp, picc, cmac) async {
+    var redemption = StampRedemption(stamp: stamp, picc: picc, cmac: cmac);
+    var redemptionResult = await redemption.redeemProcessed(context);
+    if (!redemptionResult) {
+      return;
+    }
+    ScanCooldown().enable();
+    if (widget.currentPageIndex() == 0) {
+      widget.callback();
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              ProductPage(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
   }
 
   @override

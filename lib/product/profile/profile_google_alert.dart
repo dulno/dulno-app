@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/connection_alert.dart';
+import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/config/google_options.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
@@ -63,14 +64,11 @@ class ProfileGoogleAlert {
       if (idToken == null) {
         return;
       }
-      AlertLoader().show(context);
+      LoaderAlert().show(context);
       await sendInternalGoogleSignInRequest(
           context, idToken, legalChecked, newsletterChecked);
     } catch (exception) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
     }
   }
 
@@ -83,10 +81,7 @@ class ProfileGoogleAlert {
         await Request.post(url: "/user/bind/google/", body: body).send(context);
     Navigator.pop(context);
     if (response == null || response.statusCode == 409) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
       return;
     }
     var responseBody = jsonDecode(response.body);

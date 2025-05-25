@@ -6,8 +6,7 @@ import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:torch_light/torch_light.dart';
 
 class AndroidScanPopupContent extends ScanPopupContent {
-  const AndroidScanPopupContent(
-      {super.key, required super.callback, required super.currentPageIndex});
+  const AndroidScanPopupContent({super.key, required super.callback});
 
   @override
   State<AndroidScanPopupContent> createState() =>

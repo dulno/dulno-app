@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
+import 'package:dulno/product/coupon/coupon_cache.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
@@ -86,6 +87,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return;
     }
     ScanCache().redeem(navigatorKey.currentContext);
+    CouponCache().redeem(navigatorKey.currentContext);
   }
 
   @override
@@ -96,7 +98,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     ]);
     DulnoStatistic().keep(context);
     return FutureBuilder<void>(
-      future: ScanCache().redeem(context),
+      future: checkCache(context),
       builder: (context, AsyncSnapshot<void> redemptionSnapshot) {
         return FutureBuilder<String>(
           future: findLanguage(),
@@ -139,6 +141,11 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     );
   }
 
+  Future<void> checkCache(context) async {
+    await ScanCache().redeem(context);
+    await CouponCache().redeem(context);
+  }
+
   Future<String> findLanguage() async {
     const storage = FlutterSecureStorage();
     final language = await storage.read(key: "language") ?? "de";
@@ -170,7 +177,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   }
 
   void redeemDeepLink(context, key, stamp, picc, cmac) {
-    AlertLoader().show(context);
+    LoaderAlert().show(context);
     Future.delayed(
       Duration(milliseconds: 500),
       () async {

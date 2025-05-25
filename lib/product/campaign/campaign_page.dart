@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dulno/product/campaign/campaign_batch.dart';
 import 'package:dulno/product/campaign/campaign_time.dart';
+import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
 import 'package:dulno/product/partner/partner_page.dart';
 import 'package:dulno/request/request.dart';
@@ -99,7 +100,35 @@ class CampaignPage extends StatelessWidget {
                                 ),
                         ],
                       ),
-                      SizedBox(height: 40),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Divider(
+                          color: Colors.grey[300],
+                          height: 2,
+                        ),
+                      ),
+                      !loading && campaignSnapshot.data["coupon"]["found"]
+                          ? Opacity(
+                              opacity:
+                                  isCouponUsable(campaignSnapshot) ? 1 : 0.4,
+                              child: CouponElement(
+                                  isLoading: false,
+                                  content: campaignSnapshot.data["coupon"],
+                                  state: CouponElementState.collectable,
+                                  animateCoupon: false),
+                            )
+                          : SizedBox(),
+                      createLimitationElement(
+                          context, loading, campaignSnapshot),
+                      !loading && campaignSnapshot.data["coupon"]["found"]
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Divider(
+                                color: Colors.grey[300],
+                                height: 2,
+                              ),
+                            )
+                          : SizedBox(),
                       Text(
                         !loading
                             ? utf8.decode(campaignSnapshot.data["title"]
@@ -184,6 +213,37 @@ class CampaignPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget createLimitationElement(context, loading, campaignSnapshot) {
+    if (loading ||
+        !campaignSnapshot.data["coupon"]["found"] ||
+        campaignSnapshot.data["coupon"]["limitation"] == -1) {
+      return SizedBox();
+    }
+    var limitation = campaignSnapshot.data["coupon"]["limitation"];
+    var text = "";
+    if (limitation > 0) {
+      text = Locales.string(context, "product.coupon.limitation.open")
+          .replaceAll("%s", limitation.toString());
+    } else {
+      text = Locales.string(context, "product.coupon.limitation.reached");
+    }
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(top: 20),
+      child: Text(
+        text,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  bool isCouponUsable(campaignSnapshot) {
+    if (campaignSnapshot.data["coupon"]["limitation"] == 0) {
+      return false;
+    }
+    return true;
   }
 
   Future<dynamic> findCampaign(context) async {
