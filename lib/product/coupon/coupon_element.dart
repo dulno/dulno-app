@@ -5,6 +5,7 @@ import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_animation.dart';
+import 'package:dulno/product/coupon/coupon_expiration.dart';
 import 'package:dulno/product/coupon/coupon_logo.dart';
 import 'package:dulno/product/coupon/coupon_redemption.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
@@ -24,13 +25,16 @@ class CouponElement extends StatefulWidget {
   final Map<String, dynamic> content;
   final CouponElementState state;
   final bool animateCoupon;
+  final bool unusable;
 
-  const CouponElement(
-      {super.key,
-      required this.isLoading,
-      required this.content,
-      required this.state,
-      required this.animateCoupon});
+  const CouponElement({
+    super.key,
+    required this.isLoading,
+    required this.content,
+    required this.state,
+    required this.animateCoupon,
+    required this.unusable
+  });
 
   @override
   State<CouponElement> createState() => _CouponElementState();
@@ -91,85 +95,101 @@ class _CouponElementState extends State<CouponElement> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Stack(
+                      clipBehavior: Clip.none,
                       children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: (_logo?.logo == null || widget.isLoading)
-                              ? Skeleton.leaf(
-                                  child: Container(
-                                    height: 75,
-                                    width: 75,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: 135,
-                                    maxHeight: 75,
-                                  ),
-                                  child: _logo?.logo!,
-                                ),
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: widget.isLoading
-                              ? Skeleton.leaf(
-                                  child: Container(
-                                    width: 120,
-                                    height: 25,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                  ),
-                                )
-                              : Text(
-                                  utf8.decode(widget.content["couponReward"]
-                                      .toString()
-                                      .codeUnits),
-                                  style: TextStyle(
-                                      color: foregroundColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              if (widget.state ==
-                                  CouponElementState.collectable) {
-                                collectCoupon(context);
-                              } else {
-                                redeemCoupon(context);
-                              }
-                            },
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              side: widget.isLoading
-                                  ? BorderSide(width: 0)
-                                  : BorderSide(
-                                      color: foregroundColor,
-                                      width: 2,
-                                    ),
-                              foregroundColor: foregroundColor,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
+                        Opacity(
+                          opacity: widget.unusable || hasExpired() ? 0.4 : 1,
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: (_logo?.logo == null || widget.isLoading)
+                                    ? Skeleton.leaf(
+                                        child: Container(
+                                          height: 75,
+                                          width: 75,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[300],
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 135,
+                                          maxHeight: 75,
+                                        ),
+                                        child: _logo?.logo!,
+                                      ),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: widget.isLoading
+                                    ? Skeleton.leaf(
+                                        child: Container(
+                                          width: 120,
+                                          height: 25,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[300],
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                          ),
+                                        ),
+                                      )
+                                    : Text(
+                                        utf8.decode(widget
+                                            .content["couponReward"]
+                                            .toString()
+                                            .codeUnits),
+                                        style: TextStyle(
+                                            color: foregroundColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                               ),
-                            ),
-                            child: LocaleText(
-                                widget.state == CouponElementState.collectable
-                                    ? "product.coupon.collect"
-                                    : "product.coupon.redeem"),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    if (widget.state ==
+                                        CouponElementState.collectable) {
+                                      collectCoupon(context);
+                                    } else {
+                                      redeemCoupon(context);
+                                    }
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    side: widget.isLoading
+                                        ? BorderSide(width: 0)
+                                        : BorderSide(
+                                            color: foregroundColor,
+                                            width: 2,
+                                          ),
+                                    foregroundColor: foregroundColor,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  child: LocaleText(widget.state ==
+                                          CouponElementState.collectable
+                                      ? "product.coupon.collect"
+                                      : "product.coupon.redeem"),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                        !widget.isLoading &&
+                                widget.state == CouponElementState.redeemable
+                            ? CouponExpiration(
+                                expiration: widget.content["expiration"])
+                            : SizedBox(),
                       ],
                     ),
                   ),
@@ -182,6 +202,15 @@ class _CouponElementState extends State<CouponElement> {
     );
   }
 
+  bool hasExpired() {
+    if (widget.isLoading || widget.state == CouponElementState.collectable) {
+      return false;
+    }
+    return widget.content["expiration"] -
+            DateTime.now().millisecondsSinceEpoch <=
+        0;
+  }
+
   Color parseColor(String key) {
     var hex = widget.content[key].toString();
     hex = hex.replaceAll('#', '');
@@ -189,6 +218,9 @@ class _CouponElementState extends State<CouponElement> {
   }
 
   Future<void> collectCoupon(context) async {
+    if (widget.unusable) {
+      return;
+    }
     LoaderAlert().show(context);
     const storage = FlutterSecureStorage();
     var body = <String, Object>{"coupon": widget.content["couponId"]};
@@ -211,6 +243,7 @@ class _CouponElementState extends State<CouponElement> {
     }
     collectionUpdateCouponCache(responseBody);
     checkIsNewPartner(responseBody);
+    storeCouponCollection();
     Alert(
       description: "product.coupon.collect.successful",
       icon: CupertinoIcons.check_mark_circled,
@@ -232,6 +265,14 @@ class _CouponElementState extends State<CouponElement> {
     responseBody.remove("success");
     coupons.add(responseBody);
     await storage.write(key: "coupons", value: jsonEncode(coupons));
+  }
+
+  Future<void> storeCouponCollection() async {
+    const storage = FlutterSecureStorage();
+    final couponCache = await storage.read(key: "collectedCoupons");
+    var coupons = couponCache == null ? [] : jsonDecode(couponCache);
+    coupons.add(widget.content["couponId"]);
+    await storage.write(key: "collectedCoupons", value: jsonEncode(coupons));
   }
 
   void displayCollectionError(context, error) {
@@ -263,12 +304,16 @@ class _CouponElementState extends State<CouponElement> {
   }
 
   Future<void> redeemCoupon(context) async {
+    if (widget.unusable || hasExpired()) {
+      return;
+    }
     ScanPopup(
-      callback: completeCouponRedemption,
+      callback: (stamp, picc, cmac) =>
+          completeCouponRedemption(context, stamp, picc, cmac),
     ).show(context, widget.key);
   }
 
-  Future<void> completeCouponRedemption(stamp, picc, cmac) async {
+  Future<void> completeCouponRedemption(context, stamp, picc, cmac) async {
     var redemption = CouponRedemption(
       coupon: widget.content["redeemableId"],
       stamp: stamp,

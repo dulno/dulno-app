@@ -70,6 +70,7 @@ class CouponPage extends StatelessWidget {
               content: content,
               state: CouponElementState.redeemable,
               animateCoupon: false,
+              unusable: false,
             ),
           ),
           new Divider(

@@ -49,6 +49,7 @@
 
   "product.coupon.limitation.open": "Nur noch %s verfügbar",
   "product.coupon.limitation.reached": "Keine weiteren Gutscheine verfügbar",
+  "product.coupon.already.collected": "Der Gutschein wurde bereits abgeholt",
   "product.coupon.collect": "Einsammeln",
   "product.coupon.collect.successful": "Sie haben den Gutschein erfolgreich abgeholt",
   "product.coupon.collect.error.coupon.existence": "Leider konnte der Gutschein nicht gefunden werden. Bitte versuchen Sie es später noch einmal",
@@ -66,6 +67,9 @@
   "product.coupon.redemption.connection.cache": "Da im Moment keine Verbindung hergestellt werden konnte, wird der Gutschein zu einem späteren Zeitpunkt eingelöst, sobald die Verbindung wieder hergestellt werden kann",
   "product.coupon.redemption.redemption.successful": "Zwischengespeicherte Gutscheine wurden nun erfolgreich nachträglich eingelöst",
   "product.coupon.redemption.redemption.failed": "Es wurde versucht, Gutscheine im Nachhinein einzulösen. Dabei ist ein Fehler aufgetreten. Daher wurden die Gutscheine leider nicht eingelöst",
+  "product.coupon.expiration.unit.day": "T",
+  "product.coupon.expiration.unit.hour": "H",
+  "product.coupon.expiration.expired": "Abgelaufen",
   "product.coupon.about": "Über diesen Gutschein",
   "product.coupon.links": "Links",
   "product.coupon.locations": "Standorte",

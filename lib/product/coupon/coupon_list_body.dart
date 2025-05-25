@@ -152,6 +152,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
               content: coupon,
               state: CouponElementState.redeemable,
               animateCoupon: detectNewCoupon(coupon),
+              unusable: false,
             ),
           ),
         ));
@@ -240,6 +241,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
                             content: {},
                             state: CouponElementState.redeemable,
                             animateCoupon: false,
+                            unusable: false,
                           ),
                         ),
                         Container(
@@ -249,6 +251,7 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
                             content: {},
                             state: CouponElementState.redeemable,
                             animateCoupon: false,
+                            unusable: false,
                           ),
                         ),
                       ],
