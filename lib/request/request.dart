@@ -43,7 +43,6 @@ class Request {
       if (refreshResult == true) {
         return await send(context);
       }
-      await reset(context);
       return response;
     }
     return response;
@@ -73,6 +72,7 @@ class Request {
     const storage = FlutterSecureStorage();
     final refreshToken = await storage.read(key: "refreshToken") ?? "";
     if (refreshToken == "") {
+      await reset(context);
       return false;
     }
     var response = await Request.post(
@@ -83,6 +83,7 @@ class Request {
     }
     var responseBody = jsonDecode(response.body);
     if (responseBody["success"] == false) {
+      await reset(context);
       return false;
     }
     await storage.write(
