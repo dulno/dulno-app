@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
-class CardSearchBar extends StatefulWidget {
+class CouponSearchBar extends StatefulWidget {
   final TextEditingController controller;
 
-  const CardSearchBar({super.key, required this.controller});
+  const CouponSearchBar({super.key, required this.controller});
 
   @override
-  State<CardSearchBar> createState() => _CardSearchBarState();
+  State<CouponSearchBar> createState() => _CouponSearchBarState();
 }
 
-class _CardSearchBarState extends State<CardSearchBar> {
+class _CouponSearchBarState extends State<CouponSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +22,7 @@ class _CardSearchBarState extends State<CardSearchBar> {
             controller: widget.controller,
             decoration: InputDecoration(
               hintStyle: TextStyle(color: Colors.grey[500]),
-              hintText: Locales.string(context, "product.card.list.search"),
+              hintText: Locales.string(context, "product.coupon.list.search"),
               prefixIcon: Icon(Icons.search),
               isDense: true,
               contentPadding:

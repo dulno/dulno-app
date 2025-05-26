@@ -1,3 +1,4 @@
 class StatisticOptions {
-  static String statisticKey = "***REMOVED***";
+  static String statisticKey =
+      "***REMOVED***";
 }

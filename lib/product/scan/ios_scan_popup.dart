@@ -6,8 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 class IOSScanPopupContent extends ScanPopupContent {
-  const IOSScanPopupContent(
-      {super.key, required super.callback, required super.currentPageIndex});
+  const IOSScanPopupContent({super.key, required super.callback});
 
   @override
   State<IOSScanPopupContent> createState() => IOSScanPopupContentState();

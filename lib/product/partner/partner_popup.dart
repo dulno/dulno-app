@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dulno/product/partner/discover_map_directions.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
 import 'package:flutter/material.dart';
@@ -18,17 +19,18 @@ class PartnerPopup extends StatefulWidget {
 }
 
 class _DraggablePopupState extends State<PartnerPopup> {
-  double _popupHeight = 300.0;
-  double _startDragHeight = 300.0;
+  double _popupHeight = 400.0;
+  double _startDragHeight = 400.0;
   double _startVerticalDrag = 0.0;
   PartnerLogo? _logo;
 
   @override
   Widget build(BuildContext context) {
-    _logo ??= PartnerLogo(partnerId: widget.partner["id"],
+    _logo ??= PartnerLogo(
+        partnerId: widget.partner["id"],
         currentLogoId: widget.partner["logoId"]);
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(),
+      future: _logo?.fetch(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Positioned(
           bottom: 0,
@@ -125,6 +127,48 @@ class _DraggablePopupState extends State<PartnerPopup> {
                                   .toString()
                                   .codeUnits),
                               style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 20),
+                            Align(
+                              alignment: Alignment.center,
+                              child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        WidgetStateProperty.all(Colors.indigo),
+                                    shape: WidgetStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                    ),
+                                    padding: WidgetStateProperty.all(
+                                        EdgeInsets.symmetric(
+                                            horizontal: 15, vertical: 8)),
+                                    alignment: Alignment.center),
+                                onPressed: () async {
+                                  DiscoverMapDirections(
+                                          destinationLatitude:
+                                              widget.location["latitude"],
+                                          destinationLongitude:
+                                              widget.location["longitude"])
+                                      .open();
+                                },
+                                icon: Container(
+                                  margin: EdgeInsets.only(right: 2),
+                                  child: Icon(
+                                    Icons.directions,
+                                    color: Colors.white,
+                                    size: 21,
+                                  ),
+                                ),
+                                label: LocaleText(
+                                  "product.partner.popup.navigate",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
                             ),
                             SizedBox(height: 20),
                             LocaleText(

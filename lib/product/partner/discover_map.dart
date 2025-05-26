@@ -167,7 +167,7 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
     var markers = <Marker>[];
     for (var partner in widget.partners) {
       for (var location in partner["locations"]) {
-        var latLng = LatLng(location["latitude"], location["longitude"]);
+        LatLng latLng = LatLng(location["latitude"], location["longitude"]);
         markers.add(
           Marker(
             point: latLng,
@@ -184,8 +184,11 @@ class OSMMapState extends State<OSMMap> with SingleTickerProviderStateMixin {
                   _selectedLocation = location;
                 });
 
+                LatLng zoomDestination =
+                    LatLng(latLng.latitude - 0.002, latLng.longitude);
+
                 // Animate the map to the selected marker's location
-                _animateMapMove(latLng, targetElementZoom);
+                _animateMapMove(zoomDestination, targetElementZoom);
               },
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,

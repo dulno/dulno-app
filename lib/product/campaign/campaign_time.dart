@@ -4,15 +4,19 @@ import 'package:intl/intl.dart';
 
 class CampaignTime extends StatelessWidget {
   final dynamic campaign;
+  final bool? reduced;
 
-  const CampaignTime({super.key, required this.campaign});
+  const CampaignTime({super.key, required this.campaign, this.reduced});
 
   @override
   Widget build(BuildContext context) {
     var start = formatDate(context, campaign["start"]);
     var end = formatDate(context, campaign["end"]);
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+      padding: EdgeInsets.symmetric(
+        vertical: (reduced ?? false) ? 1 : 2,
+        horizontal: (reduced ?? false) ? 4 : 5,
+      ),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(5),
@@ -20,12 +24,13 @@ class CampaignTime extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FaIcon(FontAwesomeIcons.clock, size: 14, color: Colors.grey[600]),
+          FaIcon(FontAwesomeIcons.clock,
+              size: (reduced ?? false) ? 12 : 14, color: Colors.grey[600]),
           SizedBox(width: 5),
           Text(
-            start == end ? start : "$start - $end",
+            (start == end || (reduced ?? false)) ? start : "$start - $end",
             style: TextStyle(
-              fontSize: 14,
+              fontSize: (reduced ?? false) ? 12 : 14,
               color: Colors.grey[600],
             ),
           ),

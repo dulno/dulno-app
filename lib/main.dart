@@ -3,15 +3,16 @@ import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
-import 'package:dulno/product/scan/scan_cache.dart';
+import 'package:dulno/product/coupon/coupon_cache.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
+import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
+import 'package:dulno/request/request.dart';
 import 'package:dulno/statistic/statistic.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -24,7 +25,6 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
-  DulnoStatistic().keep();
   await DulnoNotification(navigatorKey: navigatorKey).setup();
   runApp(DulnoApp());
 }
@@ -52,6 +52,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       );
     }
     _initDeepLinks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkAuthorization(context);
+    });
   }
 
   void _initDeepLinks() async {
@@ -83,6 +86,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return;
     }
     ScanCache().redeem(navigatorKey.currentContext);
+    CouponCache().redeem(navigatorKey.currentContext);
   }
 
   @override
@@ -91,8 +95,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    DulnoStatistic().keep(context);
     return FutureBuilder<void>(
-      future: ScanCache().redeem(context),
+      future: checkCache(context),
       builder: (context, AsyncSnapshot<void> redemptionSnapshot) {
         return FutureBuilder<String>(
           future: findLanguage(),
@@ -135,6 +140,11 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     );
   }
 
+  Future<void> checkCache(context) async {
+    await ScanCache().redeem(context);
+    await CouponCache().redeem(context);
+  }
+
   Future<String> findLanguage() async {
     const storage = FlutterSecureStorage();
     final language = await storage.read(key: "language") ?? "de";
@@ -158,7 +168,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (stamp == "" || picc == "" || cmac == "") {
       Alert(
         description: "product.scan.error.nfc.tag",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
@@ -166,7 +176,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   }
 
   void redeemDeepLink(context, key, stamp, picc, cmac) {
-    AlertLoader().show(context);
+    LoaderAlert().show(context);
     Future.delayed(
       Duration(milliseconds: 500),
       () async {
@@ -182,5 +192,14 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
         }
       },
     );
+  }
+
+  Future<void> checkAuthorization(context) async {
+    const storage = FlutterSecureStorage();
+    var email = await storage.read(key: "email");
+    if (email == null) {
+      return;
+    }
+    await Request.get(url: "/user/authorized/").send(context);
   }
 }

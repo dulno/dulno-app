@@ -1,13 +1,12 @@
-import 'package:dulno/product/card/card_list_arrow.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class CardListEmptyContent extends StatelessWidget {
+class CouponListEmptyContent extends StatelessWidget {
   final Function signInCallback;
 
-  const CardListEmptyContent({super.key, required this.signInCallback});
+  const CouponListEmptyContent({super.key, required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -15,20 +14,22 @@ class CardListEmptyContent extends StatelessWidget {
     return FutureBuilder<String?>(
       future: storage.read(key: "email"),
       builder: (context, AsyncSnapshot<String?> email) {
+        var notLoggedIn = email.data == null || email.data == "";
         return Container(
           alignment: Alignment.center,
           margin: const EdgeInsets.only(top: 20, bottom: 75),
           child: Stack(
             children: [
-              email.data == null || email.data == ""
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child:
-                              LocaleText("product.card.list.login.description"),
-                        ),
-                        Center(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: LocaleText(notLoggedIn
+                        ? "product.coupon.list.login.description"
+                        : "product.coupon.list.empty"),
+                  ),
+                  notLoggedIn
+                      ? Center(
                           child: TextButton(
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.symmetric(
@@ -47,18 +48,17 @@ class CardListEmptyContent extends StatelessWidget {
                               );
                             },
                             child: LocaleText(
-                              "product.card.list.login.call",
+                              "product.coupon.list.login.call",
                               style: TextStyle(
                                 color: Colors.indigo,
                                 decoration: TextDecoration.underline,
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  : SizedBox.shrink(),
-              CardListScanArrow(),
+                        )
+                      : SizedBox.shrink(),
+                ],
+              ),
             ],
           ),
         );

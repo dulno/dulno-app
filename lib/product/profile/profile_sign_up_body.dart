@@ -14,11 +14,16 @@ class ProfileSignUpBody {
     var cards = (cardCache == null ? [] : jsonDecode(cardCache))
         .map((card) => card["itemId"])
         .toList();
+    final couponCache = await storage.read(key: "coupons");
+    var coupons = (couponCache == null ? [] : jsonDecode(couponCache))
+        .map((coupon) => coupon["redeemableId"])
+        .toList();
     var body = <String, Object>{
       "language": language,
       "legalAccepted": legalAccepted,
       "newsletter": newsletter,
-      "cards": cards
+      "cards": cards,
+      "coupons": coupons
     };
     body.addAll(await _findDeviceInfo());
     return body;

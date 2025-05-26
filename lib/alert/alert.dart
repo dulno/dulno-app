@@ -1,8 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
+enum AlertType {
+  success,
+  error,
+  neutral
+}
+
 class Alert extends StatefulWidget {
-  final IconData icon;
+  AlertType? type;
+  IconData? icon;
+  Color? iconColor;
   String? description;
   Widget? content;
   bool? cancelButton;
@@ -13,18 +22,21 @@ class Alert extends StatefulWidget {
   bool Function()? confirmButtonEnabled;
   Function()? callback;
 
-  Alert(
-      {super.key,
-      required this.icon,
-      this.description,
-      this.content,
-      this.cancelButton,
-      this.cancelButtonText,
-      this.cancelButtonColor,
-      this.confirmButtonText,
-      this.confirmButtonColor,
-      this.confirmButtonEnabled,
-      this.callback});
+  Alert({
+    super.key,
+    this.type,
+    this.icon,
+    this.iconColor,
+    this.description,
+    this.content,
+    this.cancelButton,
+    this.cancelButtonText,
+    this.cancelButtonColor,
+    this.confirmButtonText,
+    this.confirmButtonColor,
+    this.confirmButtonEnabled,
+    this.callback,
+  });
 
   @override
   State<Alert> createState() => AlertState();
@@ -51,7 +63,7 @@ class AlertState extends State<Alert> {
         child: CircleAvatar(
           radius: 30,
           backgroundColor: Colors.grey[200],
-          child: Icon(widget.icon, size: 35, color: Colors.black),
+          child: createAlertIcon(),
         ),
       ),
       content: Column(
@@ -130,5 +142,33 @@ class AlertState extends State<Alert> {
         ],
       ),
     );
+  }
+
+  Widget createAlertIcon() {
+    IconData? iconData = CupertinoIcons.circle;
+    if (widget.icon != null) {
+      iconData = widget.icon;
+    } else if (widget.type != null) {
+      if (widget.type == AlertType.success) {
+        iconData = CupertinoIcons.check_mark_circled;
+      } else if (widget.type == AlertType.error) {
+        iconData = CupertinoIcons.exclamationmark_triangle;
+      }
+    }
+    return Icon(iconData, size: 35, color: createAlertIconColor());
+  }
+
+  Color? createAlertIconColor() {
+    Color? iconColor = Colors.black;
+    if (widget.iconColor != null) {
+      iconColor = widget.iconColor;
+    } else if (widget.type != null) {
+      if (widget.type == AlertType.success) {
+        iconColor = Colors.green;
+      } else if (widget.type == AlertType.error) {
+        iconColor = Colors.red;
+      }
+    }
+    return iconColor;
   }
 }

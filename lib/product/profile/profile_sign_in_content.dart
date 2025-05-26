@@ -3,14 +3,11 @@ import 'package:dulno/product/profile/profile_google_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileSignInContent extends StatelessWidget {
-  final GoogleSignIn googleSignIn;
   final Function signInCallback;
 
-  const ProfileSignInContent(
-      {super.key, required this.googleSignIn, required this.signInCallback});
+  const ProfileSignInContent({super.key, required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +95,7 @@ class ProfileSignInContent extends StatelessWidget {
                 padding: WidgetStateProperty.all(EdgeInsets.all(15)),
                 alignment: Alignment.centerLeft),
             onPressed: () async {
-              ProfileGoogleAlert(
-                      googleSignIn: googleSignIn,
-                      signInCallback: signInCallback)
-                  .show(context);
+              ProfileGoogleAlert(signInCallback: signInCallback).show(context);
             },
             icon: Container(
               margin: EdgeInsets.symmetric(horizontal: 10),

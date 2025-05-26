@@ -1,4 +1,5 @@
 import 'package:dulno/product/profile/profile_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -30,7 +31,7 @@ class _ProductHeaderState extends State<ProductHeader> {
             Stack(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.account_circle, size: 40),
+                  icon: Icon(CupertinoIcons.person_crop_circle_fill, size: 40),
                   color: const Color(0xFFB3B3B3),
                   onPressed: () {
                     Navigator.push(

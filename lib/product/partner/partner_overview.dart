@@ -27,7 +27,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
         partnerId: widget.partner["id"],
         currentLogoId: widget.partner["logoId"]);
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(),
+      future: _logo?.fetch(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
           enabled: _logo?.logo == null,
@@ -39,7 +39,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
                 children: [
                   SizedBox(height: 40),
                   Align(
-                    alignment: Alignment.centerRight,
+                    alignment: Alignment.center,
                     child: _logo?.logo == null
                         ? Skeleton.leaf(
                             child: Container(
@@ -53,8 +53,8 @@ class _PartnerOverviewState extends State<PartnerOverview> {
                           )
                         : Container(
                             constraints: BoxConstraints(
-                              maxWidth: 135,
-                              maxHeight: 90,
+                              maxWidth: 180,
+                              maxHeight: 120,
                             ),
                             child: _logo?.logo!,
                           ),
@@ -108,20 +108,13 @@ class _PartnerOverviewState extends State<PartnerOverview> {
       height: 300,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: OSMMap(
           partners: [partner],
           mapController: mapController,
-          latitude: firstLocation["latitude"],
+          latitude: firstLocation["latitude"] + 0.00075,
           longitude: firstLocation["longitude"],
           radius: 1,
           initialZoom: 16,
