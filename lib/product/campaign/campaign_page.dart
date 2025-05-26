@@ -118,7 +118,6 @@ class CampaignPage extends StatelessWidget {
                                   isLoading: false,
                                   content: campaignSnapshot.data["coupon"],
                                   state: CouponElementState.collectable,
-                                  animateCoupon: false,
                                   unusable: !isCouponUsable(
                                       loading,
                                       campaignSnapshot,

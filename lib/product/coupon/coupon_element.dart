@@ -4,7 +4,6 @@ import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
-import 'package:dulno/product/coupon/coupon_animation.dart';
 import 'package:dulno/product/coupon/coupon_expiration.dart';
 import 'package:dulno/product/coupon/coupon_logo.dart';
 import 'package:dulno/product/coupon/coupon_redemption.dart';
@@ -24,7 +23,6 @@ class CouponElement extends StatefulWidget {
   final bool isLoading;
   final Map<String, dynamic> content;
   final CouponElementState state;
-  final bool animateCoupon;
   final bool unusable;
 
   const CouponElement({
@@ -32,7 +30,6 @@ class CouponElement extends StatefulWidget {
     required this.isLoading,
     required this.content,
     required this.state,
-    required this.animateCoupon,
     required this.unusable
   });
 
@@ -45,15 +42,7 @@ class _CouponElementState extends State<CouponElement> {
 
   @override
   Widget build(BuildContext context) {
-    var element = createCouponElement();
-    if (widget.animateCoupon) {
-      return CouponBlinkerAnimation(
-        child: element,
-        color: Colors.grey[400]!,
-        scale: 1.05,
-      );
-    }
-    return element;
+    return createCouponElement();
   }
 
   Widget createCouponElement() {

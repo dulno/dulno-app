@@ -48,7 +48,6 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<dynamic> _coupons = [];
-  List<dynamic> _previousCoupons = [];
 
   @override
   void initState() {
@@ -117,7 +116,6 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
       const storage = FlutterSecureStorage();
       final couponCache = await storage.read(key: "coupons");
       _coupons = couponCache == null ? [] : jsonDecode(couponCache);
-      _previousCoupons = _coupons;
       fetchCoupons(context, true);
       setState(() {
         _loaded = true;
@@ -147,18 +145,16 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
           child: Container(
             margin: const EdgeInsets.only(bottom: 20),
             child: CouponElement(
-              key: ValueKey(coupon["itemId"].toString()),
+              key: ValueKey(coupon["redeemableId"].toString()),
               isLoading: false,
               content: coupon,
               state: CouponElementState.redeemable,
-              animateCoupon: detectNewCoupon(coupon),
               unusable: false,
             ),
           ),
         ));
       }
     }
-    _previousCoupons = _coupons;
     if (elements.isEmpty) {
       elements.add(
         LocaleText(
@@ -194,12 +190,6 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
         ),
       ),
     );
-  }
-
-  bool detectNewCoupon(coupon) {
-    var previousCouponOptional = _previousCoupons
-        .where((entry) => entry["redeemableId"] == coupon["redeemableId"]);
-    return previousCouponOptional.isEmpty;
   }
 
   @override
@@ -240,7 +230,6 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
                             isLoading: true,
                             content: {},
                             state: CouponElementState.redeemable,
-                            animateCoupon: false,
                             unusable: false,
                           ),
                         ),
@@ -250,7 +239,6 @@ class _CouponListBodyContentState extends State<CouponListBodyContent> {
                             isLoading: true,
                             content: {},
                             state: CouponElementState.redeemable,
-                            animateCoupon: false,
                             unusable: false,
                           ),
                         ),

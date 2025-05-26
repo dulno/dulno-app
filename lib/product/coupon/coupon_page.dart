@@ -69,7 +69,6 @@ class CouponPage extends StatelessWidget {
               isLoading: !partner.hasData,
               content: content,
               state: CouponElementState.redeemable,
-              animateCoupon: false,
               unusable: false,
             ),
           ),
