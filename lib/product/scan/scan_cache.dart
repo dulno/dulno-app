@@ -38,8 +38,8 @@ class ScanCache {
     await storage.write(key: "scans", value: jsonEncode(remainingScans));
     if (remainingScans.isEmpty) {
       Alert(
-        description: "product.scan.redemption.successful",
-        icon: CupertinoIcons.check_mark_circled,
+        description: "product.scan.cache.redemption.successful",
+        type: AlertType.success,
         callback: () {
           Navigator.pushReplacement(
             context,
@@ -54,8 +54,8 @@ class ScanCache {
       ).show(context);
     } else if (failedResults > 0) {
       Alert(
-        description: "product.scan.redemption.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        description: "product.scan.cache.redemption.failed",
+        type: AlertType.error,
       ).show(context);
     }
   }

@@ -255,14 +255,14 @@ class CardPage extends StatelessWidget {
     if (responseBody["success"] == false) {
       Alert(
         description: "product.card.delete.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error
       ).show(context);
       return;
     }
     deletionUpdateCardCache();
     Alert(
       description: "product.card.delete.successful",
-      icon: CupertinoIcons.check_mark_circled,
+      type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(

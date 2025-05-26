@@ -108,7 +108,7 @@ class CouponRedemption {
     }
     Alert(
       description: description,
-      icon: CupertinoIcons.exclamationmark_triangle,
+      type: AlertType.error,
     ).show(context);
     return;
   }

@@ -243,14 +243,14 @@ class CouponPage extends StatelessWidget {
     if (responseBody["success"] == false) {
       Alert(
         description: "product.coupon.delete.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
     deletionUpdateCouponCache();
     Alert(
       description: "product.coupon.delete.successful",
-      icon: CupertinoIcons.check_mark_circled,
+      type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(

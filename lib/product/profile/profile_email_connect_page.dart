@@ -7,7 +7,6 @@ import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -265,7 +264,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     if (!responseBody["success"]) {
       Alert(
         description: "product.profile.email.connect.failure.email.format",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
@@ -305,14 +304,14 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       codeController.text = "";
       Alert(
         description: "product.profile.email.connect.failure.complete",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
     await storeSignInResponse(responseBody);
     Alert(
       description: "product.profile.email.connect.success",
-      icon: CupertinoIcons.check_mark_circled,
+      type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(

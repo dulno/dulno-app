@@ -7,11 +7,11 @@ import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_expiration.dart';
 import 'package:dulno/product/coupon/coupon_logo.dart';
 import 'package:dulno/product/coupon/coupon_redemption.dart';
+import 'package:dulno/product/coupon/coupon_redemption_popup.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/scan_popup.dart';
 import 'package:dulno/request/request.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -235,7 +235,7 @@ class _CouponElementState extends State<CouponElement> {
     storeCouponCollection();
     Alert(
       description: "product.coupon.collect.successful",
-      icon: CupertinoIcons.check_mark_circled,
+      type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(
@@ -275,7 +275,7 @@ class _CouponElementState extends State<CouponElement> {
     }
     Alert(
       description: description,
-      icon: CupertinoIcons.exclamationmark_triangle,
+      type: AlertType.error,
     ).show(context);
     return;
   }
@@ -321,9 +321,6 @@ class _CouponElementState extends State<CouponElement> {
       ),
       (route) => false,
     );
-    Alert(
-      description: "product.coupon.redeem.successful",
-      icon: CupertinoIcons.check_mark_circled,
-    ).show(context);
+    CouponRedemptionPopup(content: widget.content).show(context);
   }
 }

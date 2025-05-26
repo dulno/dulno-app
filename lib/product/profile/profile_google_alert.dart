@@ -88,7 +88,7 @@ class ProfileGoogleAlert {
     if (!responseBody["success"]) {
       Alert(
         description: "product.profile.google.connect.failure",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
@@ -99,7 +99,7 @@ class ProfileGoogleAlert {
     await storeSignInResponse(responseBody);
     Alert(
       description: "product.profile.google.connect.success",
-      icon: CupertinoIcons.check_mark_circled,
+      type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(

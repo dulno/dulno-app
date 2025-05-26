@@ -13,7 +13,6 @@ import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:dulno/request/request.dart';
 import 'package:dulno/statistic/statistic.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -169,7 +168,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (stamp == "" || picc == "" || cmac == "") {
       Alert(
         description: "product.scan.error.nfc.tag",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }

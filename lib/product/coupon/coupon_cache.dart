@@ -43,8 +43,8 @@ class CouponCache {
         key: "redemptionCache", value: jsonEncode(remainingRedemptionList));
     if (remainingRedemptionList.isEmpty) {
       Alert(
-        description: "product.coupon.redemption.successful",
-        icon: CupertinoIcons.check_mark_circled,
+        description: "product.coupon.cache.redemption.successful",
+        type: AlertType.success,
         callback: () {
           Navigator.pushReplacement(
             context,
@@ -59,8 +59,8 @@ class CouponCache {
       ).show(context);
     } else if (failedResults > 0) {
       Alert(
-        description: "product.coupon.redemption.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        description: "product.coupon.cache.redemption.failed",
+        type: AlertType.error,
       ).show(context);
     }
   }

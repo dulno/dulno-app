@@ -96,7 +96,7 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
     Navigator.pop(context);
     Alert(
       description: "product.scan.error.scan",
-      icon: CupertinoIcons.exclamationmark_triangle,
+      type: AlertType.error,
     ).show(context);
   }
 
@@ -104,7 +104,7 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
     Navigator.pop(context);
     Alert(
       description: "product.scan.unsupported.description",
-      icon: CupertinoIcons.exclamationmark_triangle,
+      type: AlertType.error,
     ).show(context);
   }
 
@@ -117,7 +117,7 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
       Navigator.pop(context);
       Alert(
         description: "product.scan.error.nfc.tag",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
