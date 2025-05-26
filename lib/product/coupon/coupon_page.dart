@@ -4,7 +4,7 @@ import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
-import 'package:dulno/product/card/card_element.dart';
+import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/request/request.dart';
@@ -15,11 +15,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class CardPage extends StatelessWidget {
+class CouponPage extends StatelessWidget {
   final Map<String, dynamic> content;
   final MapController mapController = MapController();
 
-  CardPage({super.key, required this.content});
+  CouponPage({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class CardPage extends StatelessWidget {
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(20),
-              child: createCardPageContent(context, partner),
+              child: createCouponPageContent(context, partner),
             ),
           ),
         );
@@ -56,7 +56,7 @@ class CardPage extends StatelessWidget {
     );
   }
 
-  Widget createCardPageContent(context, AsyncSnapshot<dynamic> partner) {
+  Widget createCouponPageContent(context, AsyncSnapshot<dynamic> partner) {
     return Skeletonizer(
       enabled: !partner.hasData,
       child: Column(
@@ -65,11 +65,11 @@ class CardPage extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(bottom: 20),
             alignment: Alignment.center,
-            child: CardElement(
+            child: CouponElement(
               isLoading: !partner.hasData,
               content: content,
-              animateLastStamp: false,
-              animateCard: false,
+              state: CouponElementState.redeemable,
+              unusable: false,
             ),
           ),
           new Divider(
@@ -99,14 +99,14 @@ class CardPage extends StatelessWidget {
             height: 20,
           ),
           LocaleText(
-            "product.card.about",
+            "product.coupon.about",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
           ),
           Text(
-            utf8.decode(findDescription().toString().codeUnits),
+            utf8.decode(content["couponDescription"].toString().codeUnits),
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[600],
@@ -118,7 +118,7 @@ class CardPage extends StatelessWidget {
             height: 20,
           ),
           LocaleText(
-            "product.card.links",
+            "product.coupon.links",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -129,7 +129,7 @@ class CardPage extends StatelessWidget {
             height: 20,
           ),
           LocaleText(
-            "product.card.locations",
+            "product.coupon.locations",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -156,14 +156,14 @@ class CardPage extends StatelessWidget {
                   alignment: Alignment.center),
               onPressed: () async {
                 Alert(
-                  description: "product.card.delete.alert",
+                  description: "product.coupon.delete.alert",
                   icon: CupertinoIcons.exclamationmark_triangle,
-                  confirmButtonText: "product.card.delete.continue",
+                  confirmButtonText: "product.coupon.delete.continue",
                   confirmButtonColor: Colors.redAccent,
                   cancelButton: true,
                   callback: () {
                     LoaderAlert().show(context);
-                    deleteCard(context);
+                    deleteCoupon(context);
                   },
                 ).show(context);
               },
@@ -179,7 +179,7 @@ class CardPage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   LocaleText(
-                    "product.card.delete",
+                    "product.coupon.delete",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 15,
@@ -195,18 +195,6 @@ class CardPage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String findDescription() {
-    var type = content["cardType"];
-    if (type == "COLLECTION") {
-      return content["rewardDescription"];
-    } else if (type == "VALUE") {
-      return content["valueDescription"];
-    } else if (type == "MEMBER") {
-      return content["memberDescription"];
-    }
-    return "";
   }
 
   Widget createMapElement(partner) {
@@ -243,10 +231,10 @@ class CardPage extends StatelessWidget {
     );
   }
 
-  void deleteCard(context) async {
-    var body = <String, Object>{"item": content["itemId"]};
-    var response =
-        await Request.post(url: "/user/card/delete/", body: body).send(context);
+  void deleteCoupon(context) async {
+    var body = <String, Object>{"coupon": content["redeemableId"]};
+    var response = await Request.post(url: "/user/coupon/delete/", body: body)
+        .send(context);
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return;
@@ -254,19 +242,19 @@ class CardPage extends StatelessWidget {
     var responseBody = jsonDecode(response.body);
     if (responseBody["success"] == false) {
       Alert(
-        description: "product.card.delete.failed",
-        type: AlertType.error
+        description: "product.coupon.delete.failed",
+        type: AlertType.error,
       ).show(context);
       return;
     }
-    deletionUpdateCardCache();
+    deletionUpdateCouponCache();
     Alert(
-      description: "product.card.delete.successful",
+      description: "product.coupon.delete.successful",
       type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(
-            pageBuilder: (_, __, ___) => ProductPage(),
+            pageBuilder: (_, __, ___) => ProductPage(initialPageIndex: 1),
           ),
           (route) => false,
         );
@@ -274,12 +262,13 @@ class CardPage extends StatelessWidget {
     ).show(context);
   }
 
-  Future<void> deletionUpdateCardCache() async {
+  Future<void> deletionUpdateCouponCache() async {
     const storage = FlutterSecureStorage();
-    final cardCache = await storage.read(key: "cards");
-    var cards = cardCache == null ? [] : jsonDecode(cardCache);
-    cards.removeWhere((card) => card["itemId"] == content["itemId"]);
-    await storage.write(key: "cards", value: jsonEncode(cards));
+    final couponCache = await storage.read(key: "coupons");
+    var coupons = couponCache == null ? [] : jsonDecode(couponCache);
+    coupons.removeWhere(
+        (coupon) => coupon["redeemableId"] == content["redeemableId"]);
+    await storage.write(key: "coupons", value: jsonEncode(coupons));
   }
 
   Future<dynamic> findPartner(context) async {

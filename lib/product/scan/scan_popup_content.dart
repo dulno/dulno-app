@@ -2,18 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
-import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 abstract class ScanPopupContent extends StatefulWidget {
   final Function callback;
-  final Function currentPageIndex;
 
-  const ScanPopupContent(
-      {super.key, required this.callback, required this.currentPageIndex});
+  const ScanPopupContent({super.key, required this.callback});
 }
 
 abstract class ScanPopupContentState<T extends ScanPopupContent>
@@ -100,7 +96,7 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
     Navigator.pop(context);
     Alert(
       description: "product.scan.error.scan",
-      icon: CupertinoIcons.exclamationmark_triangle,
+      type: AlertType.error,
     ).show(context);
   }
 
@@ -108,7 +104,7 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
     Navigator.pop(context);
     Alert(
       description: "product.scan.unsupported.description",
-      icon: CupertinoIcons.exclamationmark_triangle,
+      type: AlertType.error,
     ).show(context);
   }
 
@@ -121,33 +117,10 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
       Navigator.pop(context);
       Alert(
         description: "product.scan.error.nfc.tag",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
-    await redeemStamp(context, stamp, picc, cmac);
-  }
-
-  Future<void> redeemStamp(context, stamp, picc, cmac) async {
-    var redemption = StampRedemption(stamp: stamp, picc: picc, cmac: cmac);
-    var redemptionResult = await redemption.redeemProcessed(context);
-    if (!redemptionResult) {
-      return;
-    }
-    ScanCooldown().enable();
-    if (widget.currentPageIndex() == 0) {
-      widget.callback();
-      Navigator.pop(context);
-    } else {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              ProductPage(),
-          transitionDuration: Duration.zero,
-          reverseTransitionDuration: Duration.zero,
-        ),
-      );
-    }
+    widget.callback(stamp, picc, cmac);
   }
 }

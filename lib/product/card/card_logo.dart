@@ -13,7 +13,7 @@ class CardLogo {
 
   CardLogo({required this.cardId, required this.currentLogoId});
 
-  Future fetch() async {
+  Future fetch(context) async {
     if (cardId == null || currentLogoId == null) {
       return null;
     }
@@ -33,7 +33,7 @@ class CardLogo {
     }
     var body = <String, Object>{"card": cardId!};
     var response =
-        await Request.post(url: "/user/card/logo/", body: body).send();
+        await Request.post(url: "/user/card/logo/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       logo = SizedBox.shrink();
       return logo;

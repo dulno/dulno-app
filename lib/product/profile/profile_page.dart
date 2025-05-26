@@ -6,7 +6,6 @@ import 'package:dulno/product/profile/profile_sign_in_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -20,11 +19,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-      clientId:
-          "862018629934-j8dtsmu1vqcu4tuh09lkk8agoaop1cho.apps.googleusercontent.com",
-      serverClientId:
-          "862018629934-72a04nvjcku5unlfcp3v429f7i9o8008.apps.googleusercontent.com");
   Widget? accountContentElement;
 
   @override
@@ -61,69 +55,81 @@ class _ProfilePageState extends State<ProfilePage> {
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(height: 30),
-                    LocaleText(
-                      "product.profile.account",
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: 30),
+                        LocaleText(
+                          "product.profile.account",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 5),
+                        accountContent(),
+                        SizedBox(height: 30),
+                        LocaleText(
+                          "product.profile.language",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 10),
+                        ProfileLanguageSelection(),
+                        SizedBox(height: 30),
+                        LocaleText(
+                          "product.profile.notification",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 10),
+                        ProfileNotificationToggle(),
+                      ],
                     ),
-                    SizedBox(height: 5),
-                    accountContent(),
-                    SizedBox(height: 30),
-                    LocaleText(
-                      "product.profile.language",
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left,
+                    Column(
+                      children: [
+                        SizedBox(height: 50),
+                        Divider(
+                          color: Colors.grey[300],
+                          height: 2,
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Wrap(
+                            spacing: 16.0,
+                            runSpacing: 8.0,
+                            alignment: WrapAlignment.center,
+                            children: [
+                              ProfileFooterLink("product.profile.imprint",
+                                  "https://dulno.com/imprint/"),
+                              ProfileFooterLink(
+                                  "product.profile.terms.of.service",
+                                  "https://dulno.com/terms-of-service/"),
+                              ProfileFooterLink(
+                                  "product.profile.privacy.policy",
+                                  "https://dulno.com/privacy-policy/"),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        Align(
+                          alignment: Alignment.center,
+                          child: FutureBuilder<PackageInfo>(
+                            future: PackageInfo.fromPlatform(),
+                            builder: (context, snapshot) {
+                              return Text(
+                                "Version ${snapshot.data?.version ?? ""}",
+                                style: TextStyle(fontSize: 12),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                      ],
                     ),
-                    SizedBox(height: 10),
-                    ProfileLanguageSelection(),
-                    SizedBox(height: 30),
-                    LocaleText(
-                      "product.profile.notification",
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(height: 10),
-                    ProfileNotificationToggle(),
-                    SizedBox(height: 50),
-                    Divider(
-                      color: Colors.grey[300],
-                      height: 2,
-                    ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: Wrap(
-                        spacing: 16.0,
-                        runSpacing: 8.0,
-                        alignment: WrapAlignment.center,
-                        children: [
-                          ProfileFooterLink("product.profile.imprint",
-                              "https://dulno.com/imprint/"),
-                          ProfileFooterLink("product.profile.terms.of.service",
-                              "https://dulno.com/terms-of-service/"),
-                          ProfileFooterLink("product.profile.privacy.policy",
-                              "https://dulno.com/privacy-policy/"),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Align(
-                      alignment: Alignment.center,
-                      child: FutureBuilder<PackageInfo>(
-                        future: PackageInfo.fromPlatform(),
-                        builder: (context, snapshot) {
-                          return Text(
-                            "Version ${snapshot.data?.version ?? ""}",
-                            style: TextStyle(fontSize: 12),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 30),
                   ],
                 ),
               ),
@@ -145,13 +151,10 @@ class _ProfilePageState extends State<ProfilePage> {
         if (email.connectionState == ConnectionState.done) {
           if (email.data != null && email.data != "") {
             accountContentElement = ProfileAccountContent(
-                googleSignIn: _googleSignIn,
-                signInCallback: widget.signInCallback,
-                email: email.data ?? "");
+                signInCallback: widget.signInCallback, email: email.data ?? "");
           } else {
-            accountContentElement = ProfileSignInContent(
-                googleSignIn: _googleSignIn,
-                signInCallback: widget.signInCallback);
+            accountContentElement =
+                ProfileSignInContent(signInCallback: widget.signInCallback);
           }
           return accountContentElement!;
         }

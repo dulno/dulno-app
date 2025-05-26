@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
-import 'package:dulno/alert/alert_loader.dart';
+import 'package:dulno/alert/connection_alert.dart';
+import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/config/google_options.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
@@ -10,15 +12,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileGoogleAlert {
-  final GoogleSignIn googleSignIn;
   final Function signInCallback;
 
-  ProfileGoogleAlert(
-      {required this.googleSignIn, required this.signInCallback});
+  ProfileGoogleAlert({required this.signInCallback});
 
   show(context) {
     GlobalKey<ProfileGoogleAlertContentState> contentKey =
@@ -54,6 +53,7 @@ class ProfileGoogleAlert {
   Future<void> processGoogleSignIn(
       context, legalChecked, newsletterChecked) async {
     try {
+      var googleSignIn = GoogleOptions.googleSignIn;
       await googleSignIn.signOut();
       final account = await googleSignIn.signIn();
       if (account == null) {
@@ -64,14 +64,11 @@ class ProfileGoogleAlert {
       if (idToken == null) {
         return;
       }
-      AlertLoader().show(context);
+      LoaderAlert().show(context);
       await sendInternalGoogleSignInRequest(
           context, idToken, legalChecked, newsletterChecked);
     } catch (exception) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
     }
   }
 
@@ -81,20 +78,17 @@ class ProfileGoogleAlert {
     body.addAll(
         await ProfileSignUpBody().generate(legalChecked, newsletterChecked));
     var response =
-        await Request.post(url: "/user/bind/google/", body: body).send();
+        await Request.post(url: "/user/bind/google/", body: body).send(context);
     Navigator.pop(context);
     if (response == null || response.statusCode == 409) {
-      Alert(
-        description: "connection.failed",
-        icon: CupertinoIcons.exclamationmark_triangle,
-      ).show(context);
+      ConnectionAlert().show(context);
       return;
     }
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       Alert(
         description: "product.profile.google.connect.failure",
-        icon: CupertinoIcons.exclamationmark_triangle,
+        type: AlertType.error,
       ).show(context);
       return;
     }
@@ -102,17 +96,10 @@ class ProfileGoogleAlert {
   }
 
   void completeGoogleSignIn(context, responseBody) async {
-    const storage = FlutterSecureStorage();
-    await storage.write(key: "email", value: responseBody["email"]);
-    if (responseBody["user"] != null &&
-        responseBody["authenticationKey"] != null) {
-      await storage.write(key: "user", value: responseBody["user"]);
-      await storage.write(
-          key: "authenticationKey", value: responseBody["authenticationKey"]);
-    }
+    await storeSignInResponse(responseBody);
     Alert(
       description: "product.profile.google.connect.success",
-      icon: CupertinoIcons.check_mark_circled,
+      type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
           PageRouteBuilder(
@@ -123,6 +110,21 @@ class ProfileGoogleAlert {
       },
     ).show(context);
     signInCallback();
+  }
+
+  Future<void> storeSignInResponse(responseBody) async {
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "email", value: responseBody["email"]);
+    if (responseBody["user"] != null &&
+        responseBody["authenticationToken"] != null &&
+        responseBody["refreshToken"] != null) {
+      await storage.write(key: "user", value: responseBody["user"]);
+      await storage.write(
+          key: "authenticationToken",
+          value: responseBody["authenticationToken"]);
+      await storage.write(
+          key: "refreshToken", value: responseBody["refreshToken"]);
+    }
   }
 }
 

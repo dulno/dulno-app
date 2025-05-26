@@ -3,19 +3,22 @@ import 'dart:convert';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/request/request.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 class DiscoverBody extends ProductPageBody {
   DiscoverBody({super.key})
-      : super(name: "product.discover.label", icon: Icon(Icons.location_pin));
+      : super(
+            name: "product.discover.label",
+            unselectedIcon: CupertinoIcons.map,
+            selectedIcon: CupertinoIcons.map_fill);
 
   final MapController controller = MapController();
 
   @override
   Widget content(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findPartners(),
+      future: findPartners(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return OSMMap(
           partners: snapshot.data ?? [],
@@ -28,8 +31,8 @@ class DiscoverBody extends ProductPageBody {
     );
   }
 
-  Future<dynamic> findPartners() async {
-    var response = await Request.get(url: "/user/partners/").send();
+  Future<dynamic> findPartners(context) async {
+    var response = await Request.get(url: "/user/partners/").send(context);
     if (response == null || response.statusCode == 409) {
       return [];
     }

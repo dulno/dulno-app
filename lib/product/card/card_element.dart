@@ -46,7 +46,7 @@ class _CardElementState extends State<CardElement> {
     var backgroundColor =
         widget.isLoading ? Colors.white : parseColor("cardBackgroundColor");
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(),
+      future: _logo?.fetch(context),
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
           enabled: widget.isLoading,

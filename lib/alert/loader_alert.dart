@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AlertLoader extends StatefulWidget {
-  AlertLoader({super.key});
+class LoaderAlert extends StatefulWidget {
+  LoaderAlert({super.key});
 
   @override
-  State<AlertLoader> createState() => _AlertLoaderState();
+  State<LoaderAlert> createState() => _LoaderAlertState();
 
   show(context) {
     showDialog(context: context, builder: (BuildContext context) => this);
   }
 }
 
-class _AlertLoaderState extends State<AlertLoader> {
+class _LoaderAlertState extends State<LoaderAlert> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

@@ -1,21 +1,17 @@
 import 'package:dulno/alert/alert.dart';
+import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileAccountContent extends StatelessWidget {
-  final GoogleSignIn googleSignIn;
   final Function signInCallback;
   final String email;
 
   const ProfileAccountContent(
-      {super.key,
-      required this.googleSignIn,
-      required this.email,
-      required this.signInCallback});
+      {super.key, required this.email, required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -107,20 +103,17 @@ class ProfileAccountContent extends StatelessWidget {
   }
 
   void logout(context) async {
-    const storage = FlutterSecureStorage();
-    await storage.delete(key: "email");
-    await storage.delete(key: "user");
-    await storage.delete(key: "authenticationKey");
-    await googleSignIn.signOut();
+    LoaderAlert().show(context);
+    await ProfileLogout().logout(context);
     signInCallback();
-    Navigator.pushReplacement(
-      context,
+    Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) => ProfilePage(
                 signInCallback: signInCallback,
               ),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero),
+      (Route<dynamic> route) => route.isFirst,
     );
   }
 }

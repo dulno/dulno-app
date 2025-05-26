@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:dulno/product/base/page_body.dart';
-import 'package:dulno/product/card/card_element.dart';
-import 'package:dulno/product/card/card_list_empty.dart';
-import 'package:dulno/product/card/card_page.dart';
-import 'package:dulno/product/card/card_search_bar.dart';
+import 'package:dulno/product/coupon/coupon_element.dart';
+import 'package:dulno/product/coupon/coupon_list_empty.dart';
+import 'package:dulno/product/coupon/coupon_page.dart';
+import 'package:dulno/product/coupon/coupon_search_bar.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,19 +12,19 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class CardListBody extends ProductPageBody {
-  final GlobalKey<_CardListBodyContentState> _key =
-      GlobalKey<_CardListBodyContentState>();
+class CouponListBody extends ProductPageBody {
+  final GlobalKey<_CouponListBodyContentState> _key =
+      GlobalKey<_CouponListBodyContentState>();
 
-  CardListBody({super.key})
+  CouponListBody({super.key})
       : super(
-            name: "product.card.list.label",
-            unselectedIcon: CupertinoIcons.creditcard,
-            selectedIcon: CupertinoIcons.creditcard_fill);
+            name: "product.coupon.list.label",
+            unselectedIcon: CupertinoIcons.gift,
+            selectedIcon: CupertinoIcons.gift_fill);
 
   @override
   Widget content(BuildContext context) {
-    return CardListBodyContent(key: _key);
+    return CouponListBodyContent(key: _key);
   }
 
   void reload() {
@@ -36,19 +36,18 @@ class CardListBody extends ProductPageBody {
   }
 }
 
-class CardListBodyContent extends StatefulWidget {
-  const CardListBodyContent({super.key});
+class CouponListBodyContent extends StatefulWidget {
+  const CouponListBodyContent({super.key});
 
   @override
-  State<CardListBodyContent> createState() => _CardListBodyContentState();
+  State<CouponListBodyContent> createState() => _CouponListBodyContentState();
 }
 
-class _CardListBodyContentState extends State<CardListBodyContent> {
+class _CouponListBodyContentState extends State<CouponListBodyContent> {
   bool _loaded = false;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  List<dynamic> _cards = [];
-  List<dynamic> _previousCards = [];
+  List<dynamic> _coupons = [];
 
   @override
   void initState() {
@@ -60,8 +59,8 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
 
   void reload() async {
     const storage = FlutterSecureStorage();
-    final cardCache = await storage.read(key: "cards");
-    _cards = cardCache == null ? [] : jsonDecode(cardCache);
+    final couponCache = await storage.read(key: "coupons");
+    _coupons = couponCache == null ? [] : jsonDecode(couponCache);
     if (mounted) {
       setState(() {
         scrollToTop();
@@ -80,7 +79,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
   }
 
   Future<void> refresh(context) async {
-    await fetchCards(context, false);
+    await fetchCoupons(context, false);
     if (mounted) {
       setState(() {
         _searchController.text = "";
@@ -88,16 +87,16 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     }
   }
 
-  Future<void> fetchCards(context, reloadAfterwards) async {
+  Future<void> fetchCoupons(context, reloadAfterwards) async {
     const storage = FlutterSecureStorage();
     var body = <String, Object>{};
-    final cardCache = await storage.read(key: "cards");
-    var cards = (cardCache == null ? [] : jsonDecode(cardCache))
-        .map((card) => card["itemId"])
+    final couponCache = await storage.read(key: "coupons");
+    var coupons = (couponCache == null ? [] : jsonDecode(couponCache))
+        .map((coupon) => coupon["redeemableId"])
         .toList();
-    body["cards"] = cards;
+    body["coupons"] = coupons;
     var response =
-        await Request.post(url: "/user/cards/", body: body).send(context);
+        await Request.post(url: "/user/coupons/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
       return;
     }
@@ -105,35 +104,34 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     if (responseBody.isEmpty) {
       return;
     }
-    _cards = responseBody["items"];
-    await storage.write(key: "cards", value: jsonEncode(_cards));
+    _coupons = responseBody["coupons"];
+    await storage.write(key: "coupons", value: jsonEncode(_coupons));
     if (reloadAfterwards && mounted) {
       setState(() {});
     }
   }
 
-  Future<Widget> createCardElements(context, value) async {
+  Future<Widget> createCouponElements(context, value) async {
     if (!_loaded) {
       const storage = FlutterSecureStorage();
-      final cardCache = await storage.read(key: "cards");
-      _cards = cardCache == null ? [] : jsonDecode(cardCache);
-      _previousCards = _cards;
-      fetchCards(context, true);
+      final couponCache = await storage.read(key: "coupons");
+      _coupons = couponCache == null ? [] : jsonDecode(couponCache);
+      fetchCoupons(context, true);
       setState(() {
         _loaded = true;
       });
     }
-    if (_cards.isEmpty) {
-      return CardListEmptyContent(signInCallback: () {
+    if (_coupons.isEmpty) {
+      return CouponListEmptyContent(signInCallback: () {
         refresh(context);
       });
     }
-    _cards.sort(
+    _coupons.sort(
         (a, b) => (b["lastUpdate"] as num).compareTo(a["lastUpdate"] as num));
     var elements = <Widget>[];
-    for (var card in _cards) {
+    for (var coupon in _coupons) {
       if (value.toString().isEmpty ||
-          card["partnerName"]
+          coupon["partnerName"]
               .toString()
               .toLowerCase()
               .contains(value.toString().toLowerCase())) {
@@ -142,26 +140,25 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CardPage(content: card)));
+                    builder: (context) => CouponPage(content: coupon)));
           },
           child: Container(
             margin: const EdgeInsets.only(bottom: 20),
-            child: CardElement(
-              key: ValueKey(card["itemId"].toString()),
+            child: CouponElement(
+              key: ValueKey(coupon["redeemableId"].toString()),
               isLoading: false,
-              content: card,
-              animateLastStamp: detectCardStampUpdate(card),
-              animateCard: detectNewCard(card),
+              content: coupon,
+              state: CouponElementState.redeemable,
+              unusable: false,
             ),
           ),
         ));
       }
     }
-    _previousCards = _cards;
     if (elements.isEmpty) {
       elements.add(
         LocaleText(
-          "product.card.list.empty",
+          "product.coupon.list.empty",
           textAlign: TextAlign.center,
         ),
       );
@@ -183,7 +180,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
             width: 360,
             child: Column(
               children: [
-                CardSearchBar(
+                CouponSearchBar(
                   controller: _searchController,
                 ),
                 ...elements
@@ -195,30 +192,6 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     );
   }
 
-  bool detectCardStampUpdate(card) {
-    var previousCardOptional =
-        _previousCards.where((entry) => entry["itemId"] == card["itemId"]);
-    if (previousCardOptional.isEmpty) {
-      return card["cardType"] == "COLLECTION";
-    }
-    var previousCard = previousCardOptional.first;
-    var type = previousCard["cardType"];
-    if (type == "COLLECTION" || type == "VALUE") {
-      return previousCard["stamps"] != card["stamps"];
-    }
-    return false;
-  }
-
-  bool detectNewCard(card) {
-    var previousCardOptional =
-        _previousCards.where((entry) => entry["itemId"] == card["itemId"]);
-    if (previousCardOptional.isNotEmpty) {
-      return false;
-    }
-    var type = card["cardType"];
-    return type == "VALUE" || type == "MEMBER";
-  }
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -227,7 +200,7 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
         valueListenable: _searchController,
         builder: (context, value, child) {
           return FutureBuilder<Widget>(
-            future: createCardElements(context, value.text),
+            future: createCouponElements(context, value.text),
             builder: (context, AsyncSnapshot<Widget> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting &&
                   !_loaded) {
@@ -253,20 +226,20 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
                         ),
                         Container(
                           margin: const EdgeInsets.only(bottom: 20),
-                          child: CardElement(
+                          child: CouponElement(
                             isLoading: true,
                             content: {},
-                            animateLastStamp: false,
-                            animateCard: false,
+                            state: CouponElementState.redeemable,
+                            unusable: false,
                           ),
                         ),
                         Container(
                           margin: const EdgeInsets.only(bottom: 20),
-                          child: CardElement(
+                          child: CouponElement(
                             isLoading: true,
                             content: {},
-                            animateLastStamp: false,
-                            animateCard: false,
+                            state: CouponElementState.redeemable,
+                            unusable: false,
                           ),
                         ),
                       ],
