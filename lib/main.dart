@@ -10,6 +10,7 @@ import 'package:dulno/product/coupon/coupon_cache.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
+import 'package:dulno/product/scan/scan_flashlight.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:dulno/request/request.dart';
 import 'package:dulno/statistic/statistic.dart';
@@ -52,9 +53,18 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       );
     }
     _initDeepLinks();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkAuthorization(context);
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        Future.delayed(
+          Duration(milliseconds: 500),
+          () async {
+            await checkAuthorization(context);
+            ScanCache().redeem(context);
+            CouponCache().redeem(context);
+          },
+        );
+      },
+    );
   }
 
   void _initDeepLinks() async {
@@ -96,53 +106,42 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitDown,
     ]);
     DulnoStatistic().keep(context);
-    return FutureBuilder<void>(
-      future: checkCache(context),
-      builder: (context, AsyncSnapshot<void> redemptionSnapshot) {
-        return FutureBuilder<String>(
-          future: findLanguage(),
-          builder: (context, AsyncSnapshot<String> languageSnapshot) {
-            return MultiProvider(
-              providers: [
-                ChangeNotifierProvider(
-                    create: (_) =>
-                        ProfileLanguageState(languageSnapshot.data ?? "de")),
-              ],
-              child: LocaleBuilder(
-                builder: (locale) => MaterialApp(
-                  title: 'Dulno',
-                  theme: ThemeData(
-                    useMaterial3: true,
-                    primaryColor: Colors.black,
-                    colorScheme: ColorScheme.light(
-                        primary: Color(0xFF2196F3),
-                        background: Color(0xFFE8E8E8)),
-                  ),
-                  home: Builder(
-                    builder: (context) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        processDeepLink(context, _productPageKey);
-                      });
-                      return ProductPage(key: _productPageKey);
-                    },
-                  ),
-                  debugShowCheckedModeBanner: false,
-                  localizationsDelegates: Locales.delegates,
-                  supportedLocales: Locales.supportedLocales,
-                  locale: locale,
-                  navigatorKey: navigatorKey,
-                ),
+    return FutureBuilder<String>(
+      future: findLanguage(),
+      builder: (context, AsyncSnapshot<String> languageSnapshot) {
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+                create: (_) =>
+                    ProfileLanguageState(languageSnapshot.data ?? "de")),
+          ],
+          child: LocaleBuilder(
+            builder: (locale) => MaterialApp(
+              title: 'Dulno',
+              theme: ThemeData(
+                useMaterial3: true,
+                primaryColor: Colors.black,
+                colorScheme: ColorScheme.light(
+                    primary: Color(0xFF2196F3), background: Color(0xFFE8E8E8)),
               ),
-            );
-          },
+              home: Builder(
+                builder: (context) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    processDeepLink(context, _productPageKey);
+                  });
+                  return ProductPage(key: _productPageKey);
+                },
+              ),
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: Locales.delegates,
+              supportedLocales: Locales.supportedLocales,
+              locale: locale,
+              navigatorKey: navigatorKey,
+            ),
+          ),
         );
       },
     );
-  }
-
-  Future<void> checkCache(context) async {
-    await ScanCache().redeem(context);
-    await CouponCache().redeem(context);
   }
 
   Future<String> findLanguage() async {
@@ -186,6 +185,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
           return;
         }
         ScanCooldown().enable();
+        if (Platform.isAndroid) {
+          ScanFlashlight().flashlight();
+        }
         if (key.currentState != null && key.currentState!.mounted) {
           key.currentState!.findCardListBody().reload();
           Navigator.pop(context);
