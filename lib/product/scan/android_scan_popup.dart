@@ -1,9 +1,9 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:dulno/product/scan/scan_flashlight.dart';
 import 'package:dulno/product/scan/scan_popup_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:torch_light/torch_light.dart';
 
 class AndroidScanPopupContent extends ScanPopupContent {
   const AndroidScanPopupContent({super.key, required super.callback});
@@ -34,20 +34,12 @@ class AndroidScanPopupContentState
           if (mounted) {
             setState(() {
               scanned = true;
-              flashlight();
+              ScanFlashlight().flashlight();
             });
           }
         },
       );
     }
-  }
-
-  void flashlight() async {
-    try {
-      await TorchLight.enableTorch();
-      await Future.delayed(Duration(milliseconds: 200));
-      await TorchLight.disableTorch();
-    } catch (exception) {}
   }
 
   @override
