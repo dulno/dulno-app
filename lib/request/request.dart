@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-import 'package:dulno/alert/alert.dart';
 import 'package:dulno/config/environment_options.dart';
-import 'package:dulno/product/base/page.dart';
-import 'package:dulno/product/profile/profile_logout.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dulno/request/request_refresh.dart';
+import 'package:dulno/request/request_reset.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 
@@ -13,6 +11,7 @@ class Request {
   final String method;
   final Map<String, String> headers;
   final Map<String, Object> body;
+  static final RequestRefresh _refresh = RequestRefresh();
 
   Request.get(
       {required String url, this.headers = const {}, this.body = const {}})
@@ -35,11 +34,11 @@ class Request {
     }
     var response = await generateResponse(headers);
     if (response?.statusCode == 403) {
-      await reset(context);
+      await RequestReset().reset(context);
       return response;
     }
     if (response?.statusCode == 417) {
-      var refreshResult = await refresh(context);
+      var refreshResult = await _refresh.refresh(context);
       if (refreshResult == true) {
         return await send(context);
       }
@@ -66,49 +65,5 @@ class Request {
     } else {
       throw UnsupportedError("Unsupported HTTP method: $method");
     }
-  }
-
-  refresh(context) async {
-    const storage = FlutterSecureStorage();
-    final refreshToken = await storage.read(key: "refreshToken") ?? "";
-    if (refreshToken == "") {
-      await reset(context);
-      return false;
-    }
-    var response = await Request.post(
-        url: "/user/authorization/refresh/",
-        body: <String, String>{"refreshToken": refreshToken}).send(context);
-    if (response == null || response.statusCode == 409) {
-      return false;
-    }
-    var responseBody = jsonDecode(response.body);
-    if (responseBody["success"] == false) {
-      await reset(context);
-      return false;
-    }
-    await storage.write(
-        key: "authenticationToken", value: responseBody["authenticationToken"]);
-    await storage.write(
-        key: "refreshToken", value: responseBody["refreshToken"]);
-    return true;
-  }
-
-  reset(context) async {
-    await ProfileLogout().reset(context);
-    Alert(
-      description: "connection.logout",
-      icon: CupertinoIcons.exclamationmark_triangle,
-      callback: () {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                ProductPage(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
-      },
-    ).show(context);
   }
 }
