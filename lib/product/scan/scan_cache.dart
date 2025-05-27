@@ -37,7 +37,6 @@ class ScanCache {
     const storage = FlutterSecureStorage();
     await storage.write(key: "scans", value: jsonEncode(remainingScans));
     if (remainingScans.isEmpty) {
-      debugPrint("SHOW");
       Alert(
         description: "product.scan.cache.redemption.successful",
         type: AlertType.success,

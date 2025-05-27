@@ -41,6 +41,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   final GlobalKey<ProductPageState> _productPageKey =
       GlobalKey<ProductPageState>();
   final AppLinks _appLinks = AppLinks();
+  bool _initialized = false;
   Uri? _deepLinkUri;
 
   @override
@@ -53,18 +54,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       );
     }
     _initDeepLinks();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) async {
-        Future.delayed(
-          Duration(milliseconds: 500),
-          () async {
-            await checkAuthorization(context);
-            ScanCache().redeem(context);
-            CouponCache().redeem(context);
-          },
-        );
-      },
-    );
   }
 
   void _initDeepLinks() async {
@@ -127,6 +116,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
               home: Builder(
                 builder: (context) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
+                    checkInitialization(context);
                     processDeepLink(context, _productPageKey);
                   });
                   return ProductPage(key: _productPageKey);
@@ -148,6 +138,16 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     const storage = FlutterSecureStorage();
     final language = await storage.read(key: "language") ?? "de";
     return language;
+  }
+
+  void checkInitialization(context) async {
+    if (_initialized) {
+      return;
+    }
+    _initialized = true;
+    await checkAuthorization(context);
+    ScanCache().redeem(context);
+    CouponCache().redeem(context);
   }
 
   void processDeepLink(context, key) async {
