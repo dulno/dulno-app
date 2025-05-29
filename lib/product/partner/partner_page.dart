@@ -1,4 +1,7 @@
+import 'package:dulno/dropdown/dropdown.dart';
 import 'package:dulno/product/partner/partner_overview.dart';
+import 'package:dulno/product/partner/partner_report_menu_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PartnerPage extends StatelessWidget {
@@ -13,11 +16,19 @@ class PartnerPage extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace),
+          icon: Icon(CupertinoIcons.arrow_left),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
+        actions: <Widget>[
+          Dropdown(
+            icon: Icon(CupertinoIcons.ellipsis),
+            items: [
+              PartnerReportMenuItem(context: context, partner: partner["id"])
+            ],
+          )
+        ],
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),

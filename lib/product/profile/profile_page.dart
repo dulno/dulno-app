@@ -3,6 +3,7 @@ import 'package:dulno/product/profile/profile_footer_link.dart';
 import 'package:dulno/product/profile/profile_language_selection.dart';
 import 'package:dulno/product/profile/profile_notification_toggle.dart';
 import 'package:dulno/product/profile/profile_sign_in_content.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -28,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace),
+          icon: Icon(CupertinoIcons.arrow_left),
           onPressed: () {
             Navigator.pop(context);
           },

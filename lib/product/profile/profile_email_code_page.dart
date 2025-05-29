@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -27,7 +28,7 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace),
+          icon: Icon(CupertinoIcons.arrow_left),
           onPressed: () {
             Navigator.pop(context);
           },

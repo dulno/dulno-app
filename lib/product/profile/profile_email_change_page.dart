@@ -6,6 +6,7 @@ import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
 import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -30,7 +31,7 @@ class _ProfileEmailChangePageState extends State<ProfileEmailChangePage> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace),
+          icon: Icon(CupertinoIcons.arrow_left),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -156,8 +157,9 @@ class _ProfileEmailChangePageState extends State<ProfileEmailChangePage> {
       "email": _controller.text,
       "language": language
     };
-    var response = await Request.post(url: "/user/email/change/request/", body: body)
-        .send(context);
+    var response =
+        await Request.post(url: "/user/email/change/request/", body: body)
+            .send(context);
     setState(() {
       _connecting = false;
     });

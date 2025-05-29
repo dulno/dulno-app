@@ -94,6 +94,14 @@
   "product.partner.link.facebook": "Facebook",
   "product.partner.link.tiktok": "TikTok",
 
+  "product.partner.report": "Melden",
+  "product.partner.report.title": "Partner melden",
+  "product.partner.report.description": "Beschreiben Sie so genau wie möglich, was Sie für berichtenswert halten:",
+  "product.partner.report.message.placeholder": "Nachricht",
+  "product.partner.report.submit": "Einreichen",
+  "product.partner.report.success": "Partner erfolgreich gemeldet. Vielen Dank für Ihre Hilfe",
+  "product.partner.report.failure": "Bei der Meldung des Partners ist etwas schief gelaufen. Bitte versuchen Sie es später noch einmal",
+
   "product.profile.title": "Profil",
   "product.profile.account": "Konto",
   "product.profile.account.disclaimer.headline": "Hinweis",

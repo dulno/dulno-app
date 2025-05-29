@@ -7,6 +7,7 @@ import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -38,7 +39,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace),
+          icon: Icon(CupertinoIcons.arrow_left),
           onPressed: () {
             Navigator.pop(context);
           },

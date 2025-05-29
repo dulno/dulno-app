@@ -94,6 +94,14 @@
   "product.partner.link.facebook": "Facebook",
   "product.partner.link.tiktok": "TikTok",
 
+  "product.partner.report": "Report",
+  "product.partner.report.title": "Report partner",
+  "product.partner.report.description": "Describe as precisely as possible what you think is worth reporting:",
+  "product.partner.report.message.placeholder": "Message",
+  "product.partner.report.submit": "Submit",
+  "product.partner.report.success": "Partner successfully reported. Thank you for your help",
+  "product.partner.report.failure": "Something went wrong while reporting the partner. Please try again later",
+
   "product.profile.title": "Profile",
   "product.profile.account": "Account",
   "product.profile.account.disclaimer.headline": "Disclaimer",
