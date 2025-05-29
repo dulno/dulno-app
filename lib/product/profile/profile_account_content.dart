@@ -1,5 +1,6 @@
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/product/profile/profile_email_change_page.dart';
 import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,53 +49,95 @@ class ProfileAccountContent extends StatelessWidget {
                 ),
                 textAlign: TextAlign.left,
               ),
-              SizedBox(height: 15),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
+              SizedBox(height: 20),
+              OverflowBar(
+                alignment: MainAxisAlignment.spaceBetween,
+                overflowAlignment: OverflowBarAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.black),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                        ),
+                        padding: WidgetStateProperty.all(
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 8)),
+                        alignment: Alignment.center),
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileEmailChangePage(),
+                        ),
+                      );
+                    },
+                    icon: Container(
+                      margin: EdgeInsets.only(right: 2),
+                      child: Icon(
+                        Icons.email_outlined,
+                        color: Colors.white,
+                        size: 21,
                       ),
-                      padding: WidgetStateProperty.all(
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 8)),
-                      alignment: Alignment.center),
-                  onPressed: () async {
-                    Alert(
-                      description: "product.profile.logout.alert",
-                      icon: CupertinoIcons.exclamationmark_triangle,
-                      confirmButtonText: "product.profile.logout.continue",
-                      confirmButtonColor: Colors.redAccent,
-                      cancelButton: true,
-                      callback: () {
-                        logout(context);
-                      },
-                    ).show(context);
-                  },
-                  icon: Container(
-                    margin: EdgeInsets.only(right: 2),
-                    child: Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                      size: 21,
+                    ),
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        LocaleText(
+                          "product.profile.email.change",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LocaleText(
-                        "product.profile.logout",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
+                  ElevatedButton.icon(
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.indigo),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
+                        padding: WidgetStateProperty.all(
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 8)),
+                        alignment: Alignment.center),
+                    onPressed: () async {
+                      Alert(
+                        description: "product.profile.logout.alert",
+                        icon: CupertinoIcons.exclamationmark_triangle,
+                        confirmButtonText: "product.profile.logout.continue",
+                        confirmButtonColor: Colors.redAccent,
+                        cancelButton: true,
+                        callback: () {
+                          logout(context);
+                        },
+                      ).show(context);
+                    },
+                    icon: Container(
+                      margin: EdgeInsets.only(right: 2),
+                      child: Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                        size: 21,
                       ),
-                    ],
+                    ),
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        LocaleText(
+                          "product.profile.logout",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                ],
+              )
             ],
           ),
         ),

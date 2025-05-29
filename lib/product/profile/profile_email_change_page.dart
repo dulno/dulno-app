@@ -5,28 +5,20 @@ import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_email_code_page.dart';
-import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class ProfileEmailConnectPage extends StatefulWidget {
-  final Function signInCallback;
-
-  const ProfileEmailConnectPage({super.key, required this.signInCallback});
+class ProfileEmailChangePage extends StatefulWidget {
+  const ProfileEmailChangePage({super.key});
 
   @override
-  State<ProfileEmailConnectPage> createState() =>
-      _ProfileEmailConnectPageState();
+  State<ProfileEmailChangePage> createState() => _ProfileEmailChangePageState();
 }
 
-class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
+class _ProfileEmailChangePageState extends State<ProfileEmailChangePage> {
   final TextEditingController _controller = TextEditingController();
-  bool _legalChecked = false;
-  bool _newsletterChecked = false;
   bool _isEmailValid = false;
   bool _hasTyped = false;
   bool _connecting = false;
@@ -59,7 +51,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
             children: [
               SizedBox(height: 30),
               LocaleText(
-                "product.profile.email.connect.headline",
+                "product.profile.email.change.headline",
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
@@ -75,7 +67,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                   hintStyle: TextStyle(color: Colors.grey[500]),
                   hintText: Locales.string(
                     context,
-                    "product.profile.email.connect.placeholder",
+                    "product.profile.email.change.placeholder",
                   ),
                   prefixIcon: Icon(
                     Icons.email,
@@ -91,100 +83,13 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                   fillColor: Colors.grey[200],
                 ),
               ),
-              SizedBox(height: 10),
-              CheckboxListTile(
-                title: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                    children: [
-                      TextSpan(
-                        text: Locales.string(
-                            context, "product.legal.compliant.1"),
-                      ),
-                      TextSpan(
-                        text: Locales.string(
-                            context, "product.legal.terms.of.service"),
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () async {
-                            await launchUrl(Uri.parse(
-                                "https://dulno.com/terms-of-service/"));
-                          },
-                      ),
-                      TextSpan(
-                        text: Locales.string(
-                            context, "product.legal.compliant.2"),
-                      ),
-                      TextSpan(
-                        text: Locales.string(
-                            context, "product.legal.privacy.policy"),
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () async {
-                            await launchUrl(
-                                Uri.parse("https://dulno.com/privacy-policy/"));
-                          },
-                      ),
-                      TextSpan(
-                        text: Locales.string(
-                            context, "product.legal.compliant.3"),
-                      ),
-                    ],
-                  ),
-                ),
-                value: _legalChecked,
-                onChanged: (bool? newValue) {
-                  setState(() {
-                    _legalChecked = newValue!;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-                // checkbox before text
-                activeColor: Colors.indigo, // optional styling
-              ),
-              CheckboxListTile(
-                title: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                    children: [
-                      TextSpan(
-                        text:
-                            Locales.string(context, "product.legal.newsletter"),
-                      ),
-                    ],
-                  ),
-                ),
-                value: _newsletterChecked,
-                onChanged: (bool? newValue) {
-                  setState(() {
-                    _newsletterChecked = newValue!;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-                // checkbox before text
-                activeColor: Colors.indigo, // optional styling
-              ),
               SizedBox(height: 50),
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton.icon(
                   style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(
-                          (_isEmailValid && _legalChecked)
-                              ? Colors.indigo
-                              : Colors.indigo[200]),
+                          _isEmailValid ? Colors.indigo : Colors.indigo[200]),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
@@ -192,15 +97,15 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                       padding: WidgetStateProperty.all(
                           EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
                       alignment: Alignment.center),
-                  onPressed: (_isEmailValid && _legalChecked)
+                  onPressed: _isEmailValid
                       ? () {
-                          requestBinding(context);
+                          requestEmailChange(context);
                         }
                       : null,
                   icon: Container(
                     margin: EdgeInsets.only(right: 5),
                     child: Icon(
-                      Icons.login,
+                      Icons.send,
                       color: Colors.white,
                       size: 25,
                     ),
@@ -209,7 +114,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       LocaleText(
-                        "product.profile.email.connect.button",
+                        "product.profile.email.change.button",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -241,7 +146,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     );
   }
 
-  void requestBinding(context) async {
+  void requestEmailChange(context) async {
     setState(() {
       _connecting = true;
     });
@@ -251,7 +156,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
       "email": _controller.text,
       "language": language
     };
-    var response = await Request.post(url: "/user/bind/request/", body: body)
+    var response = await Request.post(url: "/user/email/change/request/", body: body)
         .send(context);
     setState(() {
       _connecting = false;
@@ -262,16 +167,27 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     }
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
-      Alert(
-        description: "product.profile.email.connect.failure.email.format",
-        type: AlertType.error,
-      ).show(context);
+      displayEmailChangeRequestError(context, responseBody["error"]);
       return;
     }
-    displayBindingCodePage(context, responseBody["user"]);
+    displayEmailChangeCodePage(context);
   }
 
-  void displayBindingCodePage(context, user) {
+  void displayEmailChangeRequestError(context, error) {
+    var description = "";
+    if (error == 1000) {
+      description = "product.profile.email.change.failure.email.format";
+    } else if (error == 1001) {
+      description = "product.profile.email.change.failure.already.used";
+    }
+    Alert(
+      description: description,
+      type: AlertType.error,
+    ).show(context);
+    return;
+  }
+
+  void displayEmailChangeCodePage(context) {
     var codeController = TextEditingController();
     Navigator.push(
       context,
@@ -280,20 +196,19 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
           controller: codeController,
           email: _controller.text,
           callback: (code) async {
-            completeBinding(context, codeController, user, code);
+            completeEmailChange(context, codeController, code);
           },
         ),
       ),
     );
   }
 
-  void completeBinding(context, codeController, user, code) async {
+  void completeEmailChange(context, codeController, code) async {
     LoaderAlert().show(context);
-    var body = <String, Object>{"code": code, "user": user};
-    body.addAll(
-        await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
-    var response = await Request.post(url: "/user/bind/complete/", body: body)
-        .send(context);
+    var body = <String, Object>{"code": code};
+    var response =
+        await Request.post(url: "/user/email/change/complete/", body: body)
+            .send(context);
     Navigator.pop(context);
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
@@ -302,15 +217,12 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       codeController.text = "";
-      Alert(
-        description: "product.profile.email.connect.failure.complete",
-        type: AlertType.error,
-      ).show(context);
+      displayEmailChangeCompleteError(context, responseBody["error"]);
       return;
     }
-    await storeSignInResponse(responseBody);
+    await storeEmailChangeResponse(responseBody);
     Alert(
-      description: "product.profile.email.connect.success",
+      description: "product.profile.email.change.success",
       type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(
@@ -321,22 +233,27 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
         );
       },
     ).show(context);
-    widget.signInCallback();
   }
 
-  Future<void> storeSignInResponse(responseBody) async {
+  void displayEmailChangeCompleteError(context, error) {
+    var description = "";
+    if (error == 1000) {
+      description = "product.profile.email.change.failure.expired";
+    } else if (error == 1001) {
+      description = "product.profile.email.change.failure.code";
+    } else if (error == 1002) {
+      description = "product.profile.email.change.failure.already.used";
+    }
+    Alert(
+      description: description,
+      type: AlertType.error,
+    ).show(context);
+    return;
+  }
+
+  Future<void> storeEmailChangeResponse(responseBody) async {
     const storage = FlutterSecureStorage();
     await storage.write(key: "email", value: _controller.text);
-    if (responseBody["user"] != null &&
-        responseBody["authenticationToken"] != null &&
-        responseBody["refreshToken"] != null) {
-      await storage.write(key: "user", value: responseBody["user"]);
-      await storage.write(
-          key: "authenticationToken",
-          value: responseBody["authenticationToken"]);
-      await storage.write(
-          key: "refreshToken", value: responseBody["refreshToken"]);
-    }
   }
 
   void _checkEmail(String value) {

@@ -6,13 +6,14 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 class ProfileEmailCodePage extends StatefulWidget {
   final TextEditingController controller;
   final String email;
-  final Function(String) signInCallback;
+  final Function(String) callback;
 
-  const ProfileEmailCodePage(
-      {super.key,
-      required this.controller,
-      required this.email,
-      required this.signInCallback});
+  const ProfileEmailCodePage({
+    super.key,
+    required this.controller,
+    required this.email,
+    required this.callback,
+  });
 
   @override
   State<ProfileEmailCodePage> createState() => _ProfileEmailCodePageState();
@@ -117,7 +118,7 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
                   FilteringTextInputFormatter.digitsOnly
                 ],
                 onCompleted: (v) {
-                  widget.signInCallback(v);
+                  widget.callback(v);
                 },
               ),
             ],
