@@ -79,9 +79,11 @@ class CouponRedemption {
     };
     const storage = FlutterSecureStorage();
     final redemptionCache = await storage.read(key: "redemptionCache");
-    var redemptionList = redemptionCache == null ? [] : jsonDecode(redemptionCache);
+    var redemptionList =
+        redemptionCache == null ? [] : jsonDecode(redemptionCache);
     redemptionList.add(redemption);
-    await storage.write(key: "redemptionCache", value: jsonEncode(redemptionList));
+    await storage.write(
+        key: "redemptionCache", value: jsonEncode(redemptionList));
     Navigator.pop(context);
     Alert(
       description: "product.coupon.redemption.connection.cache",

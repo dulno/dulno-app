@@ -25,13 +25,12 @@ class CouponElement extends StatefulWidget {
   final CouponElementState state;
   final bool unusable;
 
-  const CouponElement({
-    super.key,
-    required this.isLoading,
-    required this.content,
-    required this.state,
-    required this.unusable
-  });
+  const CouponElement(
+      {super.key,
+      required this.isLoading,
+      required this.content,
+      required this.state,
+      required this.unusable});
 
   @override
   State<CouponElement> createState() => _CouponElementState();

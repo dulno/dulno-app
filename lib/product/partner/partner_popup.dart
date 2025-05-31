@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:dulno/product/partner/discover_map_directions.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
+import 'package:dulno/product/partner/partner_report_popup.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -77,29 +79,44 @@ class _DraggablePopupState extends State<PartnerPopup> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 5),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: _logo?.logo == null
-                                  ? Skeleton.leaf(
-                                      child: Container(
-                                        height: 90,
-                                        width: 90,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[300],
-                                          borderRadius:
-                                              BorderRadius.circular(25),
+                            Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: _logo?.logo == null
+                                      ? Skeleton.leaf(
+                                          child: Container(
+                                            height: 90,
+                                            width: 90,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[300],
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 90,
+                                          constraints: BoxConstraints(
+                                            maxWidth: 135,
+                                          ),
+                                          child: _logo?.logo!,
                                         ),
-                                      ),
-                                    )
-                                  : Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 135,
-                                        maxHeight: 90,
-                                      ),
-                                      child: _logo?.logo!,
-                                    ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    icon: Icon(CupertinoIcons.flag),
+                                    onPressed: () {
+                                      PartnerReportPopup(
+                                              partner: widget.partner["id"])
+                                          .show(context);
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 40),
+                            SizedBox(height: 30),
                             Text(
                               utf8.decode(
                                   widget.partner["name"].toString().codeUnits),

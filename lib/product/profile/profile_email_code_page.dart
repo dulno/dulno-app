@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -6,13 +7,14 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 class ProfileEmailCodePage extends StatefulWidget {
   final TextEditingController controller;
   final String email;
-  final Function(String) signInCallback;
+  final Function(String) callback;
 
-  const ProfileEmailCodePage(
-      {super.key,
-      required this.controller,
-      required this.email,
-      required this.signInCallback});
+  const ProfileEmailCodePage({
+    super.key,
+    required this.controller,
+    required this.email,
+    required this.callback,
+  });
 
   @override
   State<ProfileEmailCodePage> createState() => _ProfileEmailCodePageState();
@@ -26,7 +28,7 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace),
+          icon: Icon(CupertinoIcons.arrow_left),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -117,7 +119,7 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
                   FilteringTextInputFormatter.digitsOnly
                 ],
                 onCompleted: (v) {
-                  widget.signInCallback(v);
+                  widget.callback(v);
                 },
               ),
             ],

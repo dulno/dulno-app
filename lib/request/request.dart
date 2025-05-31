@@ -12,6 +12,9 @@ class Request {
   final Map<String, String> headers;
   final Map<String, Object> body;
   static final RequestRefresh _refresh = RequestRefresh();
+  static const int _timeout = 5;
+  static const int _maxRetries = 3;
+  int _retries = 0;
 
   Request.get(
       {required String url, this.headers = const {}, this.body = const {}})
@@ -33,6 +36,16 @@ class Request {
       headers["Authorization"] = "Bearer $authenticationToken";
     }
     var response = await generateResponse(headers);
+    return processResponse(context, response, headers);
+  }
+
+  Future<Response?> processResponse(context, response, headers) async {
+    if (response == null && _retries < _maxRetries) {
+      _retries += 1;
+      await Future.delayed(Duration(milliseconds: 500 * _retries));
+      var response = await generateResponse(headers);
+      return processResponse(context, response, headers);
+    }
     if (response?.statusCode == 403) {
       await RequestReset().reset(context);
       return response;
@@ -50,7 +63,8 @@ class Request {
   Future<Response?> generateResponse(headers) async {
     if (method == "GET") {
       try {
-        return await get(Uri.parse(url), headers: headers);
+        return await get(Uri.parse(url), headers: headers)
+            .timeout(const Duration(seconds: _timeout));
       } catch (exception) {
         return null;
       }
@@ -58,7 +72,8 @@ class Request {
       try {
         Map<String, Object> body = Map.from(this.body);
         return await post(Uri.parse(url),
-            headers: headers, body: jsonEncode(body));
+                headers: headers, body: jsonEncode(body))
+            .timeout(const Duration(seconds: _timeout));
       } catch (exception) {
         return null;
       }

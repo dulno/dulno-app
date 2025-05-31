@@ -2,11 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
-enum AlertType {
-  success,
-  error,
-  neutral
-}
+enum AlertType { success, error, neutral }
 
 class Alert extends StatefulWidget {
   AlertType? type;
