@@ -94,6 +94,14 @@
   "product.partner.link.facebook": "Facebook",
   "product.partner.link.tiktok": "TikTok",
 
+  "product.partner.report": "Report",
+  "product.partner.report.title": "Report partner",
+  "product.partner.report.description": "Describe as precisely as possible what you think is worth reporting:",
+  "product.partner.report.message.placeholder": "Message",
+  "product.partner.report.submit": "Submit",
+  "product.partner.report.success": "Partner successfully reported. Thank you for your help",
+  "product.partner.report.failure": "Something went wrong while reporting the partner. Please try again later",
+
   "product.profile.title": "Profile",
   "product.profile.account": "Account",
   "product.profile.account.disclaimer.headline": "Disclaimer",
@@ -106,6 +114,7 @@
   "product.profile.logout": "Logout",
   "product.profile.logout.alert": "Warning: Any new card you collect from now on will no longer be linked to your e-mail address until you log in again.",
   "product.profile.logout.continue": "Log out now",
+  "product.profile.email.change": "Change e-mail",
   "product.profile.language": "Language",
   "product.profile.notification": "Notifications",
   "product.profile.notification.description": "Receive notifications",
@@ -119,6 +128,15 @@
   "product.profile.email.connect.success": "Email connection was successful",
   "product.profile.email.connect.failure.email.format": "The email you entered could not be found",
   "product.profile.email.connect.failure.complete": "The code entered is incorrect. Please try again",
+
+  "product.profile.email.change.headline": "Change email",
+  "product.profile.email.change.placeholder": "Email",
+  "product.profile.email.change.button": "Change email",
+  "product.profile.email.change.success": "Email changing was successful",
+  "product.profile.email.change.failure.email.format": "The email you entered could not be found",
+  "product.profile.email.change.failure.already.used": "The new e-mail address is already taken. Please choose another email",
+  "product.profile.email.change.failure.expired": "The code has expired. Please request a new email change",
+  "product.profile.email.change.failure.code": "The code entered is incorrect. Please try again",
 
   "product.legal.compliant.1": "Do you agree to our and ",
   "product.legal.terms.of.service": "terms of service",

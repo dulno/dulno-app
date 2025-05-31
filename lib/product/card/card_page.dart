@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/dropdown/dropdown.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/card/card_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
+import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,11 +33,20 @@ class CardPage extends StatelessWidget {
             backgroundColor: Colors.white,
             surfaceTintColor: Colors.transparent,
             leading: IconButton(
-              icon: Icon(Icons.keyboard_backspace),
+              icon: Icon(CupertinoIcons.arrow_left),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
+            actions: <Widget>[
+              Dropdown(
+                icon: Icon(CupertinoIcons.ellipsis),
+                items: [
+                  PartnerReportMenuItem(
+                      context: context, partner: content["partnerId"])
+                ],
+              )
+            ],
             centerTitle: true,
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(1.0),
@@ -253,10 +264,8 @@ class CardPage extends StatelessWidget {
     }
     var responseBody = jsonDecode(response.body);
     if (responseBody["success"] == false) {
-      Alert(
-        description: "product.card.delete.failed",
-        type: AlertType.error
-      ).show(context);
+      Alert(description: "product.card.delete.failed", type: AlertType.error)
+          .show(context);
       return;
     }
     deletionUpdateCardCache();

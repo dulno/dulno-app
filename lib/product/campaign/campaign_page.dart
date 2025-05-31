@@ -1,10 +1,12 @@
 import 'dart:convert';
 
-import 'package:dulno/product/campaign/campaign_batch.dart';
+import 'package:dulno/dropdown/dropdown.dart';
+import 'package:dulno/product/campaign/campaign_badge.dart';
 import 'package:dulno/product/campaign/campaign_time.dart';
 import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
 import 'package:dulno/product/partner/partner_page.dart';
+import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,11 +47,20 @@ class CampaignPage extends StatelessWidget {
                     backgroundColor: Colors.white,
                     surfaceTintColor: Colors.transparent,
                     leading: IconButton(
-                      icon: Icon(Icons.keyboard_backspace),
+                      icon: Icon(CupertinoIcons.arrow_left),
                       onPressed: () {
                         Navigator.pop(context);
                       },
                     ),
+                    actions: <Widget>[
+                      Dropdown(
+                        icon: Icon(CupertinoIcons.ellipsis),
+                        items: [
+                          PartnerReportMenuItem(
+                              context: context, partner: partner)
+                        ],
+                      )
+                    ],
                     centerTitle: true,
                     bottom: PreferredSize(
                       preferredSize: Size.fromHeight(1.0),
@@ -66,7 +77,7 @@ class CampaignPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 50),
+                          SizedBox(height: 30),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,9 +95,9 @@ class CampaignPage extends StatelessWidget {
                                       ),
                                     )
                                   : Container(
+                                      height: 90,
                                       constraints: BoxConstraints(
                                         maxWidth: 135,
-                                        maxHeight: 90,
                                       ),
                                       child: _logo?.logo!,
                                     ),
@@ -107,7 +118,7 @@ class CampaignPage extends StatelessWidget {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
+                            padding: EdgeInsets.symmetric(vertical: 30),
                             child: Divider(
                               color: Colors.grey[300],
                               height: 2,

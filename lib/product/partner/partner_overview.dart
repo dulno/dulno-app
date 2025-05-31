@@ -37,7 +37,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 40),
+                  SizedBox(height: 30),
                   Align(
                     alignment: Alignment.center,
                     child: _logo?.logo == null
@@ -52,14 +52,14 @@ class _PartnerOverviewState extends State<PartnerOverview> {
                             ),
                           )
                         : Container(
+                            height: 120,
                             constraints: BoxConstraints(
                               maxWidth: 180,
-                              maxHeight: 120,
                             ),
                             child: _logo?.logo!,
                           ),
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 30),
                   Text(
                     utf8.decode(widget.partner["name"].toString().codeUnits),
                     style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
