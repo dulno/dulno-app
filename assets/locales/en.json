@@ -26,6 +26,7 @@
   "product.scan.cache.redemption.failed": "An attempt was made to redeem temporarily saved scans retrospectively. An error has occurred. Therefore the scans were unfortunately not transferred",
 
   "product.scan.history": "History",
+  "product.scan.history.title": "Stamp history",
 
   "product.card.list.label": "Cards",
   "product.card.list.login.description": "You already had stamps?",

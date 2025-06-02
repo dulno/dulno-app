@@ -36,8 +36,8 @@ class ProfileLanguageSelection extends StatelessWidget {
               borderRadius: BorderRadius.circular(6.0),
               side: BorderSide(
                   color: selected
-                      ? Colors.indigo[100] ?? Colors.indigo
-                      : Colors.grey[300] ?? Colors.grey,
+                      ? Colors.indigo[100]!
+                      : Colors.grey[300]!,
                   width: selected ? 2 : 1)),
         ),
         onPressed: () async {
@@ -45,8 +45,8 @@ class ProfileLanguageSelection extends StatelessWidget {
           await Locales.change(context, language);
         },
         child: Container(
-          width: 130,
-          height: 70,
+          width: 120,
+          height: 65,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             image: DecorationImage(

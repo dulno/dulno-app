@@ -25,7 +25,7 @@ class ProfileAccountContent extends StatelessWidget {
             color: Colors.grey[100],
             borderRadius: BorderRadius.circular(6.0),
             border: Border.all(
-              color: Colors.grey[300] ?? Colors.grey,
+              color: Colors.grey[300]!,
               width: 1,
             ),
           ),

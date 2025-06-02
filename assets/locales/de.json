@@ -25,7 +25,8 @@
   "product.scan.cache.redemption.successful": "Zwischengespeicherte Scans wurden nun erfolgreich rückwirkend eingelöst",
   "product.scan.cache.redemption.failed": "Es wurde versucht, vorübergehend gespeicherte Scans im Nachhinein einzulösen. Dabei ist ein Fehler aufgetreten. Daher konnten die Scans leider nicht übertragen werden",
 
-  "product.scan.history": "Historie",
+  "product.scan.history": "Verlauf",
+  "product.scan.history.title": "Stempelverlauf",
 
   "product.card.list.label": "Karten",
   "product.card.list.login.description": "Sie hatten bereits Stempel?",
