@@ -25,6 +25,8 @@
   "product.scan.cache.redemption.successful": "Cached scans have now been successfully redeemed retrospectively",
   "product.scan.cache.redemption.failed": "An attempt was made to redeem temporarily saved scans retrospectively. An error has occurred. Therefore the scans were unfortunately not transferred",
 
+  "product.scan.history": "History",
+
   "product.card.list.label": "Cards",
   "product.card.list.login.description": "You already had stamps?",
   "product.card.list.login.call": "Sign in now",
@@ -86,7 +88,6 @@
 
   "product.partner.popup.address": "Address",
   "product.partner.popup.links": "Links",
-  "product.partner.popup.navigate": "Navigate",
 
   "product.partner.links.empty": "No links found",
   "product.partner.link.website": "Website",

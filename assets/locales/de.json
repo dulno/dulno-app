@@ -25,6 +25,8 @@
   "product.scan.cache.redemption.successful": "Zwischengespeicherte Scans wurden nun erfolgreich rückwirkend eingelöst",
   "product.scan.cache.redemption.failed": "Es wurde versucht, vorübergehend gespeicherte Scans im Nachhinein einzulösen. Dabei ist ein Fehler aufgetreten. Daher konnten die Scans leider nicht übertragen werden",
 
+  "product.scan.history": "Historie",
+
   "product.card.list.label": "Karten",
   "product.card.list.login.description": "Sie hatten bereits Stempel?",
   "product.card.list.login.call": "Jetzt anmelden",
@@ -86,7 +88,6 @@
 
   "product.partner.popup.address": "Adresse",
   "product.partner.popup.links": "Links",
-  "product.partner.popup.navigate": "Navigieren",
 
   "product.partner.links.empty": "Keine Links gefunden",
   "product.partner.link.website": "Website",

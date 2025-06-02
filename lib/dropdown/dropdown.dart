@@ -2,7 +2,7 @@ import 'package:dulno/dropdown/dropdown_item.dart';
 import 'package:flutter/material.dart';
 
 class Dropdown extends StatelessWidget {
-  final Icon icon;
+  final Widget icon;
   final List<DropdownItem> items;
 
   const Dropdown({super.key, required this.icon, required this.items});

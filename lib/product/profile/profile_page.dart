@@ -1,3 +1,5 @@
+import 'package:dulno/dropdown/dropdown.dart';
+import 'package:dulno/dropdown/dropdown_item.dart';
 import 'package:dulno/product/profile/profile_account_content.dart';
 import 'package:dulno/product/profile/profile_footer_link.dart';
 import 'package:dulno/product/profile/profile_language_selection.dart';
@@ -34,6 +36,20 @@ class _ProfilePageState extends State<ProfilePage> {
             Navigator.pop(context);
           },
         ),
+        actions: <Widget>[
+          Dropdown(
+            icon: Icon(CupertinoIcons.ellipsis),
+            items: [
+              DropdownItem(
+                text: "product.scan.history",
+                icon: const Icon(CupertinoIcons.time),
+                click: () {
+
+                },
+              ),
+            ],
+          )
+        ],
         title: LocaleText(
           "product.profile.title",
           style: TextStyle(fontFamily: "Arial"),
