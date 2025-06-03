@@ -56,6 +56,7 @@ class CouponPage extends StatelessWidget {
               ),
             ),
           ),
+          backgroundColor: Color(0xFFFAFAFA),
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(20),

@@ -27,6 +27,17 @@
 
   "product.scan.history": "History",
   "product.scan.history.title": "Stamp history",
+  "product.scan.history.empty": "You haven't stamped yet.",
+  "product.scan.history.create.title": "Card received",
+  "product.scan.history.create.description": "You have received a new card from the partner %s.",
+  "product.scan.history.delete.value.title": "Card used up",
+  "product.scan.history.delete.value.description": "Card used up",
+  "product.scan.history.delete.member.title": "Card removed",
+  "product.scan.history.delete.member.description": "Card removed",
+  "product.scan.history.update.collection.title": "Stamp collected",
+  "product.scan.history.update.collection.description": "Stamp collected",
+  "product.scan.history.update.value.title": "Stamp debited",
+  "product.scan.history.update.value.description": "Stamp debited",
 
   "product.card.list.label": "Cards",
   "product.card.list.login.description": "You already had stamps?",

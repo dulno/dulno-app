@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
+import 'package:dulno/product/scan/scan_history.dart';
 import 'package:dulno/request/request.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,7 +37,8 @@ class StampRedemption {
     if (!responseBody["success"]) {
       return 1;
     }
-    await updateCardCache(responseBody);
+    await updateCardCache(Map.from(responseBody));
+    await ScanHistory().store(Map.from(responseBody));
     return 2;
   }
 

@@ -41,6 +41,7 @@ class _ProfileEmailCodePageState extends State<ProfileEmailCodePage> {
           ),
         ),
       ),
+      backgroundColor: Color(0xFFFAFAFA),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
         child: SingleChildScrollView(

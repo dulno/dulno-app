@@ -27,6 +27,7 @@
 
   "product.scan.history": "Verlauf",
   "product.scan.history.title": "Stempelverlauf",
+  "product.scan.history.empty": "Sie haben noch nicht gestempelt.",
 
   "product.card.list.label": "Karten",
   "product.card.list.login.description": "Sie hatten bereits Stempel?",

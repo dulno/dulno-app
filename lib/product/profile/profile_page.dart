@@ -65,6 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+      backgroundColor: Color(0xFFFAFAFA),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
         child: LayoutBuilder(

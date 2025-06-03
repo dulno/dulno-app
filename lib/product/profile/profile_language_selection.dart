@@ -30,7 +30,7 @@ class ProfileLanguageSelection extends StatelessWidget {
       margin: EdgeInsets.all(10),
       child: TextButton(
         style: TextButton.styleFrom(
-          backgroundColor: selected ? Colors.indigo[50] : Colors.white,
+          backgroundColor: selected ? Colors.indigo[50] : Color(0xFFFAFAFA),
           padding: EdgeInsets.all(10),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.0),
