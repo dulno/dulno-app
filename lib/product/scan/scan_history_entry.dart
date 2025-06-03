@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:intl/intl.dart';
 
 class ScanHistoryEntry {
@@ -10,6 +9,7 @@ class ScanHistoryEntry {
       cardType: data["cardType"],
       partnerName: data["partnerName"],
       timestamp: data["timestamp"],
+      data: data,
     );
   }
 
@@ -17,12 +17,14 @@ class ScanHistoryEntry {
   final String cardType;
   final String partnerName;
   final int timestamp;
+  final Map<String, dynamic> data;
 
   ScanHistoryEntry({
     required this.entryType,
     required this.cardType,
     required this.partnerName,
     required this.timestamp,
+    required this.data,
   });
 
   IconData icon() {
@@ -30,6 +32,10 @@ class ScanHistoryEntry {
       return CupertinoIcons.checkmark;
     } else if (entryType == "REMOVE") {
       return CupertinoIcons.xmark;
+    } else if (entryType == "UPDATE" &&
+        cardType == "COLLECTION" &&
+        data["stamps"] == 0) {
+      return CupertinoIcons.gift;
     } else if (entryType == "UPDATE" && cardType == "COLLECTION") {
       return CupertinoIcons.plus;
     } else if (entryType == "UPDATE" && cardType == "VALUE") {
@@ -39,7 +45,10 @@ class ScanHistoryEntry {
   }
 
   Color iconColor() {
-    if (entryType == "CREATE") {
+    if (entryType == "CREATE" ||
+        (entryType == "UPDATE" &&
+            cardType == "COLLECTION" &&
+            data["stamps"] == 0)) {
       return Colors.green;
     } else if (entryType == "REMOVE") {
       return Colors.red;
@@ -48,7 +57,10 @@ class ScanHistoryEntry {
   }
 
   Color backgroundColor() {
-    if (entryType == "CREATE") {
+    if (entryType == "CREATE" ||
+        (entryType == "UPDATE" &&
+            cardType == "COLLECTION" &&
+            data["stamps"] == 0)) {
       return Colors.green[50]!;
     } else if (entryType == "REMOVE") {
       return Colors.red[50]!;
@@ -63,6 +75,10 @@ class ScanHistoryEntry {
       return "product.scan.history.delete.value.title";
     } else if (entryType == "REMOVE" && cardType == "MEMBER") {
       return "product.scan.history.delete.member.title";
+    } else if (entryType == "UPDATE" &&
+        cardType == "COLLECTION" &&
+        data["stamps"] == 0) {
+      return "product.scan.history.update.collection.full.title";
     } else if (entryType == "UPDATE" && cardType == "COLLECTION") {
       return "product.scan.history.update.collection.title";
     } else if (entryType == "UPDATE" && cardType == "VALUE") {
@@ -78,6 +94,10 @@ class ScanHistoryEntry {
       return "product.scan.history.delete.value.description";
     } else if (entryType == "REMOVE" && cardType == "MEMBER") {
       return "product.scan.history.delete.member.description";
+    } else if (entryType == "UPDATE" &&
+        cardType == "COLLECTION" &&
+        data["stamps"] == 0) {
+      return "product.scan.history.update.collection.full.description";
     } else if (entryType == "UPDATE" && cardType == "COLLECTION") {
       return "product.scan.history.update.collection.description";
     } else if (entryType == "UPDATE" && cardType == "VALUE") {

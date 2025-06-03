@@ -36,6 +36,8 @@
   "product.scan.history.delete.member.description": "A membership card from the partner %s has been revoked.",
   "product.scan.history.update.collection.title": "Stamp collected",
   "product.scan.history.update.collection.description": "A new stamp was collected on the collection card from the partner %s.",
+  "product.scan.history.update.collection.full.title": "Collection redeemed",
+  "product.scan.history.update.collection.full.description": "You have redeemed a full stamp card from partner %s for your reward.",
   "product.scan.history.update.value.title": "Stamp debited",
   "product.scan.history.update.value.description": "A stamp on the value card from the partner %s was debited.",
 

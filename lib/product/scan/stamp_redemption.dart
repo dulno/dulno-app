@@ -80,7 +80,9 @@ class StampRedemption {
       return false;
     }
     if (redemptionResult == 1) {
-      Navigator.pop(context);
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
       displayScanError(context, responseBody["error"]);
       return false;
     }
@@ -94,7 +96,9 @@ class StampRedemption {
     var scans = scanCache == null ? [] : jsonDecode(scanCache);
     scans.add(scan);
     await storage.write(key: "scans", value: jsonEncode(scans));
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     Alert(
       description: "product.scan.connection.cache",
       icon: CupertinoIcons.antenna_radiowaves_left_right,

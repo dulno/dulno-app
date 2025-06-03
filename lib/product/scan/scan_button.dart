@@ -80,7 +80,9 @@ class _ScanButtonState extends State<ScanButton>
     ScanCooldown().enable();
     if (widget.currentPageIndex() == 0) {
       widget.callback();
-      Navigator.pop(context);
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     } else {
       Navigator.pushReplacement(
         context,

@@ -27,7 +27,9 @@ class ScanPopup {
       builder: (context) {
         return GestureDetector(
           onTap: () {
-            Navigator.of(context).pop();
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
           },
           behavior: HitTestBehavior.opaque,
           child: Align(

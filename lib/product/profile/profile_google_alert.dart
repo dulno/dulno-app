@@ -79,7 +79,9 @@ class ProfileGoogleAlert {
         await ProfileSignUpBody().generate(legalChecked, newsletterChecked));
     var response =
         await Request.post(url: "/user/bind/google/", body: body).send(context);
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return;

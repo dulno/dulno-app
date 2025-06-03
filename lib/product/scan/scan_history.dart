@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dulno/product/scan/scan_history_entry.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ScanHistory {
