@@ -17,10 +17,10 @@ class ProfileSignInContent extends StatelessWidget {
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: Colors.grey[200],
             borderRadius: BorderRadius.circular(6.0),
             border: Border.all(
-              color: Colors.grey[300]!,
+              color: Colors.grey[400]!,
               width: 1,
             ),
           ),

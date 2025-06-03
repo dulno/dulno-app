@@ -23,12 +23,11 @@ class ScanHistory {
   Future<List<ScanHistoryEntry>> find() async {
     const storage = FlutterSecureStorage();
     final rawHistory = await storage.read(key: "history");
-    debugPrint(rawHistory?.length.toString());
     var history = rawHistory == null ? [] : jsonDecode(rawHistory);
     var entries = <ScanHistoryEntry>[];
     for (var entry in history) {
       entries.add(ScanHistoryEntry.of(entry));
     }
-    return entries;
+    return entries.reversed.toList();
   }
 }

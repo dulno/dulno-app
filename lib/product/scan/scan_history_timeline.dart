@@ -2,6 +2,7 @@ import 'package:dulno/product/scan/scan_history.dart';
 import 'package:dulno/product/scan/scan_history_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class ScanHistoryTimeline extends StatelessWidget {
@@ -66,9 +67,9 @@ class ScanHistoryTimeline extends StatelessWidget {
                     ),
                     endChild: Padding(
                       padding: const EdgeInsets.only(
-                        left: 16,
-                        top: 16,
-                        bottom: 16,
+                        top: 12,
+                        bottom: 12,
+                        left: 12,
                       ),
                       child: Container(
                         width: double.infinity,
@@ -82,23 +83,69 @@ class ScanHistoryTimeline extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              entry.title(context),
+                              Locales.string(context, entry.title()),
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(
-                              entry.date(context),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 1,
+                                horizontal: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  FaIcon(FontAwesomeIcons.clock,
+                                      size: 12, color: Colors.grey[600]),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    entry.date(context),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(
-                              entry.description(context),
-                              style: TextStyle(fontSize: 14),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: Locales.string(
+                                            context, entry.description())
+                                        .split("%s")[0],
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: entry.partnerName,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: Locales.string(
+                                            context, entry.description())
+                                        .split("%s")[1],
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

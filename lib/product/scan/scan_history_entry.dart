@@ -56,39 +56,32 @@ class ScanHistoryEntry {
     return Colors.white;
   }
 
-  String title(context) {
+  String title() {
     if (entryType == "CREATE") {
-      return Locales.string(context, "product.scan.history.create.title");
+      return "product.scan.history.create.title";
     } else if (entryType == "REMOVE" && cardType == "VALUE") {
-      return Locales.string(context, "product.scan.history.delete.value.title");
+      return "product.scan.history.delete.value.title";
     } else if (entryType == "REMOVE" && cardType == "MEMBER") {
-      return Locales.string(
-          context, "product.scan.history.delete.member.title");
+      return "product.scan.history.delete.member.title";
     } else if (entryType == "UPDATE" && cardType == "COLLECTION") {
-      return Locales.string(
-          context, "product.scan.history.update.collection.title");
+      return "product.scan.history.update.collection.title";
     } else if (entryType == "UPDATE" && cardType == "VALUE") {
-      return Locales.string(context, "product.scan.history.update.value.title");
+      return "product.scan.history.update.value.title";
     }
     return "";
   }
 
-  String description(context) {
+  String description() {
     if (entryType == "CREATE") {
-      return Locales.string(context, "product.scan.history.create.description")
-          .replaceAll("%s", partnerName);
+      return "product.scan.history.create.description";
     } else if (entryType == "REMOVE" && cardType == "VALUE") {
-      return Locales.string(
-          context, "product.scan.history.delete.value.description");
+      return "product.scan.history.delete.value.description";
     } else if (entryType == "REMOVE" && cardType == "MEMBER") {
-      return Locales.string(
-          context, "product.scan.history.delete.member.description");
+      return "product.scan.history.delete.member.description";
     } else if (entryType == "UPDATE" && cardType == "COLLECTION") {
-      return Locales.string(
-          context, "product.scan.history.update.collection.description");
+      return "product.scan.history.update.collection.description";
     } else if (entryType == "UPDATE" && cardType == "VALUE") {
-      return Locales.string(
-          context, "product.scan.history.update.value.description");
+      return "product.scan.history.update.value.description";
     }
     return "";
   }
