@@ -3,6 +3,7 @@ import 'package:dulno/product/scan/scan_history_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class ScanHistoryTimeline extends StatelessWidget {
@@ -104,12 +105,33 @@ class ScanHistoryTimeline extends StatelessWidget {
                                   FaIcon(FontAwesomeIcons.clock,
                                       size: 12, color: Colors.grey[600]),
                                   SizedBox(width: 5),
-                                  Text(
-                                    entry.date(context),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
+                                  FutureBuilder<String>(
+                                    future: entry.date(context),
+                                    builder: (context,
+                                        AsyncSnapshot<String> dateSnapshot) {
+                                      return dateSnapshot.connectionState ==
+                                              ConnectionState.waiting
+                                          ? Skeletonizer(
+                                              child: Skeleton.leaf(
+                                                child: Container(
+                                                  height: 15,
+                                                  width: 75,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[300],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Text(
+                                              dateSnapshot.hasData
+                                                  ? dateSnapshot.data!
+                                                  : "",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey[600],
+                                              ),
+                                            );
+                                    },
                                   ),
                                 ],
                               ),
