@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:intl/intl.dart';
 
 class ScanHistoryEntry {
@@ -106,9 +108,16 @@ class ScanHistoryEntry {
     return "";
   }
 
-  String date(context) {
+  Future<String> date(context) async {
     var tag = Localizations.maybeLocaleOf(context)?.toLanguageTag();
+    var pattern = DateFormat.yMMMd(tag).add_jm().pattern;
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    return DateFormat.yMMMd(tag).add_jm().format(dateTime);
+    const storage = FlutterSecureStorage();
+    final language = await storage.read(key: "language") ?? "de";
+    return GetTimeAgo.parse(
+      dateTime,
+      locale: language,
+      pattern: pattern,
+    );
   }
 }
