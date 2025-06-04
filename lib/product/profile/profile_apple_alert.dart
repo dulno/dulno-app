@@ -30,8 +30,7 @@ class ProfileAppleAlert {
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName
+          AppleIDAuthorizationScopes.email
         ],
       );
       final idToken = credential.identityToken;
