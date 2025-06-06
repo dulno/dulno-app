@@ -30,6 +30,12 @@ class IOSScanPopupContentState
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Future<void> checkNFC(context) async {
     final isAvailable = await NfcManager.instance.isAvailable();
     if (isAvailable) {
@@ -62,12 +68,13 @@ class IOSScanPopupContentState
                 return Transform.translate(
                   offset: Offset(0, offsetY),
                   child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Transform.scale(
-                        scaleY: 1.2,
-                        child: Icon(Icons.arrow_upward_rounded,
-                            size: 50, color: Colors.white),
-                      )),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Transform.scale(
+                      scaleY: 1.2,
+                      child: Icon(Icons.arrow_upward_rounded,
+                          size: 50, color: Colors.white),
+                    ),
+                  ),
                 );
               },
             ),

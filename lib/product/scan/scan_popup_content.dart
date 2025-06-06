@@ -71,7 +71,11 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
         }
       },
       onError: (NfcError error) async {
-        if (error.type == NfcErrorType.userCanceled) {
+        if (error.type == NfcErrorType.userCanceled ||
+            error.type == NfcErrorType.systemIsBusy) {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
           return;
         }
         displayNFCTagScanError(context);
