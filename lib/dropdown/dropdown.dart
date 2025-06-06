@@ -2,7 +2,7 @@ import 'package:dulno/dropdown/dropdown_item.dart';
 import 'package:flutter/material.dart';
 
 class Dropdown extends StatelessWidget {
-  final Icon icon;
+  final Widget icon;
   final List<DropdownItem> items;
 
   const Dropdown({super.key, required this.icon, required this.items});
@@ -10,9 +10,12 @@ class Dropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<PopupMenuEntry<String>> entries = [];
-    for (var item in items) {
+    for (var i = 0; i < items.length; i++) {
+      if (i > 0) {
+        entries.add(createDropdownDivider());
+      }
       entries.add(
-        PopupMenuItem(padding: EdgeInsets.zero, child: item),
+        PopupMenuItem(padding: EdgeInsets.zero, child: items[i]),
       );
     }
     return PopupMenuButton<String>(
@@ -25,6 +28,19 @@ class Dropdown extends StatelessWidget {
       ),
       elevation: 0,
       itemBuilder: (BuildContext context) => entries,
+    );
+  }
+
+  PopupMenuItem<String> createDropdownDivider() {
+    return PopupMenuItem(
+      enabled: false,
+      padding: EdgeInsets.zero,
+      height: 1,
+      child: Divider(
+        height: 1,
+        thickness: 1,
+        color: Color(0xFFE0E0E0),
+      ),
     );
   }
 }

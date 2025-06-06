@@ -38,6 +38,7 @@ class PartnerPage extends StatelessWidget {
           ),
         ),
       ),
+      backgroundColor: Color(0xFFFAFAFA),
       body: PartnerOverview(partner: partner),
     );
   }

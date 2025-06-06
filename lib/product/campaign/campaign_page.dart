@@ -70,6 +70,7 @@ class CampaignPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  backgroundColor: Color(0xFFFAFAFA),
                   body: Skeletonizer(
                     enabled: loading,
                     child: SingleChildScrollView(

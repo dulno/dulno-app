@@ -115,7 +115,11 @@ class AndroidScanPopupContentState
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                },
                 child: LocaleText('product.scan.popup.cancel'),
               ),
             ),

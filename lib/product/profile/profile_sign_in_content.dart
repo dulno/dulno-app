@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dulno/product/profile/profile_apple_alert.dart';
 import 'package:dulno/product/profile/profile_email_connect_page.dart';
 import 'package:dulno/product/profile/profile_google_alert.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +20,10 @@ class ProfileSignInContent extends StatelessWidget {
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: Colors.grey[200],
             borderRadius: BorderRadius.circular(6.0),
             border: Border.all(
-              color: Colors.grey[300] ?? Colors.grey,
+              color: Colors.grey[400]!,
               width: 1,
             ),
           ),
@@ -48,70 +51,93 @@ class ProfileSignInContent extends StatelessWidget {
           ),
         ),
         SizedBox(height: 25),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.indigo),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+        createSignInButton(
+          Colors.indigo,
+          Colors.white,
+          FontAwesomeIcons.envelope,
+          "product.profile.account.email.button",
+          () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfileEmailConnectPage(
+                  signInCallback: signInCallback,
                 ),
-                padding: WidgetStateProperty.all(EdgeInsets.all(15)),
-                alignment: Alignment.centerLeft),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProfileEmailConnectPage(
-                          signInCallback: signInCallback,
-                        )),
-              );
-            },
-            icon: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              child: FaIcon(
-                FontAwesomeIcons.envelope,
-                color: Colors.white,
-                size: 25,
               ),
-            ),
-            label: LocaleText(
-              "product.profile.account.email.button",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-          ),
+            );
+          },
         ),
+        SizedBox(height: Platform.isIOS ? 10 : 0),
+        Platform.isIOS
+            ? createSignInButton(
+                Colors.black,
+                Colors.white,
+                FontAwesomeIcons.apple,
+                "product.profile.account.apple.button",
+                () async {
+                  ProfileAppleAlert(signInCallback: signInCallback)
+                      .show(context);
+                },
+              )
+            : SizedBox.shrink(),
         SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(Colors.black),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                padding: WidgetStateProperty.all(EdgeInsets.all(15)),
-                alignment: Alignment.centerLeft),
-            onPressed: () async {
-              ProfileGoogleAlert(signInCallback: signInCallback).show(context);
-            },
-            icon: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
+        createSignInButton(
+          Platform.isIOS ? Colors.white : Colors.black,
+          Platform.isIOS ? Colors.black : Colors.white,
+          FontAwesomeIcons.google,
+          "product.profile.account.google.button",
+          () async {
+            ProfileGoogleAlert(signInCallback: signInCallback).show(context);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget createSignInButton(
+      backgroundColor, foregroundColor, icon, text, onPressed) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          elevation: WidgetStateProperty.all(0),
+          backgroundColor: WidgetStateProperty.all(backgroundColor),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              side: BorderSide(
+                color: Colors.black12,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          padding: WidgetStateProperty.all(EdgeInsets.all(15)),
+          alignment: Alignment.centerLeft,
+        ),
+        onPressed: onPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 30,
+              alignment: Alignment.center,
               child: FaIcon(
-                FontAwesomeIcons.google,
-                color: Colors.white,
+                icon,
+                color: foregroundColor,
                 size: 25,
               ),
             ),
-            label: LocaleText(
-              "product.profile.account.google.button",
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            SizedBox(width: 15),
+            LocaleText(
+              text,
+              style: TextStyle(
+                color: foregroundColor,
+                fontSize: 18,
+              ),
             ),
-          ),
-        )
-      ],
+          ],
+        ),
+      ),
     );
   }
 }

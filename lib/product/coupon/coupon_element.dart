@@ -219,7 +219,9 @@ class _CouponElementState extends State<CouponElement> {
     body["coupons"] = coupons;
     var response = await Request.post(url: "/user/coupon/collect/", body: body)
         .send(context);
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return;
@@ -313,7 +315,9 @@ class _CouponElementState extends State<CouponElement> {
       return;
     }
     ScanCooldown().enable();
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => ProductPage(initialPageIndex: 1),

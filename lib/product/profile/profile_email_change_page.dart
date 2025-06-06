@@ -44,6 +44,7 @@ class _ProfileEmailChangePageState extends State<ProfileEmailChangePage> {
           ),
         ),
       ),
+      backgroundColor: Color(0xFFFAFAFA),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
         child: SingleChildScrollView(
@@ -211,7 +212,9 @@ class _ProfileEmailChangePageState extends State<ProfileEmailChangePage> {
     var response =
         await Request.post(url: "/user/email/change/complete/", body: body)
             .send(context);
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return;
