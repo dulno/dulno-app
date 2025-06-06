@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:dulno/dropdown/dropdown.dart';
 import 'package:dulno/product/partner/discover_map_directions.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
-import 'package:dulno/product/partner/partner_report_popup.dart';
+import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -79,49 +80,65 @@ class _DraggablePopupState extends State<PartnerPopup> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 5),
+                            Align(
+                              alignment: Alignment.center,
+                              child: _logo?.logo == null
+                                  ? Skeleton.leaf(
+                                      child: Container(
+                                        height: 90,
+                                        width: 90,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      height: 90,
+                                      constraints: BoxConstraints(
+                                        maxWidth: 150,
+                                      ),
+                                      child: _logo?.logo!,
+                                    ),
+                            ),
+                            SizedBox(height: 30),
                             Stack(
+                              clipBehavior: Clip.none,
                               children: [
                                 Align(
                                   alignment: Alignment.centerLeft,
-                                  child: _logo?.logo == null
-                                      ? Skeleton.leaf(
-                                          child: Container(
-                                            height: 90,
-                                            width: 90,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[300],
-                                              borderRadius:
-                                                  BorderRadius.circular(25),
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          height: 90,
-                                          constraints: BoxConstraints(
-                                            maxWidth: 135,
-                                          ),
-                                          child: _logo?.logo!,
-                                        ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 40),
+                                    child: Text(
+                                      utf8.decode(widget.partner["name"]
+                                          .toString()
+                                          .codeUnits),
+                                      style: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                  ),
                                 ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: IconButton(
-                                    icon: Icon(CupertinoIcons.flag),
-                                    onPressed: () {
-                                      PartnerReportPopup(
-                                              partner: widget.partner["id"])
-                                          .show(context);
-                                    },
+                                Positioned(
+                                  right: -15,
+                                  top: -7,
+                                  child: Dropdown(
+                                    icon: Icon(
+                                      CupertinoIcons.info,
+                                      size: 20,
+                                    ),
+                                    items: [
+                                      PartnerReportMenuItem(
+                                          context: context,
+                                          partner: widget.partner["id"])
+                                    ],
                                   ),
                                 ),
                               ],
-                            ),
-                            SizedBox(height: 30),
-                            Text(
-                              utf8.decode(
-                                  widget.partner["name"].toString().codeUnits),
-                              style: TextStyle(
-                                  fontSize: 23, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 5),
                             Text(
@@ -134,65 +151,56 @@ class _DraggablePopupState extends State<PartnerPopup> {
                               maxLines: 3,
                             ),
                             SizedBox(height: 30),
-                            LocaleText(
-                              "product.partner.popup.address",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 40),
+                                    child: LocaleText(
+                                      "product.partner.popup.address",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: -15,
+                                  top: -7,
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      DiscoverMapDirections(
+                                        destinationLatitude:
+                                            widget.location["latitude"],
+                                        destinationLongitude:
+                                            widget.location["longitude"],
+                                      ).open();
+                                    },
+                                    icon: Icon(
+                                      CupertinoIcons.location,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                            SizedBox(height: 5),
                             Text(
                               utf8.decode(widget.location["address"]
                                   .toString()
                                   .codeUnits),
                               style: TextStyle(fontSize: 16),
                             ),
-                            SizedBox(height: 20),
-                            Align(
-                              alignment: Alignment.center,
-                              child: ElevatedButton.icon(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        WidgetStateProperty.all(Colors.indigo),
-                                    shape: WidgetStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                    ),
-                                    padding: WidgetStateProperty.all(
-                                        EdgeInsets.symmetric(
-                                            horizontal: 15, vertical: 8)),
-                                    alignment: Alignment.center),
-                                onPressed: () async {
-                                  DiscoverMapDirections(
-                                          destinationLatitude:
-                                              widget.location["latitude"],
-                                          destinationLongitude:
-                                              widget.location["longitude"])
-                                      .open();
-                                },
-                                icon: Container(
-                                  margin: EdgeInsets.only(right: 2),
-                                  child: Icon(
-                                    Icons.directions,
-                                    color: Colors.white,
-                                    size: 21,
-                                  ),
-                                ),
-                                label: LocaleText(
-                                  "product.partner.popup.navigate",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 30),
                             LocaleText(
                               "product.partner.popup.links",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),
+                            SizedBox(height: 5),
                             PartnerLinkList(partner: widget.partner),
                             SizedBox(height: 40),
                           ],

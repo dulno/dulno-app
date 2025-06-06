@@ -71,7 +71,11 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
         }
       },
       onError: (NfcError error) async {
-        if (error.type == NfcErrorType.userCanceled) {
+        if (error.type == NfcErrorType.userCanceled ||
+            error.type == NfcErrorType.systemIsBusy) {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
           return;
         }
         displayNFCTagScanError(context);
@@ -93,7 +97,9 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
   }
 
   void displayNFCTagScanError(context) {
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     Alert(
       description: "product.scan.error.scan",
       type: AlertType.error,
@@ -101,7 +107,9 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
   }
 
   void displayNFCTagUnsupportedError(context) {
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     Alert(
       description: "product.scan.unsupported.description",
       type: AlertType.error,
@@ -114,7 +122,9 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
     String picc = uri.queryParameters['picc'] ?? "";
     String cmac = uri.queryParameters['cmac'] ?? "";
     if (stamp == "" || picc == "" || cmac == "") {
-      Navigator.pop(context);
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
       Alert(
         description: "product.scan.error.nfc.tag",
         type: AlertType.error,

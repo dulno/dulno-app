@@ -52,6 +52,7 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
           ),
         ),
       ),
+      backgroundColor: Color(0xFFFAFAFA),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 30),
         child: SingleChildScrollView(
@@ -295,7 +296,9 @@ class _ProfileEmailConnectPageState extends State<ProfileEmailConnectPage> {
         await ProfileSignUpBody().generate(_legalChecked, _newsletterChecked));
     var response = await Request.post(url: "/user/bind/complete/", body: body)
         .send(context);
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return;

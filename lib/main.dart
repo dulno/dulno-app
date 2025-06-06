@@ -190,7 +190,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
         }
         if (key.currentState != null && key.currentState!.mounted) {
           key.currentState!.findCardListBody().reload();
-          Navigator.pop(context);
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
         }
       },
     );

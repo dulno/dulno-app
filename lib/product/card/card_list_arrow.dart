@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 
@@ -48,7 +49,7 @@ class _CardListScanArrowState extends State<CardListScanArrow>
                   transform: Matrix4.diagonal3Values(1, 1.25, 1),
                   alignment: Alignment.center,
                   child:
-                      Icon(Icons.arrow_downward, size: 30, color: Colors.black),
+                      Icon(CupertinoIcons.arrow_down, size: 30, color: Colors.black),
                 ),
               ),
               Transform.translate(

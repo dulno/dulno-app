@@ -48,7 +48,9 @@ class PartnerReportPopup {
     var body = <String, Object>{"partner": partner, "message": message};
     var response = await Request.post(url: "/user/partner/report/", body: body)
         .send(context);
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return;

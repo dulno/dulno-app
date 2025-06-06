@@ -3,60 +3,52 @@ import 'dart:convert';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
-import 'package:dulno/config/google_options.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_legal_alert.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-class ProfileGoogleAlert {
+class ProfileAppleAlert {
   final Function signInCallback;
 
-  ProfileGoogleAlert({required this.signInCallback});
+  ProfileAppleAlert({required this.signInCallback});
 
   show(context) {
     ProfileLegalAlert(
       callback: (legalChecked, newsletterChecked) {
-        processGoogleSignIn(context, legalChecked, newsletterChecked);
+        processAppleSignIn(context, legalChecked, newsletterChecked);
       },
     ).show(context);
   }
 
-  Future<void> processGoogleSignIn(
+  Future<void> processAppleSignIn(
       context, legalChecked, newsletterChecked) async {
     try {
-      var googleSignIn = GoogleOptions.googleSignIn;
-      await googleSignIn.signOut();
-      final account = await googleSignIn.signIn();
-      if (account == null) {
-        return;
-      }
-      final auth = await account.authentication;
-      final idToken = auth.idToken;
-      if (idToken == null) {
-        return;
-      }
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email
+        ],
+      );
+      final idToken = credential.identityToken;
       LoaderAlert().show(context);
-      await sendInternalGoogleSignInRequest(
+      await sendInternalAppleSignInRequest(
           context, idToken, legalChecked, newsletterChecked);
     } catch (exception) {
       ConnectionAlert().show(context);
     }
   }
 
-  Future<void> sendInternalGoogleSignInRequest(
+  Future<void> sendInternalAppleSignInRequest(
       context, idToken, legalChecked, newsletterChecked) async {
     var body = <String, Object>{"token": idToken};
     body.addAll(
         await ProfileSignUpBody().generate(legalChecked, newsletterChecked));
     var response =
-        await Request.post(url: "/user/bind/google/", body: body).send(context);
+        await Request.post(url: "/user/bind/apple/", body: body).send(context);
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }
@@ -67,18 +59,18 @@ class ProfileGoogleAlert {
     var responseBody = jsonDecode(response.body);
     if (!responseBody["success"]) {
       Alert(
-        description: "product.profile.google.connect.failure",
+        description: "product.profile.apple.connect.failure",
         type: AlertType.error,
       ).show(context);
       return;
     }
-    completeGoogleSignIn(context, responseBody);
+    completeAppleSignIn(context, responseBody);
   }
 
-  void completeGoogleSignIn(context, responseBody) async {
+  void completeAppleSignIn(context, responseBody) async {
     await storeSignInResponse(responseBody);
     Alert(
-      description: "product.profile.google.connect.success",
+      description: "product.profile.apple.connect.success",
       type: AlertType.success,
       callback: () {
         Navigator.of(context).pushAndRemoveUntil(

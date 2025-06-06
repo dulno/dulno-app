@@ -4,6 +4,7 @@ import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/dropdown/dropdown.dart';
+import 'package:dulno/dropdown/dropdown_item.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
@@ -42,6 +43,24 @@ class CouponPage extends StatelessWidget {
               Dropdown(
                 icon: Icon(CupertinoIcons.ellipsis),
                 items: [
+                  DropdownItem(
+                    text: "product.coupon.delete",
+                    icon: const Icon(CupertinoIcons.trash),
+                    color: Colors.red,
+                    click: () {
+                      Alert(
+                        description: "product.coupon.delete.alert",
+                        icon: CupertinoIcons.exclamationmark_triangle,
+                        confirmButtonText: "product.coupon.delete.continue",
+                        confirmButtonColor: Colors.redAccent,
+                        cancelButton: true,
+                        callback: () {
+                          LoaderAlert().show(context);
+                          deleteCoupon(context);
+                        },
+                      ).show(context);
+                    },
+                  ),
                   PartnerReportMenuItem(
                       context: context, partner: content["partnerId"])
                 ],
@@ -56,6 +75,7 @@ class CouponPage extends StatelessWidget {
               ),
             ),
           ),
+          backgroundColor: Color(0xFFFAFAFA),
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(20),
@@ -150,56 +170,6 @@ class CouponPage extends StatelessWidget {
             height: 5,
           ),
           createMapElement(partner.data),
-          SizedBox(
-            height: 50,
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: ElevatedButton.icon(
-              style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.red),
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                  ),
-                  padding: WidgetStateProperty.all(
-                      EdgeInsets.symmetric(horizontal: 15, vertical: 8)),
-                  alignment: Alignment.center),
-              onPressed: () async {
-                Alert(
-                  description: "product.coupon.delete.alert",
-                  icon: CupertinoIcons.exclamationmark_triangle,
-                  confirmButtonText: "product.coupon.delete.continue",
-                  confirmButtonColor: Colors.redAccent,
-                  cancelButton: true,
-                  callback: () {
-                    LoaderAlert().show(context);
-                    deleteCoupon(context);
-                  },
-                ).show(context);
-              },
-              icon: Container(
-                margin: EdgeInsets.only(right: 2),
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                  size: 21,
-                ),
-              ),
-              label: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LocaleText(
-                    "product.coupon.delete",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
           SizedBox(
             height: 50,
           ),

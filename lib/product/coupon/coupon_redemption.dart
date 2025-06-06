@@ -63,7 +63,9 @@ class CouponRedemption {
       return false;
     }
     if (redemptionResult == 1) {
-      Navigator.pop(context);
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
       displayScanError(context, responseBody["error"]);
       return false;
     }
@@ -84,7 +86,9 @@ class CouponRedemption {
     redemptionList.add(redemption);
     await storage.write(
         key: "redemptionCache", value: jsonEncode(redemptionList));
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     Alert(
       description: "product.coupon.redemption.connection.cache",
       icon: CupertinoIcons.antenna_radiowaves_left_right,
