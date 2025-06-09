@@ -1,8 +1,11 @@
 stages:
+  - scan
   - build
   - merge
 
 include:
+  - project: 'dulno/dulno-template'
+    file: '/scan/scan-template.yml'
   - project: 'dulno/dulno-template'
     file: '/merge/merge-template.yml'
 
