@@ -48,8 +48,8 @@ class _CardListScanArrowState extends State<CardListScanArrow>
                 child: Transform(
                   transform: Matrix4.diagonal3Values(1, 1.25, 1),
                   alignment: Alignment.center,
-                  child:
-                      Icon(CupertinoIcons.arrow_down, size: 30, color: Colors.black),
+                  child: Icon(CupertinoIcons.arrow_down,
+                      size: 30, color: Colors.black),
                 ),
               ),
               Transform.translate(

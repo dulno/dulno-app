@@ -35,9 +35,7 @@ class ProfileLanguageSelection extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.0),
               side: BorderSide(
-                  color: selected
-                      ? Colors.indigo[100]!
-                      : Colors.grey[300]!,
+                  color: selected ? Colors.indigo[100]! : Colors.grey[300]!,
                   width: selected ? 2 : 1)),
         ),
         onPressed: () async {

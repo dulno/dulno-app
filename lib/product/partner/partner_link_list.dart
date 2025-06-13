@@ -32,7 +32,7 @@ class PartnerLinkList extends StatelessWidget {
               await launchUrl(Uri.parse(link["link"]));
             },
             child: Row(
-              children: [ 
+              children: [
                 SizedBox(
                   width: 20,
                   child: createLinkIcon(type),

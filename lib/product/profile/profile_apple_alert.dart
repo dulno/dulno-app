@@ -29,9 +29,7 @@ class ProfileAppleAlert {
       context, legalChecked, newsletterChecked) async {
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email
-        ],
+        scopes: [AppleIDAuthorizationScopes.email],
       );
       final idToken = credential.identityToken;
       LoaderAlert().show(context);

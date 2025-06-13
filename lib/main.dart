@@ -14,6 +14,7 @@ import 'package:dulno/product/scan/scan_flashlight.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:dulno/request/request.dart';
 import 'package:dulno/statistic/statistic.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_locales/flutter_locales.dart';
@@ -26,7 +27,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
-  await DulnoNotification(navigatorKey: navigatorKey).setup();
+  if (!kIsWeb) {
+    await DulnoNotification(navigatorKey: navigatorKey).setup();
+  }
   runApp(DulnoApp());
 }
 
@@ -48,7 +51,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {},
       );
@@ -185,7 +188,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
           return;
         }
         ScanCooldown().enable();
-        if (Platform.isAndroid) {
+        if (!kIsWeb && Platform.isAndroid) {
           ScanFlashlight().flashlight();
         }
         if (key.currentState != null && key.currentState!.mounted) {

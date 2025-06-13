@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 abstract class ScanPopupContent extends StatefulWidget {
@@ -27,7 +28,7 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     NfcManager.instance.stopSession().catchError((_) {});
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {},
       );
@@ -48,13 +49,13 @@ abstract class ScanPopupContentState<T extends ScanPopupContent>
 
   Future<void> readNFCTag(
       {required BuildContext context, Function? readCallback}) async {
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       NfcManager.instance.stopSession().catchError((_) {});
     }
     NfcManager.instance.startSession(
       invalidateAfterFirstRead: true,
       onDiscovered: (NfcTag tag) async {
-        if (Platform.isAndroid && await ScanCooldown().isActive()) {
+        if (!kIsWeb && Platform.isAndroid && await ScanCooldown().isActive()) {
           processScanCooldown(context: context, readCallback: readCallback);
           return;
         }

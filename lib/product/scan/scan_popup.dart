@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dulno/product/scan/android_scan_popup.dart';
 import 'package:dulno/product/scan/ios_scan_popup.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ScanPopup {
@@ -12,9 +13,9 @@ class ScanPopup {
 
   show(BuildContext context, Key? key) {
     ScanCooldown().reset();
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       _showAndroid(context, key);
-    } else if (Platform.isIOS) {
+    } else if (!kIsWeb && Platform.isIOS) {
       _showIOS(context, key);
     }
   }

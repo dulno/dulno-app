@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProfileSignUpBody {
@@ -31,7 +32,7 @@ class ProfileSignUpBody {
 
   Future<Map<String, String>> _findDeviceInfo() async {
     final deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       final androidInfo = await deviceInfo.androidInfo;
       return {
         "id": await const AndroidId().getId() ?? "",
@@ -41,7 +42,7 @@ class ProfileSignUpBody {
         "model": androidInfo.model ?? "",
         "name": androidInfo.device ?? "",
       };
-    } else if (Platform.isIOS) {
+    } else if (!kIsWeb && Platform.isIOS) {
       final iosInfo = await deviceInfo.iosInfo;
       return {
         "id": iosInfo.identifierForVendor ?? "",

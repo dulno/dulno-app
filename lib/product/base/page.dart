@@ -6,6 +6,8 @@ import 'package:dulno/product/card/card_list_body.dart';
 import 'package:dulno/product/coupon/coupon_list_body.dart';
 import 'package:dulno/product/partner/discover_body.dart';
 import 'package:dulno/product/scan/scan_button.dart';
+import 'package:dulno/product/web/download_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
@@ -44,21 +46,27 @@ class ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProductHeader(
+      appBar: Header(
         signInCallback: () => findCardListBody().refresh(context),
       ),
-      bottomNavigationBar: ProductNavigator(
-          selectedIndex: _selectedIndex,
-          updateIndex: _onItemTapped,
-          pageBodies: pageBodies),
+      bottomNavigationBar: !kIsWeb
+          ? ProductNavigator(
+              selectedIndex: _selectedIndex,
+              updateIndex: _onItemTapped,
+              pageBodies: pageBodies)
+          : SizedBox.shrink(),
       body: pageBodies[_selectedIndex > 2 ? _selectedIndex - 1 : _selectedIndex]
           .content(context),
       backgroundColor: Color(0xFFFAFAFA),
-      floatingActionButton: ScanButton(
-        callback: findCardListBody().reload,
-        currentPageIndex: () => _selectedIndex,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: !kIsWeb
+          ? ScanButton(
+              callback: findCardListBody().reload,
+              currentPageIndex: () => _selectedIndex,
+            )
+          : DownloadButton(),
+      floatingActionButtonLocation: !kIsWeb
+          ? FloatingActionButtonLocation.centerDocked
+          : FloatingActionButtonLocation.endFloat,
     );
   }
 
