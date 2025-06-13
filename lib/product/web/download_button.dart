@@ -62,7 +62,6 @@ class _DownloadButtonState extends State<DownloadButton>
 
   void download(context) {
     LoaderAlert().show(context);
-    Clipboard.setData(ClipboardData(text: 'Test'));
     const deepLink = "dulno://install";
     const iosAppStoreUrl = "https://apps.apple.com/de/app/dulno/id6745476292";
     const androidPlayStoreUrl =
@@ -71,6 +70,7 @@ class _DownloadButtonState extends State<DownloadButton>
     Timer(
       const Duration(seconds: 2),
       () {
+        Clipboard.setData(ClipboardData(text: 'Test'));
         final userAgent = html.window.navigator.userAgent.toLowerCase();
         if (userAgent.contains('iphone') || userAgent.contains('ipad')) {
           html.window.location.href = iosAppStoreUrl;

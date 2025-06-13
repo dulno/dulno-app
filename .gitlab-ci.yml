@@ -18,6 +18,21 @@ include:
   - project: 'dulno/dulno-template'
     file: '/merge/merge-template.yml'
 
+build_android:
+  stage: build
+  image: instrumentisto/flutter:3.29.0-androidsdk34-r0
+  before_script:
+    - echo $ANDROID_KEYSTORE_CONTENT | base64 -d > android/app/keystore.jks
+  script:
+    - yes | flutter doctor --android-licenses || true
+    - flutter pub run flutter_native_splash:create
+    - flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info
+    - mv build/app/outputs/bundle/release/app-release.aab android/dulno.aab
+  artifacts:
+    paths:
+      - android/dulno.aab
+    expire_in: 1 day
+
 build_web:
   stage: build
   image: instrumentisto/flutter:3.29.0-androidsdk34-r0
