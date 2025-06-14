@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/config/environment_options.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_cache.dart';
@@ -12,6 +13,8 @@ import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/scan_flashlight.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
+import 'package:dulno/product/web/web_deep_link.dart';
+import 'package:dulno/product/web/web_transmission.dart';
 import 'package:dulno/request/request.dart';
 import 'package:dulno/statistic/statistic.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +24,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -122,12 +126,14 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
                 builder: (context) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     checkInitialization(context);
-                    processDeepLink(context, _productPageKey);
+                    processDeepLinkStamp(context, _productPageKey);
+                    processDeepLinkTransmission(context, _productPageKey);
                   });
                   return ProductPage(key: _productPageKey);
                 },
               ),
-              debugShowCheckedModeBanner: false,
+              debugShowCheckedModeBanner:
+                  EnvironmentOptions.environment == DulnoEnvironment.staging,
               localizationsDelegates: Locales.delegates,
               supportedLocales: Locales.supportedLocales,
               locale: locale,
@@ -151,11 +157,13 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     }
     _initialized = true;
     await checkAuthorization(context);
+    await checkWebTransmission(context);
+    processWebStamp(context, _productPageKey);
     ScanCache().redeem(context);
     CouponCache().redeem(context);
   }
 
-  void processDeepLink(context, key) async {
+  void processDeepLinkStamp(context, key) async {
     if (_deepLinkUri == null || !mounted) {
       return;
     }
@@ -176,10 +184,37 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       ).show(context);
       return;
     }
-    redeemDeepLink(context, key, stamp, picc, cmac);
+    redeem(context, key, stamp, picc, cmac);
   }
 
-  void redeemDeepLink(context, key, stamp, picc, cmac) {
+  void processWebStamp(context, key) async {
+    if (!kIsWeb || !mounted) {
+      return;
+    }
+    html.Location location = html.window.location;
+    String path = location.pathname ?? "";
+    path = path.replaceAll(RegExp(r'\/+$'), '');
+    if (path != "/stamp") {
+      return;
+    }
+    if (await ScanCooldown().isActive()) {
+      return;
+    }
+    Uri uri = Uri.parse(location.href);
+    String stamp = uri.queryParameters['stamp'] ?? "";
+    String picc = uri.queryParameters['picc'] ?? "";
+    String cmac = uri.queryParameters['cmac'] ?? "";
+    if (stamp == "" || picc == "" || cmac == "") {
+      Alert(
+        description: "product.scan.error.nfc.tag",
+        type: AlertType.error,
+      ).show(context);
+      return;
+    }
+    redeem(context, key, stamp, picc, cmac);
+  }
+
+  void redeem(context, key, stamp, picc, cmac) {
     LoaderAlert().show(context);
     Future.delayed(
       Duration(milliseconds: 500),
@@ -210,5 +245,38 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return;
     }
     await Request.get(url: "/user/authorized/").send(context);
+  }
+
+  Future<void> checkWebTransmission(context) async {
+    if (!kIsWeb || !mounted) {
+      return;
+    }
+    html.Location location = html.window.location;
+    String path = location.pathname ?? "";
+    path = path.replaceAll(RegExp(r'\/+$'), '');
+    if (path != "/transmission") {
+      return;
+    }
+    String? transmission = await WebTransmission().request(context);
+    if (transmission == null) {
+      return;
+    }
+    WebDeepLink(url: "dulno://transmission?id=$transmission").open();
+  }
+
+  void processDeepLinkTransmission(context, key) async {
+    if (_deepLinkUri == null || !mounted) {
+      return;
+    }
+    if (_deepLinkUri!.scheme != 'dulno' ||
+        _deepLinkUri!.host != 'transmission') {
+      return;
+    }
+    String transmission = _deepLinkUri!.queryParameters['id'] ?? "";
+    _deepLinkUri = null;
+    if (transmission == "") {
+      return;
+    }
+    await WebTransmission().complete(context, transmission);
   }
 }

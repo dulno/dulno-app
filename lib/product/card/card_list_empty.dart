@@ -1,9 +1,11 @@
+import 'package:dulno/config/environment_options.dart';
 import 'package:dulno/product/card/card_list_arrow.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CardListEmptyContent extends StatelessWidget {
   final Function signInCallback;
@@ -32,7 +34,7 @@ class CardListEmptyContent extends StatelessWidget {
                       children: [
                         Center(
                           child:
-                              LocaleText("product.card.list.login.description"),
+                              LocaleText("product.card.list.new.description"),
                         ),
                         Center(
                           child: TextButton(
@@ -53,7 +55,34 @@ class CardListEmptyContent extends StatelessWidget {
                               );
                             },
                             child: LocaleText(
-                              "product.card.list.login.call",
+                              "product.card.list.new.login",
+                              style: TextStyle(
+                                color: Colors.indigo,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: LocaleText("product.card.list.new.or"),
+                        ),
+                        Center(
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 0),
+                              minimumSize: Size(50, 30),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              alignment: Alignment.centerLeft,
+                            ),
+                            onPressed: () async {
+                              var domain =
+                                  EnvironmentOptions.environment.domain;
+                              await launchUrl(Uri.parse(
+                                  "https://app.$domain/transmission/"));
+                            },
+                            child: LocaleText(
+                              "product.card.list.new.transmission",
                               style: TextStyle(
                                 color: Colors.indigo,
                                 decoration: TextDecoration.underline,

@@ -1,5 +1,5 @@
 import 'package:dulno/product/base/header_account_button.dart';
-import 'package:dulno/product/web/download_button.dart';
+import 'package:dulno/product/web/web_download_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
