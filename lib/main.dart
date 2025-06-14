@@ -97,7 +97,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    DulnoStatistic().keep(context);
+    if (!kIsWeb) {
+      DulnoStatistic().keep(context);
+    }
     return FutureBuilder<String>(
       future: findLanguage(),
       builder: (context, AsyncSnapshot<String> languageSnapshot) {
