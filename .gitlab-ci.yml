@@ -9,7 +9,7 @@ stages:
 variables:
   DOCKER_IMAGE: "dulno-app"
   KUBERNETES_RESOURCE: "deployment/dulno-app-deployment"
-  STAGING_SERVER_NAME: "10.96.0.15"
+  STAGING_SERVER_NAME: "10.96.0.20"
   PRODUCTION_SERVER_NAME: "app.dulno.com"
 
 include:
