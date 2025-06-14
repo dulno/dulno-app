@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:html' as html;
 import 'dart:math';
 
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:universal_html/html.dart' as html;
 
 class DownloadButton extends StatefulWidget {
   const DownloadButton({super.key});
@@ -60,17 +60,17 @@ class _DownloadButtonState extends State<DownloadButton>
     );
   }
 
-  void download(context) {
+  void download(context) async {
     LoaderAlert().show(context);
     const deepLink = "dulno://install";
     const iosAppStoreUrl = "https://apps.apple.com/de/app/dulno/id6745476292";
     const androidPlayStoreUrl =
         "https://play.google.com/store/apps/details?id=com.dulno";
+    await Clipboard.setData(ClipboardData(text: 'Test'));
     html.window.location.href = deepLink;
     Timer(
       const Duration(seconds: 2),
-      () {
-        Clipboard.setData(ClipboardData(text: 'Test'));
+      () async {
         final userAgent = html.window.navigator.userAgent.toLowerCase();
         if (userAgent.contains('iphone') || userAgent.contains('ipad')) {
           html.window.location.href = iosAppStoreUrl;
