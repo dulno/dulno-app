@@ -38,6 +38,7 @@ build_web:
   stage: build
   image: instrumentisto/flutter:3.29.0-androidsdk34-r0
   script:
+    - flutter pub run flutter_native_splash:create
     - flutter build web --release
   artifacts:
     paths:

@@ -68,10 +68,19 @@ class _DownloadButtonState extends State<DownloadButton>
     const androidPlayStoreUrl =
         "https://play.google.com/store/apps/details?id=com.dulno";
     await Clipboard.setData(ClipboardData(text: "MBVOuNybk0Lh6JBMAXg9"));
+    bool appOpened = false;
+    html.document.onVisibilityChange.listen((event) {
+      if (html.document.hidden ?? false) {
+        appOpened = true;
+      }
+    });
     openDeepLink(deepLink);
     Timer(
       const Duration(seconds: 2),
       () async {
+        if (appOpened) {
+          return;
+        }
         final userAgent = html.window.navigator.userAgent.toLowerCase();
         if (userAgent.contains('iphone') || userAgent.contains('ipad')) {
           html.window.location.href = iosAppStoreUrl;
