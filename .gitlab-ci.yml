@@ -32,6 +32,7 @@ build_android:
     paths:
       - android/dulno.aab
     expire_in: 1 day
+  when: manual
 
 build_web:
   stage: build

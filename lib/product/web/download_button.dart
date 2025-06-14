@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:universal_html/js.dart' as js;
 
 class DownloadButton extends StatefulWidget {
   const DownloadButton({super.key});
@@ -62,12 +63,12 @@ class _DownloadButtonState extends State<DownloadButton>
 
   void download(context) async {
     LoaderAlert().show(context);
-    const deepLink = "dulno://install";
+    const deepLink = "dulno://app";
     const iosAppStoreUrl = "https://apps.apple.com/de/app/dulno/id6745476292";
     const androidPlayStoreUrl =
         "https://play.google.com/store/apps/details?id=com.dulno";
-    await Clipboard.setData(ClipboardData(text: 'Test'));
-    html.window.location.href = deepLink;
+    await Clipboard.setData(ClipboardData(text: "MBVOuNybk0Lh6JBMAXg9"));
+    openDeepLink(deepLink);
     Timer(
       const Duration(seconds: 2),
       () async {
@@ -79,6 +80,10 @@ class _DownloadButtonState extends State<DownloadButton>
         }
       },
     );
+  }
+
+  void openDeepLink(String url) {
+    js.context.callMethod('eval', ['window.location.href = "$url";']);
   }
 
   @override
