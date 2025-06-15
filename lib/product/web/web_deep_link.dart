@@ -1,13 +1,11 @@
-import 'package:universal_html/html.dart' as html;
+import 'package:universal_html/js.dart' as js;
 
 class WebDeepLink {
   String url;
 
   WebDeepLink({required this.url});
 
-  void open() async {
-    html.AnchorElement(href: url)
-      ..target = "_self"
-      ..click();
+  void open() {
+    js.context.callMethod('eval', ['window.location.href = "$url";']);
   }
 }

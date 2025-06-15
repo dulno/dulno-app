@@ -269,6 +269,16 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (transmission == "") {
       return;
     }
+    LoaderAlert().show(context);
     await WebTransmission().complete(context, transmission);
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ProductPage(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
   }
 }
