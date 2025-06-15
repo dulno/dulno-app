@@ -38,7 +38,6 @@ build_web_staging:
   stage: build
   image: instrumentisto/flutter:3.29.0-androidsdk34-r0
   script:
-    - flutter pub run flutter_native_splash:create
     - flutter build web --release --dart-define=ENVIRONMENT=STAGING
   artifacts:
     paths:
@@ -51,7 +50,6 @@ build_web_production:
   stage: build
   image: instrumentisto/flutter:3.29.0-androidsdk34-r0
   script:
-    - flutter pub run flutter_native_splash:create
     - flutter build web --release --dart-define=ENVIRONMENT=PRODUCTION
   artifacts:
     paths:
