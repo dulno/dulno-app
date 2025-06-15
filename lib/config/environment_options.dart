@@ -1,5 +1,15 @@
+import 'package:flutter/foundation.dart';
+
 class EnvironmentOptions {
-  static DulnoEnvironment environment = DulnoEnvironment.production;
+  static DulnoEnvironment environment = _determineEnvironment();
+
+  static DulnoEnvironment _determineEnvironment() {
+    if (kIsWeb) {
+      return String.fromEnvironment("ENVIRONMENT") == "STAGING" ?
+        DulnoEnvironment.staging : DulnoEnvironment.production;
+    }
+    return DulnoEnvironment.production;
+  }
 }
 
 enum DulnoEnvironment {

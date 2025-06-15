@@ -34,16 +34,31 @@ build_android:
     expire_in: 1 day
   when: manual
 
-build_web:
+build_web_staging:
   stage: build
   image: instrumentisto/flutter:3.29.0-androidsdk34-r0
   script:
     - flutter pub run flutter_native_splash:create
-    - flutter build web --release
+    - flutter build web --release --dart-define=ENVIRONMENT=STAGING
   artifacts:
     paths:
       - build/web
     expire_in: 1 day
+  only:
+    - dev
+
+build_web_production:
+  stage: build
+  image: instrumentisto/flutter:3.29.0-androidsdk34-r0
+  script:
+    - flutter pub run flutter_native_splash:create
+    - flutter build web --release --dart-define=ENVIRONMENT=PRODUCTION
+  artifacts:
+    paths:
+      - build/web
+    expire_in: 1 day
+  only:
+    - main
 
 assemble_staging:
   stage: assemble
@@ -51,7 +66,7 @@ assemble_staging:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   dependencies:
-    - build_web
+    - build_web_staging
   before_script:
     - echo "{\"auths\":{\"$STAGING_DOCKER_REGISTRY\":{\"username\":\"$STAGING_DOCKER_USERNAME\",\"password\":\"$STAGING_DOCKER_PASSWORD\"}}}" > /kaniko/.docker/config.json
   script:
@@ -71,7 +86,7 @@ assemble_production:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   dependencies:
-    - build_web
+    - build_web_production
   before_script:
     - echo "{\"auths\":{\"$PRODUCTION_DOCKER_REGISTRY\":{\"username\":\"$PRODUCTION_DOCKER_USERNAME\",\"password\":\"$PRODUCTION_DOCKER_PASSWORD\"}}}" > /kaniko/.docker/config.json
   script:
