@@ -248,6 +248,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (path != "/transmission") {
       return;
     }
+    LoaderAlert().show(context);
     String? transmission = await WebTransmission().request(context);
     if (transmission == null) {
       return;

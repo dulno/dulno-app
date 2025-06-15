@@ -64,10 +64,6 @@ class _DownloadButtonState extends State<DownloadButton>
 
   void download(context) async {
     LoaderAlert().show(context);
-    const deepLink = "dulno://app";
-    const iosAppStoreUrl = "https://apps.apple.com/de/app/dulno/id6745476292";
-    const androidPlayStoreUrl =
-        "https://play.google.com/store/apps/details?id=com.dulno";
     String? transmission = await WebTransmission().request(context);
     if (transmission == null) {
       return;
@@ -79,13 +75,16 @@ class _DownloadButtonState extends State<DownloadButton>
         appOpened = true;
       }
     });
-    WebDeepLink(url: deepLink).open();
+    WebDeepLink(url: "dulno://transmission?id=$transmission").open();
     Timer(
       const Duration(seconds: 1),
       () async {
         if (appOpened) {
           return;
         }
+        const iosAppStoreUrl = "https://apps.apple.com/de/app/dulno/id6745476292";
+        const androidPlayStoreUrl =
+            "https://play.google.com/store/apps/details?id=com.dulno";
         final userAgent = html.window.navigator.userAgent.toLowerCase();
         if (userAgent.contains('iphone') || userAgent.contains('ipad')) {
           html.window.location.href = iosAppStoreUrl;
