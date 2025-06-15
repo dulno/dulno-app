@@ -1,3 +1,4 @@
+import 'package:dulno/config/environment_options.dart';
 import 'package:dulno/dropdown/dropdown.dart';
 import 'package:dulno/dropdown/dropdown_item.dart';
 import 'package:dulno/product/profile/profile_account_content.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
   final Function signInCallback;
@@ -51,6 +53,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       builder: (context) => ScanHistoryPage(),
                     ),
                   );
+                },
+              ),
+              DropdownItem(
+                text: "product.transmission",
+                icon: const Icon(CupertinoIcons.link),
+                click: () async {
+                  var domain =
+                      EnvironmentOptions.environment.domain;
+                  await launchUrl(Uri.parse(
+                      "https://app.$domain/transmission/"));
                 },
               ),
             ],

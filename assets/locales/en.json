@@ -169,6 +169,10 @@
   "product.profile.email.code.description.1": "We have sent you a confirmation code to the email ",
   "product.profile.email.code.description.2": ". Please enter it below to confirm your identity.",
 
+  "product.transmission": "Transfer",
+  "product.transmission.success": "Transfer successful",
+  "product.transmission.failed": "Transfer failed. Try again later",
+
   "product.campaign.redirect": "To the partner",
   "product.campaign.type.default": "Campaign",
   "product.campaign.type.discount": "Discount",

@@ -101,9 +101,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    if (!kIsWeb) {
-      DulnoStatistic().keep(context);
-    }
     return FutureBuilder<String>(
       future: findLanguage(),
       builder: (context, AsyncSnapshot<String> languageSnapshot) {
@@ -156,11 +153,27 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return;
     }
     _initialized = true;
+    await checkInitializationStatistics(context);
     await checkAuthorization(context);
     await checkWebTransmission(context);
     processWebStamp(context, _productPageKey);
     ScanCache().redeem(context);
     CouponCache().redeem(context);
+  }
+
+  Future<void> checkInitializationStatistics(context) async {
+    if (kIsWeb) {
+      return;
+    }
+    const storage = FlutterSecureStorage();
+    if (await storage.read(key: "alreadyOpened") == null) {
+      var clipboard = await Clipboard.getData(Clipboard.kTextPlain);
+      if (clipboard == null) {
+        return;
+      }
+      await WebTransmission().processedCompletion(context, clipboard.text ?? "");
+    }
+    await DulnoStatistic().keep(context);
   }
 
   void processDeepLinkStamp(context, key) async {
@@ -188,7 +201,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   }
 
   void processWebStamp(context, key) async {
-    if (!kIsWeb || !mounted) {
+    if (!kIsWeb) {
       return;
     }
     if (await ScanCooldown().isActive()) {
@@ -239,7 +252,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   }
 
   Future<void> checkWebTransmission(context) async {
-    if (!kIsWeb || !mounted) {
+    if (!kIsWeb) {
       return;
     }
     html.Location location = html.window.location;
@@ -269,16 +282,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (transmission == "") {
       return;
     }
-    LoaderAlert().show(context);
-    await WebTransmission().complete(context, transmission);
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ProductPage(),
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );
+    WebTransmission().processedCompletion(context, transmission);
   }
 }

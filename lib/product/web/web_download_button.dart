@@ -68,7 +68,6 @@ class _DownloadButtonState extends State<DownloadButton>
     if (transmission == null) {
       return;
     }
-    await Clipboard.setData(ClipboardData(text: transmission));
     bool appOpened = false;
     html.document.onVisibilityChange.listen((event) {
       if (html.document.hidden ?? false) {
@@ -82,6 +81,7 @@ class _DownloadButtonState extends State<DownloadButton>
         if (appOpened) {
           return;
         }
+        await Clipboard.setData(ClipboardData(text: transmission));
         const iosAppStoreUrl = "https://apps.apple.com/de/app/dulno/id6745476292";
         const androidPlayStoreUrl =
             "https://play.google.com/store/apps/details?id=com.dulno";

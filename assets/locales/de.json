@@ -169,6 +169,10 @@
   "product.profile.email.code.description.1": "Wir haben Ihnen einen Bestätigungscode an die E-Mail ",
   "product.profile.email.code.description.2": " geschickt. Bitte geben Sie ihn unten ein, um Ihre Identität zu bestätigen.",
 
+  "product.web.transmission": "Übertragen",
+  "product.transmission.success": "Übertragung erfolgreich",
+  "product.transmission.failed": "Übertragung fehlgeschlagen. Versuchen Sie es später erneut",
+
   "product.campaign.redirect": "Zum Partner",
   "product.campaign.type.default": "Kampagne",
   "product.campaign.type.discount": "Rabatt",
