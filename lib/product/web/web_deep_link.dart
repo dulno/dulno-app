@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:universal_html/html.dart' as html;
-import 'package:universal_html/js.dart' as js;
 import 'package:url_launcher/url_launcher.dart';
 
 class WebDeepLink {
@@ -8,7 +9,12 @@ class WebDeepLink {
   WebDeepLink({required this.url});
 
   void open() async {
-    //js.context.callMethod('eval', ['window.location.href = "$url";']);
-    await launchUrl(Uri.parse(url));
+    html.window.location.assign(url);
+    Timer(
+      const Duration(seconds: 2),
+      () async {
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      },
+    );
   }
 }
