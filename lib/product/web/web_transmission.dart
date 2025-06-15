@@ -48,7 +48,7 @@ class WebTransmission {
     if (!responseBody["success"]) {
       return;
     }
-    var responseCards = responseBody["cards"];
-    await storage.write(key: "cards", value: jsonEncode(responseCards));
+    var items = responseBody["items"];
+    await storage.write(key: "cards", value: jsonEncode(items));
   }
 }
