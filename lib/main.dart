@@ -191,24 +191,15 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (!kIsWeb || !mounted) {
       return;
     }
-    html.Location location = html.window.location;
-    String path = location.pathname ?? "";
-    path = path.replaceAll(RegExp(r'\/+$'), '');
-    if (path != "/stamp") {
-      return;
-    }
     if (await ScanCooldown().isActive()) {
       return;
     }
+    html.Location location = html.window.location;
     Uri uri = Uri.parse(location.href);
     String stamp = uri.queryParameters['stamp'] ?? "";
     String picc = uri.queryParameters['picc'] ?? "";
     String cmac = uri.queryParameters['cmac'] ?? "";
     if (stamp == "" || picc == "" || cmac == "") {
-      Alert(
-        description: "product.scan.error.nfc.tag",
-        type: AlertType.error,
-      ).show(context);
       return;
     }
     redeem(context, key, stamp, picc, cmac);
