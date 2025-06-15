@@ -197,7 +197,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       ).show(context);
       return;
     }
-    redeem(context, key, stamp, picc, cmac);
+    redeem(context, key, stamp, picc, cmac, 500);
   }
 
   void processWebStamp(context, key) async {
@@ -215,13 +215,14 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (stamp == "" || picc == "" || cmac == "") {
       return;
     }
-    redeem(context, key, stamp, picc, cmac);
+    WebDeepLink(url: "dulno://stamp?stamp=$stamp&picc=$picc&cmac=$cmac").open();
+    redeem(context, key, stamp, picc, cmac, 1000);
   }
 
-  void redeem(context, key, stamp, picc, cmac) {
+  void redeem(context, key, stamp, picc, cmac, delay) {
     LoaderAlert().show(context);
     Future.delayed(
-      Duration(milliseconds: 500),
+      Duration(milliseconds: delay),
       () async {
         var redemption = StampRedemption(stamp: stamp, picc: picc, cmac: cmac);
         var redemptionResult = await redemption.redeemProcessed(context);
