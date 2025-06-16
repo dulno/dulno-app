@@ -7,6 +7,7 @@ import 'package:dulno/product/coupon/coupon_list_body.dart';
 import 'package:dulno/product/partner/discover_body.dart';
 import 'package:dulno/product/scan/scan_button.dart';
 import 'package:dulno/product/web/web_download_button.dart';
+import 'package:dulno/product/web/web_legal_banner.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -54,7 +55,7 @@ class ProductPageState extends State<ProductPage> {
               selectedIndex: _selectedIndex,
               updateIndex: _onItemTapped,
               pageBodies: pageBodies)
-          : SizedBox.shrink(),
+          : WebLegalBanner(),
       body: pageBodies[_selectedIndex > 2 ? _selectedIndex - 1 : _selectedIndex]
           .content(context),
       backgroundColor: Color(0xFFFAFAFA),

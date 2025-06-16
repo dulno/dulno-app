@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
-import 'package:dulno/config/environment_options.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_cache.dart';
@@ -129,8 +128,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
                   return ProductPage(key: _productPageKey);
                 },
               ),
-              debugShowCheckedModeBanner:
-                  EnvironmentOptions.environment == DulnoEnvironment.staging,
+              debugShowCheckedModeBanner: false,
               localizationsDelegates: Locales.delegates,
               supportedLocales: Locales.supportedLocales,
               locale: locale,

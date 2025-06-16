@@ -1,5 +1,5 @@
 import 'package:dulno/product/base/header_account_button.dart';
-import 'package:dulno/product/web/web_download_button.dart';
+import 'package:dulno/product/base/header_history_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class _HeaderState extends State<Header> {
       actions: <Widget>[
         !kIsWeb
             ? HeaderAccountButton(signInCallback: widget.signInCallback)
-            : SizedBox.shrink(),
+            : HeaderHistoryButton()
       ],
       bottom: PreferredSize(
         preferredSize: Size.fromHeight(1.0),

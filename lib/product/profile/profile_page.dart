@@ -135,14 +135,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             runSpacing: 8.0,
                             alignment: WrapAlignment.center,
                             children: [
-                              ProfileFooterLink("product.profile.imprint",
-                                  "https://dulno.com/imprint/"),
                               ProfileFooterLink(
-                                  "product.profile.terms.of.service",
-                                  "https://dulno.com/terms-of-service/"),
+                                  text: "product.profile.imprint",
+                                  url: "https://dulno.com/imprint/"),
                               ProfileFooterLink(
-                                  "product.profile.privacy.policy",
-                                  "https://dulno.com/privacy-policy/"),
+                                  text: "product.profile.terms.of.service",
+                                  url: "https://dulno.com/terms-of-service/"),
+                              ProfileFooterLink(
+                                  text: "product.profile.privacy.policy",
+                                  url: "https://dulno.com/privacy-policy/"),
                             ],
                           ),
                         ),
