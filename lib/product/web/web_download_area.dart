@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/product/web/web_deep_link.dart';
-import 'package:dulno/product/web/web_download_arrow.dart';
 import 'package:dulno/product/web/web_transmission.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,13 +69,20 @@ class _WebDownloadAreaState extends State<WebDownloadArea>
                     ],
                   ),
                 ),
-                LocaleText(
-                  "product.web.download.app",
-                ),
+                Row(
+                  children: [
+                    LocaleText(
+                      "product.web.download.app",
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(CupertinoIcons.arrow_right),
+                  ],
+                )
               ],
             ),
           ),
-          WebDownloadArrow(),
           AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {
