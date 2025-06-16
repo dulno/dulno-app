@@ -16,17 +16,20 @@ class HeaderHistoryButton extends StatefulWidget
 class _HeaderAccountButtonState extends State<HeaderHistoryButton> {
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(CupertinoIcons.list_bullet, size: 30),
-      color: const Color(0xFFB3B3B3),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ScanHistoryPage(),
-          ),
-        );
-      },
+    return Padding(
+      padding: EdgeInsets.only(right: 10),
+      child: IconButton(
+        icon: Icon(CupertinoIcons.list_bullet, size: 30),
+        color: const Color(0xFFB3B3B3),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ScanHistoryPage(),
+            ),
+          );
+        },
+      ),
     );
   }
 }

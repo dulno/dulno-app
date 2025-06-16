@@ -6,8 +6,7 @@ import 'package:dulno/product/card/card_list_body.dart';
 import 'package:dulno/product/coupon/coupon_list_body.dart';
 import 'package:dulno/product/partner/discover_body.dart';
 import 'package:dulno/product/scan/scan_button.dart';
-import 'package:dulno/product/web/web_download_button.dart';
-import 'package:dulno/product/web/web_legal_banner.dart';
+import 'package:dulno/product/web/web_footer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +54,7 @@ class ProductPageState extends State<ProductPage> {
               selectedIndex: _selectedIndex,
               updateIndex: _onItemTapped,
               pageBodies: pageBodies)
-          : WebLegalBanner(),
+          : WebFooter(),
       body: pageBodies[_selectedIndex > 2 ? _selectedIndex - 1 : _selectedIndex]
           .content(context),
       backgroundColor: Color(0xFFFAFAFA),
@@ -64,10 +63,8 @@ class ProductPageState extends State<ProductPage> {
               callback: findCardListBody().reload,
               currentPageIndex: () => _selectedIndex,
             )
-          : DownloadButton(),
-      floatingActionButtonLocation: !kIsWeb
-          ? FloatingActionButtonLocation.centerDocked
-          : FloatingActionButtonLocation.endFloat,
+          : SizedBox.shrink(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 

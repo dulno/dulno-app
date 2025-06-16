@@ -173,6 +173,11 @@
   "product.transmission.success": "Übertragung erfolgreich",
   "product.transmission.failed": "Übertragung fehlgeschlagen. Versuchen Sie es später erneut",
 
+  "product.web.download.description.1": "",
+  "product.web.download.description.2": "Jetzt Karten ",
+  "product.web.download.description.3": "sichern",
+  "product.web.download.app": "Dulno App herunterladen",
+
   "product.campaign.redirect": "Zum Partner",
   "product.campaign.type.default": "Kampagne",
   "product.campaign.type.discount": "Rabatt",
