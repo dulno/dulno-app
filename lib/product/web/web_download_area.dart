@@ -34,7 +34,7 @@ class _WebDownloadAreaState extends State<WebDownloadArea>
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 25, vertical: 18),
-      width: MediaQuery.of(context).size.width,
+      width: 410,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,7 +46,7 @@ class _WebDownloadAreaState extends State<WebDownloadArea>
                 RichText(
                   text: TextSpan(
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 27,
                     ),
                     children: [
                       TextSpan(
@@ -77,7 +77,10 @@ class _WebDownloadAreaState extends State<WebDownloadArea>
                     SizedBox(
                       width: 5,
                     ),
-                    Icon(CupertinoIcons.arrow_right),
+                    Icon(
+                      CupertinoIcons.arrow_right,
+                      size: 18,
+                    ),
                   ],
                 )
               ],
