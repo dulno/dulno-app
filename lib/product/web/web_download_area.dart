@@ -33,7 +33,7 @@ class _WebDownloadAreaState extends State<WebDownloadArea>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+      padding: EdgeInsets.only(left: 25, right: 25, top: 28, bottom: 18),
       width: 410,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +96,7 @@ class _WebDownloadAreaState extends State<WebDownloadArea>
                   boxShadow: [
                     BoxShadow(
                       color: Colors.indigo
-                          .withOpacity(0.6 * min(glowValue + 0.5, 1)),
+                          .withOpacity(0.8 * min(glowValue + 0.5, 1)),
                       blurRadius: 15 * (glowValue + 0.5),
                       spreadRadius: 4 * (glowValue + 0.5),
                     ),
