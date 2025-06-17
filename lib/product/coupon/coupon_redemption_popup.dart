@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:dulno/alert/alert.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class CouponRedemptionPopup {
   final Map<String, dynamic> content;

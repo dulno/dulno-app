@@ -1,11 +1,11 @@
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/profile/profile_email_change_page.dart';
 import 'package:dulno/product/profile/profile_logout.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class ProfileAccountContent extends StatelessWidget {
   final Function signInCallback;

@@ -1,6 +1,7 @@
 import 'package:dulno/config/environment_options.dart';
 import 'package:dulno/dropdown/dropdown.dart';
 import 'package:dulno/dropdown/dropdown_item.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/profile/profile_account_content.dart';
 import 'package:dulno/product/profile/profile_footer_link.dart';
 import 'package:dulno/product/profile/profile_language_selection.dart';
@@ -9,7 +10,6 @@ import 'package:dulno/product/profile/profile_sign_in_content.dart';
 import 'package:dulno/product/scan/scan_history_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:skeletonizer/skeletonizer.dart';

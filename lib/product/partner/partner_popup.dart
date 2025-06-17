@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:dulno/dropdown/dropdown.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/partner/discover_map_directions.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
 import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class PartnerPopup extends StatefulWidget {

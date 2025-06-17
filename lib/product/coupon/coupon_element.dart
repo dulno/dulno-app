@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_expiration.dart';
 import 'package:dulno/product/coupon/coupon_logo.dart';
@@ -13,7 +14,6 @@ import 'package:dulno/product/scan/scan_popup.dart';
 import 'package:dulno/request/request.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

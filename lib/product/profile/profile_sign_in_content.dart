@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/profile/profile_apple_alert.dart';
 import 'package:dulno/product/profile/profile_email_connect_page.dart';
 import 'package:dulno/product/profile/profile_google_alert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileSignInContent extends StatelessWidget {

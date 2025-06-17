@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

@@ -1,7 +1,8 @@
+import 'package:dulno/localization/locale_text.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/product/scan/scan_history.dart';
 import 'package:dulno/product/scan/scan_history_entry.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:timeline_tile/timeline_tile.dart';

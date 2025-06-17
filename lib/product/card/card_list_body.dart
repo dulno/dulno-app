@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:dulno/product/card/card_element.dart';
 import 'package:dulno/product/card/card_list_empty.dart';
@@ -8,7 +9,6 @@ import 'package:dulno/product/card/card_search_bar.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

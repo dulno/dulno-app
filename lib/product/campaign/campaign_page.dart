@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:dulno/dropdown/dropdown.dart';
+import 'package:dulno/localization/locale_text.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/product/campaign/campaign_badge.dart';
 import 'package:dulno/product/campaign/campaign_time.dart';
 import 'package:dulno/product/coupon/coupon_element.dart';
@@ -10,7 +12,6 @@ import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

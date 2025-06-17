@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/localization/locale_text.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/product/web/web_deep_link.dart';
 import 'package:dulno/product/web/web_transmission.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:universal_html/html.dart' as html;
 
 class WebDownloadArea extends StatefulWidget {

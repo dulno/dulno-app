@@ -1,6 +1,6 @@
+import 'package:dulno/localization/locale_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class CardListScanArrow extends StatefulWidget {
   const CardListScanArrow({super.key});
