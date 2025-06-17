@@ -37,7 +37,17 @@ class CouponElement extends StatefulWidget {
 }
 
 class _CouponElementState extends State<CouponElement> {
-  CouponLogo? _logo;
+  late CouponLogo _logo;
+  late Future _logoFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _logo = CouponLogo(
+        couponId: widget.content["couponId"],
+        currentLogoId: widget.content["logoId"]);
+    _logoFetch = _logo.fetch(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +55,12 @@ class _CouponElementState extends State<CouponElement> {
   }
 
   Widget createCouponElement() {
-    _logo ??= CouponLogo(
-        couponId: widget.content["couponId"],
-        currentLogoId: widget.content["logoId"]);
     var foregroundColor =
         widget.isLoading ? Colors.black : parseColor("couponForegroundColor");
     var backgroundColor =
         widget.isLoading ? Colors.white : parseColor("couponBackgroundColor");
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(context),
+      future: _logoFetch,
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
           enabled: widget.isLoading,
@@ -91,7 +98,7 @@ class _CouponElementState extends State<CouponElement> {
                             children: [
                               Align(
                                 alignment: Alignment.centerLeft,
-                                child: (_logo?.logo == null || widget.isLoading)
+                                child: (_logo.logo == null || widget.isLoading)
                                     ? Skeleton.leaf(
                                         child: Container(
                                           height: 75,
@@ -108,7 +115,7 @@ class _CouponElementState extends State<CouponElement> {
                                           maxWidth: 135,
                                           maxHeight: 75,
                                         ),
-                                        child: _logo?.logo!,
+                                        child: _logo.logo!,
                                       ),
                               ),
                               Align(

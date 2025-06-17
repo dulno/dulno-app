@@ -13,16 +13,38 @@ class DiscoverBody extends ProductPageBody {
             unselectedIcon: CupertinoIcons.map,
             selectedIcon: CupertinoIcons.map_fill);
 
-  final MapController controller = MapController();
-
   @override
   Widget content(BuildContext context) {
+    return DiscoverMap();
+  }
+}
+
+class DiscoverMap extends StatefulWidget {
+  final MapController mapController = MapController();
+
+  DiscoverMap({super.key});
+
+  @override
+  State<DiscoverMap> createState() => _DiscoverMapState();
+}
+
+class _DiscoverMapState extends State<DiscoverMap> {
+  late Future _partnersFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _partnersFetch = findPartners(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findPartners(context),
+      future: _partnersFetch,
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return OSMMap(
           partners: snapshot.data ?? [],
-          mapController: controller,
+          mapController: widget.mapController,
           latitude: 51.1657,
           longitude: 10.4515,
           radius: 0,

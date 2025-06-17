@@ -11,14 +11,17 @@ import 'package:intl/intl.dart' as intl;
 
 class Locales {
   static late Locale selectedLocale;
+
   static String get lang => selectedLocale.languageCode;
 
   static bool get selectedLocaleRtl => selectedLocale.languageCode != 'en';
 
   final Locale locale;
+
   Locales(this.locale, {bool initialize = true}) {
     if (initialize) selectedLocale = locale;
   }
+
   static Locales? of(BuildContext context) {
     return Localizations.of<Locales>(context, Locales);
   }
@@ -102,6 +105,7 @@ class Locales {
 
 class _LocalesDelegate extends LocalizationsDelegate<Locales> {
   const _LocalesDelegate();
+
   @override
   bool isSupported(Locale locale) {
     for (Locale l in Locales.supportedLocales) {

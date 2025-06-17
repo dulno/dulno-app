@@ -1,10 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import './locales.dart';
 
 class LocalePreference {
   late SharedPreferences prefs;
   static late LocalePreference instance;
+
   static Future<LocalePreference> init() async {
     LocalePreference.instance = LocalePreference();
     instance.prefs = await SharedPreferences.getInstance();

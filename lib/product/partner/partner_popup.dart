@@ -25,15 +25,22 @@ class _DraggablePopupState extends State<PartnerPopup> {
   double _popupHeight = 400.0;
   double _startDragHeight = 400.0;
   double _startVerticalDrag = 0.0;
-  PartnerLogo? _logo;
+  late PartnerLogo _logo;
+  late Future _logoFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _logo = PartnerLogo(
+        partnerId: widget.partner["id"],
+        currentLogoId: widget.partner["logoId"]);
+    _logoFetch = _logo.fetch(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    _logo ??= PartnerLogo(
-        partnerId: widget.partner["id"],
-        currentLogoId: widget.partner["logoId"]);
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(context),
+      future: _logoFetch,
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Positioned(
           bottom: 0,
@@ -59,7 +66,7 @@ class _DraggablePopupState extends State<PartnerPopup> {
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Skeletonizer(
-                enabled: _logo?.logo == null,
+                enabled: _logo.logo == null,
                 child: Column(
                   children: [
                     Padding(
@@ -82,7 +89,7 @@ class _DraggablePopupState extends State<PartnerPopup> {
                             SizedBox(height: 5),
                             Align(
                               alignment: Alignment.center,
-                              child: _logo?.logo == null
+                              child: _logo.logo == null
                                   ? Skeleton.leaf(
                                       child: Container(
                                         height: 90,
@@ -99,7 +106,7 @@ class _DraggablePopupState extends State<PartnerPopup> {
                                       constraints: BoxConstraints(
                                         maxWidth: 150,
                                       ),
-                                      child: _logo?.logo!,
+                                      child: _logo.logo!,
                                     ),
                             ),
                             SizedBox(height: 30),

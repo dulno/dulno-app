@@ -59,10 +59,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 text: "product.transmission",
                 icon: const Icon(CupertinoIcons.link),
                 click: () async {
-                  var domain =
-                      EnvironmentOptions.environment.domain;
-                  await launchUrl(Uri.parse(
-                      "https://app.$domain/transmission/"));
+                  var domain = EnvironmentOptions.environment.domain;
+                  await launchUrl(
+                      Uri.parse("https://app.$domain/transmission/"));
                 },
               ),
             ],

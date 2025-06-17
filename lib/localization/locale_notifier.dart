@@ -16,6 +16,7 @@ class LocaleNotifier extends InheritedWidget {
   }
 
   change(String lng) => state!.changeLocale(lng);
+
   Locale? get locale => state!.locale;
 
   @override

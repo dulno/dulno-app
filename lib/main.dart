@@ -170,7 +170,8 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       if (clipboard == null) {
         return;
       }
-      await WebTransmission().processedCompletion(context, clipboard.text ?? "");
+      await WebTransmission()
+          .processedCompletion(context, clipboard.text ?? "");
     }
     await DulnoStatistic().keep(context);
   }

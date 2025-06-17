@@ -63,7 +63,8 @@ class WebTransmission {
     return true;
   }
 
-  Future<void> processedCompletion(BuildContext context, String transmission) async {
+  Future<void> processedCompletion(
+      BuildContext context, String transmission) async {
     LoaderAlert().show(context);
     bool success = await WebTransmission().complete(context, transmission);
     if (!success) {
@@ -72,8 +73,7 @@ class WebTransmission {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ProductPage(),
+        pageBuilder: (context, animation, secondaryAnimation) => ProductPage(),
         transitionDuration: Duration.zero,
         reverseTransitionDuration: Duration.zero,
       ),
