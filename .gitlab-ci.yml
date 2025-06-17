@@ -20,7 +20,7 @@ include:
 
 build_android:
   stage: build
-  image: instrumentisto/flutter:3.29.0-androidsdk34-r0
+  image: instrumentisto/flutter:3.32.4-androidsdk35-r0
   before_script:
     - echo $ANDROID_KEYSTORE_CONTENT | base64 -d > android/app/keystore.jks
   script:
@@ -36,7 +36,7 @@ build_android:
 
 build_web_staging:
   stage: build
-  image: instrumentisto/flutter:3.29.0-androidsdk34-r0
+  image: ghcr.io/cirruslabs/flutter:3.32.4
   script:
     - flutter build web --release --dart-define=ENVIRONMENT=STAGING
   artifacts:
@@ -48,7 +48,7 @@ build_web_staging:
 
 build_web_production:
   stage: build
-  image: instrumentisto/flutter:3.29.0-androidsdk34-r0
+  image: ghcr.io/cirruslabs/flutter:3.32.4
   script:
     - flutter build web --release --dart-define=ENVIRONMENT=PRODUCTION
   artifacts:
