@@ -1,6 +1,6 @@
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
@@ -35,9 +35,7 @@ class ProfileLanguageSelection extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6.0),
               side: BorderSide(
-                  color: selected
-                      ? Colors.indigo[100]!
-                      : Colors.grey[300]!,
+                  color: selected ? Colors.indigo[100]! : Colors.grey[300]!,
                   width: selected ? 2 : 1)),
         ),
         onPressed: () async {

@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:dulno/localization/locales.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class CouponExpiration extends StatelessWidget {
   final int expiration;

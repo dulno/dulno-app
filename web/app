@@ -1,0 +1,18 @@
+server {
+  server_name ${SERVER_NAME};
+
+  root /dulno/app;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+
+  location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|ttf|woff|woff2)$ {
+    expires 30d;
+    access_log off;
+  }
+
+  listen 8080;
+  server_tokens off;
+}

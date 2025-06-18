@@ -42,8 +42,10 @@
   "product.scan.history.update.value.description": "Ein Stempel auf der Wertkarte des Partners %s wurde abgebucht.",
 
   "product.card.list.label": "Karten",
-  "product.card.list.login.description": "Sie hatten bereits Stempel?",
-  "product.card.list.login.call": "Jetzt anmelden",
+  "product.card.list.new.description": "Sie hatten bereits Stempel?",
+  "product.card.list.new.login": "Jetzt anmelden",
+  "product.card.list.new.or": "oder",
+  "product.card.list.new.transmission": "Karten importieren",
   "product.card.list.stamp.description": "Zum Stempeln hier klicken",
   "product.card.list.search": "Nach Karte suchen...",
   "product.card.list.empty": "Keine Karten gefunden.",
@@ -166,6 +168,15 @@
   "product.profile.email.code.headline": "Verifizierungscode eingeben",
   "product.profile.email.code.description.1": "Wir haben Ihnen einen Bestätigungscode an die E-Mail ",
   "product.profile.email.code.description.2": " geschickt. Bitte geben Sie ihn unten ein, um Ihre Identität zu bestätigen.",
+
+  "product.transmission": "Übertragen",
+  "product.transmission.success": "Übertragung erfolgreich",
+  "product.transmission.failed": "Übertragung fehlgeschlagen. Versuchen Sie es später erneut",
+
+  "product.web.download.description.1": "",
+  "product.web.download.description.2": "Jetzt Karten ",
+  "product.web.download.description.3": "sichern",
+  "product.web.download.app": "Dulno App herunterladen",
 
   "product.campaign.redirect": "Zum Partner",
   "product.campaign.type.default": "Kampagne",

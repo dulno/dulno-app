@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/localization/locale_text.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class PartnerReportPopup {
   final String partner;

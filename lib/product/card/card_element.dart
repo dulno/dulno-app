@@ -22,31 +22,38 @@ class CardElement extends StatefulWidget {
 }
 
 class _CardElementState extends State<CardElement> {
-  CardLogo? _logo;
+  late CardLogo _logo;
+  late Future _logoFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _logo = CardLogo(
+        cardId: widget.content["cardId"],
+        currentLogoId: widget.content["logoId"]);
+    _logoFetch = _logo.fetch(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     var element = createCardElement();
     if (widget.animateCard) {
       return CardBlinkerAnimation(
-        child: element,
         color: Colors.grey[400]!,
         scale: 1.05,
+        child: element,
       );
     }
     return element;
   }
 
   Widget createCardElement() {
-    _logo ??= CardLogo(
-        cardId: widget.content["cardId"],
-        currentLogoId: widget.content["logoId"]);
     var foregroundColor =
         widget.isLoading ? Colors.black : parseColor("cardForegroundColor");
     var backgroundColor =
         widget.isLoading ? Colors.white : parseColor("cardBackgroundColor");
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(context),
+      future: _logoFetch,
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
           enabled: widget.isLoading,
@@ -77,7 +84,7 @@ class _CardElementState extends State<CardElement> {
                     children: [
                       Align(
                         alignment: Alignment.topRight,
-                        child: (_logo?.logo == null || widget.isLoading)
+                        child: (_logo.logo == null || widget.isLoading)
                             ? Skeleton.leaf(
                                 child: Container(
                                   height: 75,
@@ -93,7 +100,7 @@ class _CardElementState extends State<CardElement> {
                                   maxWidth: 135,
                                   maxHeight: 75,
                                 ),
-                                child: _logo?.logo!,
+                                child: _logo.logo!,
                               ),
                       ),
                       widget.isLoading

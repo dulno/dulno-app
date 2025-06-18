@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:dulno/dropdown/dropdown.dart';
+import 'package:dulno/localization/locale_text.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/product/campaign/campaign_badge.dart';
 import 'package:dulno/product/campaign/campaign_time.dart';
 import 'package:dulno/product/coupon/coupon_element.dart';
@@ -10,17 +12,15 @@ import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class CampaignPage extends StatelessWidget {
+class CampaignPage extends StatefulWidget {
   final String partner;
   final String campaign;
   final Function()? callback;
-  PartnerLogo? _logo;
 
-  CampaignPage({
+  const CampaignPage({
     super.key,
     required this.partner,
     required this.campaign,
@@ -28,20 +28,37 @@ class CampaignPage extends StatelessWidget {
   });
 
   @override
+  State<CampaignPage> createState() => _CampaignPageState();
+}
+
+class _CampaignPageState extends State<CampaignPage> {
+  late PartnerLogo _logo;
+  late Future _logoFetch;
+  late Future _campaignFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _logo =
+        PartnerLogo(partnerId: widget.partner, currentLogoId: widget.campaign);
+    _logoFetch = _logo.fetch(context);
+    _campaignFetch = findCampaign(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     storeViewedCampaign();
     const storage = FlutterSecureStorage();
     return FutureBuilder<dynamic>(
-      future: findCampaign(context),
+      future: _campaignFetch,
       builder: (context, AsyncSnapshot<dynamic> campaignSnapshot) {
         return FutureBuilder<dynamic>(
           future: storage.read(key: "collectedCoupons"),
           builder: (context, AsyncSnapshot<dynamic> collectedCouponsSnapshot) {
-            _logo ??= PartnerLogo(partnerId: partner, currentLogoId: campaign);
             return FutureBuilder<dynamic>(
-              future: _logo?.fetch(context),
+              future: _logoFetch,
               builder: (context, AsyncSnapshot<dynamic> logoSnapshot) {
-                var loading = !campaignSnapshot.hasData || _logo?.logo == null;
+                var loading = !campaignSnapshot.hasData || _logo.logo == null;
                 return Scaffold(
                   appBar: AppBar(
                     backgroundColor: Colors.white,
@@ -57,7 +74,7 @@ class CampaignPage extends StatelessWidget {
                         icon: Icon(CupertinoIcons.ellipsis),
                         items: [
                           PartnerReportMenuItem(
-                              context: context, partner: partner)
+                              context: context, partner: widget.partner)
                         ],
                       )
                     ],
@@ -100,7 +117,7 @@ class CampaignPage extends StatelessWidget {
                                       constraints: BoxConstraints(
                                         maxWidth: 135,
                                       ),
-                                      child: _logo?.logo!,
+                                      child: _logo.logo!,
                                     ),
                               !loading
                                   ? CampaignBadge(
@@ -290,7 +307,7 @@ class CampaignPage extends StatelessWidget {
   }
 
   Future<dynamic> findCampaign(context) async {
-    var body = <String, Object>{"campaign": campaign};
+    var body = <String, Object>{"campaign": widget.campaign};
     var response =
         await Request.post(url: "/user/campaign/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
@@ -304,9 +321,9 @@ class CampaignPage extends StatelessWidget {
     final viewedCampaignsCache = await storage.read(key: "viewedCampaigns");
     var viewedCampaigns =
         viewedCampaignsCache == null ? [] : jsonDecode(viewedCampaignsCache);
-    viewedCampaigns.add(campaign);
+    viewedCampaigns.add(widget.campaign);
     await storage.write(
         key: "viewedCampaigns", value: jsonEncode(viewedCampaigns));
-    callback?.call();
+    widget.callback?.call();
   }
 }

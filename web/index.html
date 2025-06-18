@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--
+      If you are serving your web app in a path other than the root, change the
+      href value below to reflect the base path you are serving from.
+
+      The path provided below has to start and end with a slash "/" in order for
+      it to work correctly.
+
+      For more details:
+      * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+      This is a placeholder for base href that will be replaced by the value of
+      the --base-href argument provided to flutter build.
+    -->
+    <base href="$FLUTTER_BASE_HREF">
+
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A new Flutter project.">
+
+    <!-- iOS meta tags & icons -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Dulno">
+
+    <!-- Favicon -->
+    <link rel="icon" class="dulno-icon" href="icons/icon-dark.ico" type="image/x-icon" sizes="144x144">
+
+    <title>Dulno</title>
+    <link rel="manifest" href="manifest.json">
+
+    <script>
+      const updateIcon = (event) => {
+        var iconElements = document.getElementsByClassName("dulno-icon");
+        for (var i = 0; i < iconElements.length; i++) {
+          if (event.matches) {
+            iconElements[i].href = "icons/icon-light.ico";
+          } else {
+            iconElements[i].href = "icons/icon-dark.ico";
+          }
+        }
+      };
+
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      window.addEventListener('DOMContentLoaded', () => updateIcon(mediaQuery));
+      mediaQuery.addEventListener('change', updateIcon);
+    </script>
+
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+
+    <style id="splash-screen-style">
+      html {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100%;
+        background-color: #ffffff;
+        background-size: 100% 100%;
+      }
+
+      .center {
+        margin: 0;
+        position: absolute;
+        top: calc(50% - 75px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .contain,
+      .stretch,
+      .cover {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .contain {
+        object-fit: contain;
+      }
+
+      .cover {
+        object-fit: cover;
+      }
+
+      .progress-container {
+        position: absolute;
+        top: calc(50% + 75px);
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        width: min(65%, 500px);
+        height: 4px;
+        background-color: #e0e0e0;
+        overflow: hidden;
+        border-radius: 2px;
+      }
+
+      .progress-bar {
+        position: absolute;
+        width: 30%;
+        height: 100%;
+        background-color: #007bff;
+        animation: slide 1.5s ease-in-out infinite;
+      }
+
+      @keyframes slide {
+        0% {
+          left: 0%;
+        }
+        50% {
+          left: 70%;
+        }
+        100% {
+          left: 0%;
+        }
+      }
+
+      .bottom {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+
+      .bottomLeft {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+
+      .bottomRight {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+    </style>
+
+    <script id="splash-screen-script">
+      function removeSplashFromWeb() {
+        document.getElementById("splash")?.remove();
+        document.getElementById("progress")?.remove();
+        document.getElementById("splash-branding")?.remove();
+        document.body.style.background = "transparent";
+      }
+      window.addEventListener('flutter-first-frame', removeSplashFromWeb);
+    </script>
+  </head>
+  <body>
+    <picture id="splash">
+      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+    </picture>
+
+    <div id="progress" class="progress-container">
+      <div class="progress-bar"></div>
+    </div>
+
+    <script src="flutter_bootstrap.js" async=""></script>
+  </body>
+</html>

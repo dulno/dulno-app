@@ -5,6 +5,7 @@ import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/dropdown/dropdown.dart';
 import 'package:dulno/dropdown/dropdown_item.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/card/card_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
@@ -13,21 +14,33 @@ import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class CardPage extends StatelessWidget {
+class CardPage extends StatefulWidget {
   final Map<String, dynamic> content;
   final MapController mapController = MapController();
 
   CardPage({super.key, required this.content});
 
   @override
+  State<CardPage> createState() => _CardPageState();
+}
+
+class _CardPageState extends State<CardPage> {
+  late Future _partnerFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _partnerFetch = findPartner(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findPartner(context),
+      future: _partnerFetch,
       builder: (context, AsyncSnapshot<dynamic> partner) {
         return Scaffold(
           appBar: AppBar(
@@ -62,7 +75,7 @@ class CardPage extends StatelessWidget {
                     },
                   ),
                   PartnerReportMenuItem(
-                      context: context, partner: content["partnerId"]),
+                      context: context, partner: widget.content["partnerId"]),
                 ],
               )
             ],
@@ -98,7 +111,7 @@ class CardPage extends StatelessWidget {
             alignment: Alignment.center,
             child: CardElement(
               isLoading: !partner.hasData,
-              content: content,
+              content: widget.content,
               animateLastStamp: false,
               animateCard: false,
             ),
@@ -111,14 +124,15 @@ class CardPage extends StatelessWidget {
             height: 20,
           ),
           Text(
-            utf8.decode(content["partnerName"].toString().codeUnits),
+            utf8.decode(widget.content["partnerName"].toString().codeUnits),
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 5,
           ),
           Text(
-            utf8.decode(content["partnerDescription"].toString().codeUnits),
+            utf8.decode(
+                widget.content["partnerDescription"].toString().codeUnits),
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[600],
@@ -179,13 +193,13 @@ class CardPage extends StatelessWidget {
   }
 
   String findDescription() {
-    var type = content["cardType"];
+    var type = widget.content["cardType"];
     if (type == "COLLECTION") {
-      return content["rewardDescription"];
+      return widget.content["rewardDescription"];
     } else if (type == "VALUE") {
-      return content["valueDescription"];
+      return widget.content["valueDescription"];
     } else if (type == "MEMBER") {
-      return content["memberDescription"];
+      return widget.content["memberDescription"];
     }
     return "";
   }
@@ -213,7 +227,7 @@ class CardPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: OSMMap(
           partners: [partner],
-          mapController: mapController,
+          mapController: widget.mapController,
           latitude: firstLocation["latitude"] + 0.00075,
           longitude: firstLocation["longitude"],
           radius: 1,
@@ -225,7 +239,7 @@ class CardPage extends StatelessWidget {
   }
 
   void deleteCard(context) async {
-    var body = <String, Object>{"item": content["itemId"]};
+    var body = <String, Object>{"item": widget.content["itemId"]};
     var response =
         await Request.post(url: "/user/card/delete/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
@@ -257,12 +271,12 @@ class CardPage extends StatelessWidget {
     const storage = FlutterSecureStorage();
     final cardCache = await storage.read(key: "cards");
     var cards = cardCache == null ? [] : jsonDecode(cardCache);
-    cards.removeWhere((card) => card["itemId"] == content["itemId"]);
+    cards.removeWhere((card) => card["itemId"] == widget.content["itemId"]);
     await storage.write(key: "cards", value: jsonEncode(cards));
   }
 
   Future<dynamic> findPartner(context) async {
-    var body = <String, Object>{"partner": content["partnerId"]};
+    var body = <String, Object>{"partner": widget.content["partnerId"]};
     var response =
         await Request.post(url: "/user/partner/", body: body).send(context);
     if (response == null || response.statusCode == 409) {
