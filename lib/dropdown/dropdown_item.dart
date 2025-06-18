@@ -1,5 +1,5 @@
+import 'package:dulno/localization/locale_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class DropdownItem extends StatelessWidget {
   final String text;

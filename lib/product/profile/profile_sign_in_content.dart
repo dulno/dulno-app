@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/profile/profile_apple_alert.dart';
 import 'package:dulno/product/profile/profile_email_connect_page.dart';
 import 'package:dulno/product/profile/profile_google_alert.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileSignInContent extends StatelessWidget {
@@ -67,8 +68,8 @@ class ProfileSignInContent extends StatelessWidget {
             );
           },
         ),
-        SizedBox(height: Platform.isIOS ? 10 : 0),
-        Platform.isIOS
+        SizedBox(height: !kIsWeb && Platform.isIOS ? 10 : 0),
+        !kIsWeb && Platform.isIOS
             ? createSignInButton(
                 Colors.black,
                 Colors.white,
@@ -82,8 +83,8 @@ class ProfileSignInContent extends StatelessWidget {
             : SizedBox.shrink(),
         SizedBox(height: 10),
         createSignInButton(
-          Platform.isIOS ? Colors.white : Colors.black,
-          Platform.isIOS ? Colors.black : Colors.white,
+          !kIsWeb && Platform.isIOS ? Colors.white : Colors.black,
+          !kIsWeb && Platform.isIOS ? Colors.black : Colors.white,
           FontAwesomeIcons.google,
           "product.profile.account.google.button",
           () async {

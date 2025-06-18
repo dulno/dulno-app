@@ -1,6 +1,6 @@
+import 'package:dulno/localization/locale_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class CardListScanArrow extends StatefulWidget {
   const CardListScanArrow({super.key});
@@ -48,8 +48,8 @@ class _CardListScanArrowState extends State<CardListScanArrow>
                 child: Transform(
                   transform: Matrix4.diagonal3Values(1, 1.25, 1),
                   alignment: Alignment.center,
-                  child:
-                      Icon(CupertinoIcons.arrow_down, size: 30, color: Colors.black),
+                  child: Icon(CupertinoIcons.arrow_down,
+                      size: 30, color: Colors.black),
                 ),
               ),
               Transform.translate(

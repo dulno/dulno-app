@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/localization/locale_notifier.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/notification/notification.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_cache.dart';
@@ -12,21 +14,26 @@ import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/scan_flashlight.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
+import 'package:dulno/product/web/web_deep_link.dart';
+import 'package:dulno/product/web/web_transmission.dart';
 import 'package:dulno/request/request.dart';
 import 'package:dulno/statistic/statistic.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Locales.init(["de", "en"]);
-  await DulnoNotification(navigatorKey: navigatorKey).setup();
+  if (!kIsWeb) {
+    await DulnoNotification(navigatorKey: navigatorKey).setup();
+  }
   runApp(DulnoApp());
 }
 
@@ -48,7 +55,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {},
       );
@@ -94,7 +101,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    DulnoStatistic().keep(context);
     return FutureBuilder<String>(
       future: findLanguage(),
       builder: (context, AsyncSnapshot<String> languageSnapshot) {
@@ -117,7 +123,8 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
                 builder: (context) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     checkInitialization(context);
-                    processDeepLink(context, _productPageKey);
+                    processDeepLinkStamp(context, _productPageKey);
+                    processDeepLinkTransmission(context, _productPageKey);
                   });
                   return ProductPage(key: _productPageKey);
                 },
@@ -145,12 +152,31 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return;
     }
     _initialized = true;
+    await checkInitializationStatistics(context);
     await checkAuthorization(context);
+    await checkWebTransmission(context);
+    processWebStamp(context, _productPageKey);
     ScanCache().redeem(context);
     CouponCache().redeem(context);
   }
 
-  void processDeepLink(context, key) async {
+  Future<void> checkInitializationStatistics(context) async {
+    if (kIsWeb) {
+      return;
+    }
+    const storage = FlutterSecureStorage();
+    if (await storage.read(key: "alreadyOpened") == null) {
+      var clipboard = await Clipboard.getData(Clipboard.kTextPlain);
+      if (clipboard == null) {
+        return;
+      }
+      await WebTransmission()
+          .processedCompletion(context, clipboard.text ?? "");
+    }
+    await DulnoStatistic().keep(context);
+  }
+
+  void processDeepLinkStamp(context, key) async {
     if (_deepLinkUri == null || !mounted) {
       return;
     }
@@ -171,13 +197,32 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       ).show(context);
       return;
     }
-    redeemDeepLink(context, key, stamp, picc, cmac);
+    redeem(context, key, stamp, picc, cmac, 500);
   }
 
-  void redeemDeepLink(context, key, stamp, picc, cmac) {
+  void processWebStamp(context, key) async {
+    if (!kIsWeb) {
+      return;
+    }
+    if (await ScanCooldown().isActive()) {
+      return;
+    }
+    html.Location location = html.window.location;
+    Uri uri = Uri.parse(location.href);
+    String stamp = uri.queryParameters['stamp'] ?? "";
+    String picc = uri.queryParameters['picc'] ?? "";
+    String cmac = uri.queryParameters['cmac'] ?? "";
+    if (stamp == "" || picc == "" || cmac == "") {
+      return;
+    }
+    WebDeepLink(url: "dulno://stamp?stamp=$stamp&picc=$picc&cmac=$cmac").open();
+    redeem(context, key, stamp, picc, cmac, 1000);
+  }
+
+  void redeem(context, key, stamp, picc, cmac, delay) {
     LoaderAlert().show(context);
     Future.delayed(
-      Duration(milliseconds: 500),
+      Duration(milliseconds: delay),
       () async {
         var redemption = StampRedemption(stamp: stamp, picc: picc, cmac: cmac);
         var redemptionResult = await redemption.redeemProcessed(context);
@@ -185,7 +230,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
           return;
         }
         ScanCooldown().enable();
-        if (Platform.isAndroid) {
+        if (!kIsWeb && Platform.isAndroid) {
           ScanFlashlight().flashlight();
         }
         if (key.currentState != null && key.currentState!.mounted) {
@@ -205,5 +250,39 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return;
     }
     await Request.get(url: "/user/authorized/").send(context);
+  }
+
+  Future<void> checkWebTransmission(context) async {
+    if (!kIsWeb) {
+      return;
+    }
+    html.Location location = html.window.location;
+    String path = location.pathname ?? "";
+    path = path.replaceAll(RegExp(r'\/+$'), '');
+    if (path != "/transmission") {
+      return;
+    }
+    LoaderAlert().show(context);
+    String? transmission = await WebTransmission().request(context);
+    if (transmission == null) {
+      return;
+    }
+    WebDeepLink(url: "dulno://transmission?id=$transmission").open();
+  }
+
+  void processDeepLinkTransmission(context, key) async {
+    if (_deepLinkUri == null || !mounted) {
+      return;
+    }
+    if (_deepLinkUri!.scheme != 'dulno' ||
+        _deepLinkUri!.host != 'transmission') {
+      return;
+    }
+    String transmission = _deepLinkUri!.queryParameters['id'] ?? "";
+    _deepLinkUri = null;
+    if (transmission == "") {
+      return;
+    }
+    WebTransmission().processedCompletion(context, transmission);
   }
 }

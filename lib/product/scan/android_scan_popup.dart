@@ -1,8 +1,8 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/scan/scan_flashlight.dart';
 import 'package:dulno/product/scan/scan_popup_content.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 
 class AndroidScanPopupContent extends ScanPopupContent {

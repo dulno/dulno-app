@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/partner/discover_map.dart';
 import 'package:dulno/product/partner/partner_link_list.dart';
 import 'package:dulno/product/partner/partner_logo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -19,18 +19,25 @@ class PartnerOverview extends StatefulWidget {
 
 class _PartnerOverviewState extends State<PartnerOverview> {
   final MapController mapController = MapController();
-  PartnerLogo? _logo;
+  late PartnerLogo _logo;
+  late Future _logoFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _logo = PartnerLogo(
+        partnerId: widget.partner["id"],
+        currentLogoId: widget.partner["logoId"]);
+    _logoFetch = _logo.fetch(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    _logo ??= PartnerLogo(
-        partnerId: widget.partner["id"],
-        currentLogoId: widget.partner["logoId"]);
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(context),
+      future: _logoFetch,
       builder: (context, AsyncSnapshot<dynamic> snapshot) {
         return Skeletonizer(
-          enabled: _logo?.logo == null,
+          enabled: _logo.logo == null,
           child: Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 30),
@@ -40,7 +47,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
                   SizedBox(height: 30),
                   Align(
                     alignment: Alignment.center,
-                    child: _logo?.logo == null
+                    child: _logo.logo == null
                         ? Skeleton.leaf(
                             child: Container(
                               height: 90,
@@ -56,7 +63,7 @@ class _PartnerOverviewState extends State<PartnerOverview> {
                             constraints: BoxConstraints(
                               maxWidth: 180,
                             ),
-                            child: _logo?.logo!,
+                            child: _logo.logo!,
                           ),
                   ),
                   SizedBox(height: 30),

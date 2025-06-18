@@ -1,7 +1,8 @@
+import 'package:dulno/localization/locale_text.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class ProfileEmailCodePage extends StatefulWidget {

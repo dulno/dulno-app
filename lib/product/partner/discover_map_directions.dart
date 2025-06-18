@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DiscoverMapDirections {
@@ -12,7 +13,7 @@ class DiscoverMapDirections {
   Future<void> open() async {
     final String destination = '$destinationLatitude,$destinationLongitude';
     String url = "";
-    if (Platform.isIOS) {
+    if (!kIsWeb && Platform.isIOS) {
       url = 'http://maps.apple.com/?daddr=$destination&dirflg=d';
     } else {
       url = 'https://www.google.com/maps/dir/?api=1&destination='

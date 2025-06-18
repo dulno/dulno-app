@@ -1,8 +1,8 @@
 import 'package:dulno/alert/alert.dart';
+import 'package:dulno/localization/locales.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileLegalAlert {

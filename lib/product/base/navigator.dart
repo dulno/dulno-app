@@ -1,6 +1,6 @@
+import 'package:dulno/localization/locales.dart';
 import 'package:dulno/product/base/page_body.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class ProductNavigator extends StatefulWidget implements PreferredSizeWidget {
   final int selectedIndex;

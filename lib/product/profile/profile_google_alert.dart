@@ -9,11 +9,8 @@ import 'package:dulno/product/profile/profile_legal_alert.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProfileGoogleAlert {
   final Function signInCallback;

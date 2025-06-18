@@ -1,6 +1,6 @@
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/profile/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CouponListEmptyContent extends StatelessWidget {

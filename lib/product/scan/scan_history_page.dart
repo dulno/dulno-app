@@ -1,7 +1,7 @@
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/scan/scan_history_timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 
 class ScanHistoryPage extends StatelessWidget {
   const ScanHistoryPage({super.key});

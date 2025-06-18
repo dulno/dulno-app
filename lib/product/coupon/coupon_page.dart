@@ -5,6 +5,7 @@ import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
 import 'package:dulno/dropdown/dropdown.dart';
 import 'package:dulno/dropdown/dropdown_item.dart';
+import 'package:dulno/localization/locale_text.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/coupon/coupon_element.dart';
 import 'package:dulno/product/partner/discover_map.dart';
@@ -13,21 +14,33 @@ import 'package:dulno/product/partner/partner_report_menu_item.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_locales/flutter_locales.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class CouponPage extends StatelessWidget {
+class CouponPage extends StatefulWidget {
   final Map<String, dynamic> content;
   final MapController mapController = MapController();
 
   CouponPage({super.key, required this.content});
 
   @override
+  State<CouponPage> createState() => _CouponPageState();
+}
+
+class _CouponPageState extends State<CouponPage> {
+  late Future _partnerFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    _partnerFetch = findPartner(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
-      future: findPartner(context),
+      future: _partnerFetch,
       builder: (context, AsyncSnapshot<dynamic> partner) {
         return Scaffold(
           appBar: AppBar(
@@ -62,7 +75,7 @@ class CouponPage extends StatelessWidget {
                     },
                   ),
                   PartnerReportMenuItem(
-                      context: context, partner: content["partnerId"])
+                      context: context, partner: widget.content["partnerId"])
                 ],
               )
             ],
@@ -98,7 +111,7 @@ class CouponPage extends StatelessWidget {
             alignment: Alignment.center,
             child: CouponElement(
               isLoading: !partner.hasData,
-              content: content,
+              content: widget.content,
               state: CouponElementState.redeemable,
               unusable: false,
             ),
@@ -111,14 +124,15 @@ class CouponPage extends StatelessWidget {
             height: 20,
           ),
           Text(
-            utf8.decode(content["partnerName"].toString().codeUnits),
+            utf8.decode(widget.content["partnerName"].toString().codeUnits),
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 5,
           ),
           Text(
-            utf8.decode(content["partnerDescription"].toString().codeUnits),
+            utf8.decode(
+                widget.content["partnerDescription"].toString().codeUnits),
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[600],
@@ -137,7 +151,8 @@ class CouponPage extends StatelessWidget {
             ),
           ),
           Text(
-            utf8.decode(content["couponDescription"].toString().codeUnits),
+            utf8.decode(
+                widget.content["couponDescription"].toString().codeUnits),
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey[600],
@@ -201,7 +216,7 @@ class CouponPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: OSMMap(
           partners: [partner],
-          mapController: mapController,
+          mapController: widget.mapController,
           latitude: firstLocation["latitude"] + 0.00075,
           longitude: firstLocation["longitude"],
           radius: 1,
@@ -213,7 +228,7 @@ class CouponPage extends StatelessWidget {
   }
 
   void deleteCoupon(context) async {
-    var body = <String, Object>{"coupon": content["redeemableId"]};
+    var body = <String, Object>{"coupon": widget.content["redeemableId"]};
     var response = await Request.post(url: "/user/coupon/delete/", body: body)
         .send(context);
     if (response == null || response.statusCode == 409) {
@@ -248,12 +263,12 @@ class CouponPage extends StatelessWidget {
     final couponCache = await storage.read(key: "coupons");
     var coupons = couponCache == null ? [] : jsonDecode(couponCache);
     coupons.removeWhere(
-        (coupon) => coupon["redeemableId"] == content["redeemableId"]);
+        (coupon) => coupon["redeemableId"] == widget.content["redeemableId"]);
     await storage.write(key: "coupons", value: jsonEncode(coupons));
   }
 
   Future<dynamic> findPartner(context) async {
-    var body = <String, Object>{"partner": content["partnerId"]};
+    var body = <String, Object>{"partner": widget.content["partnerId"]};
     var response =
         await Request.post(url: "/user/partner/", body: body).send(context);
     if (response == null || response.statusCode == 409) {

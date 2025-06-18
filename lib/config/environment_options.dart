@@ -1,10 +1,17 @@
+import 'package:flutter/foundation.dart';
+
 class EnvironmentOptions {
-  static DulnoEnvironment environment = DulnoEnvironment.production;
+  static const String _environmentParameter =
+      String.fromEnvironment("ENVIRONMENT");
+  static const DulnoEnvironment environment =
+      kIsWeb && _environmentParameter == "STAGING"
+          ? DulnoEnvironment.staging
+          : DulnoEnvironment.production;
 }
 
 enum DulnoEnvironment {
   production("dulno.com", "api.dulno.com"),
-  staging("dulno.dev", "pub.dulno.dev");
+  staging("dulno.dev", "api.dulno.dev");
 
   const DulnoEnvironment(this._domain, this._endpoint);
 

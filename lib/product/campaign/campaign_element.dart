@@ -19,7 +19,21 @@ class CampaignElement extends StatefulWidget {
 }
 
 class _CampaignElementState extends State<CampaignElement> {
-  PartnerLogo? _logo;
+  late PartnerLogo _logo;
+  late Future _logoFetch;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.isLoading) {
+      _logo = PartnerLogo(
+          partnerId: widget.content["partner"]["id"],
+          currentLogoId: widget.content["partner"]["logoId"]);
+      _logoFetch = _logo.fetch(context);
+    } else {
+      _logoFetch = Future.value();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +41,9 @@ class _CampaignElementState extends State<CampaignElement> {
   }
 
   Widget createCampaignElement() {
-    if (!widget.isLoading) {
-      _logo ??= PartnerLogo(
-          partnerId: widget.content["partner"]["id"],
-          currentLogoId: widget.content["partner"]["logoId"]);
-    }
     const storage = FlutterSecureStorage();
     return FutureBuilder<dynamic>(
-      future: _logo?.fetch(context),
+      future: _logoFetch,
       builder: (context, AsyncSnapshot<dynamic> logoSnapshot) {
         return FutureBuilder<String?>(
           future: storage.read(key: "viewedCampaigns"),
@@ -73,7 +82,7 @@ class _CampaignElementState extends State<CampaignElement> {
                             children: [
                               Align(
                                 alignment: Alignment.topRight,
-                                child: (_logo?.logo == null || widget.isLoading)
+                                child: (widget.isLoading || _logo.logo == null)
                                     ? Skeleton.leaf(
                                         child: Container(
                                           height: 45,
@@ -96,7 +105,7 @@ class _CampaignElementState extends State<CampaignElement> {
                                           border: Border.all(
                                               color: Colors.black12, width: 1),
                                         ),
-                                        child: ClipOval(child: _logo?.logo!),
+                                        child: ClipOval(child: _logo.logo!),
                                       ),
                               ),
                               SizedBox(
