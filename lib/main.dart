@@ -50,6 +50,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   final AppLinks _appLinks = AppLinks();
   bool _initialized = false;
   Uri? _deepLinkUri;
+  Uri? _previousDeepLinkUri;
 
   @override
   void initState() {
@@ -74,6 +75,10 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   }
 
   void _handleDeepLink(Uri uri) async {
+    if (_previousDeepLinkUri == uri) {
+      return;
+    }
+    _previousDeepLinkUri = uri;
     setState(() {
       _deepLinkUri = uri;
     });
