@@ -128,8 +128,8 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
                 builder: (context) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     checkInitialization(context);
-                    processDeepLinkStamp(context, _productPageKey);
-                    processDeepLinkTransmission(context, _productPageKey);
+                    processDeepLinkStamp(context);
+                    processDeepLinkTransmission(context);
                   });
                   return ProductPage(key: _productPageKey);
                 },
@@ -160,7 +160,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     await checkInitializationStatistics(context);
     await checkAuthorization(context);
     await checkWebTransmission(context);
-    processWebStamp(context, _productPageKey);
+    processWebStamp(context);
     ScanCache().redeem(context);
     CouponCache().redeem(context);
   }
@@ -176,12 +176,12 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
         return;
       }
       await WebTransmission()
-          .processedCompletion(context, clipboard.text ?? "");
+          .processedCompletion(context, _productPageKey, clipboard.text ?? "");
     }
     await DulnoStatistic().keep(context);
   }
 
-  void processDeepLinkStamp(context, key) async {
+  void processDeepLinkStamp(context) async {
     if (_deepLinkUri == null || !mounted) {
       return;
     }
@@ -202,10 +202,10 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       ).show(context);
       return;
     }
-    redeem(context, key, stamp, picc, cmac, 500);
+    redeem(context, stamp, picc, cmac, 500);
   }
 
-  void processWebStamp(context, key) async {
+  void processWebStamp(context) async {
     if (!kIsWeb) {
       return;
     }
@@ -221,10 +221,10 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
       return;
     }
     WebDeepLink(url: "dulno://stamp?stamp=$stamp&picc=$picc&cmac=$cmac").open();
-    redeem(context, key, stamp, picc, cmac, 1000);
+    redeem(context, stamp, picc, cmac, 1000);
   }
 
-  void redeem(context, key, stamp, picc, cmac, delay) {
+  void redeem(context, stamp, picc, cmac, delay) {
     LoaderAlert().show(context);
     Future.delayed(
       Duration(milliseconds: delay),
@@ -238,8 +238,9 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
         if (!kIsWeb && Platform.isAndroid) {
           ScanFlashlight().flashlight();
         }
-        if (key.currentState != null && key.currentState!.mounted) {
-          key.currentState!.findCardListBody().reload();
+        if (_productPageKey.currentState != null &&
+            _productPageKey.currentState!.mounted) {
+          _productPageKey.currentState!.findCardListBody().reload();
           if (Navigator.canPop(context)) {
             Navigator.pop(context);
           }
@@ -275,7 +276,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     WebDeepLink(url: "dulno://transmission?id=$transmission").open();
   }
 
-  void processDeepLinkTransmission(context, key) async {
+  void processDeepLinkTransmission(context) async {
     if (_deepLinkUri == null || !mounted) {
       return;
     }
@@ -288,6 +289,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (transmission == "") {
       return;
     }
-    WebTransmission().processedCompletion(context, transmission);
+    WebTransmission()
+        .processedCompletion(context, _productPageKey, transmission);
   }
 }

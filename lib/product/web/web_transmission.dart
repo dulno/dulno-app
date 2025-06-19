@@ -50,7 +50,9 @@ class WebTransmission {
     var response =
         await Request.post(url: "/user/transmission/complete/", body: body)
             .send(context);
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return false;
@@ -68,8 +70,9 @@ class WebTransmission {
     return true;
   }
 
-  Future<void> processedCompletion(
-      BuildContext context, String transmission) async {
+  Future<void> processedCompletion(BuildContext context,
+      GlobalKey<ProductPageState> productPageKey, String transmission) async {
+    productPageKey.currentState!.findCardListBody().prohibitLoadRefresh();
     bool success = await WebTransmission().complete(context, transmission);
     if (!success) {
       return;
