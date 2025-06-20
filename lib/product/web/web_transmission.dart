@@ -35,6 +35,9 @@ class WebTransmission {
   }
 
   Future<bool> complete(BuildContext context, String transmission) async {
+    if (!transmission.startsWith("dulno-")) {
+      return false;
+    }
     transmission = transmission.replaceFirst("dulno-", "");
     const storage = FlutterSecureStorage();
     var body = <String, Object>{"transmission": transmission};
@@ -43,9 +46,13 @@ class WebTransmission {
         .map((card) => card["itemId"])
         .toList();
     body["cards"] = cards;
+    LoaderAlert().show(context);
     var response =
         await Request.post(url: "/user/transmission/complete/", body: body)
             .send(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
     if (response == null || response.statusCode == 409) {
       ConnectionAlert().show(context);
       return false;
@@ -63,9 +70,9 @@ class WebTransmission {
     return true;
   }
 
-  Future<void> processedCompletion(
-      BuildContext context, String transmission) async {
-    LoaderAlert().show(context);
+  Future<void> processedCompletion(BuildContext context,
+      GlobalKey<ProductPageState> productPageKey, String transmission) async {
+    productPageKey.currentState!.findCardListBody().prohibitLoadRefresh();
     bool success = await WebTransmission().complete(context, transmission);
     if (!success) {
       return;

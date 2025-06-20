@@ -34,6 +34,10 @@ class CardListBody extends ProductPageBody {
   void refresh(context) {
     _key.currentState?.refresh(context);
   }
+
+  void prohibitLoadRefresh() {
+    _key.currentState?._loadRefreshProhibited = true;
+  }
 }
 
 class CardListBodyContent extends StatefulWidget {
@@ -45,6 +49,7 @@ class CardListBodyContent extends StatefulWidget {
 
 class _CardListBodyContentState extends State<CardListBodyContent> {
   bool _loaded = false;
+  bool _loadRefreshProhibited = false;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<dynamic> _cards = [];
@@ -103,6 +108,9 @@ class _CardListBodyContentState extends State<CardListBodyContent> {
     }
     var responseBody = jsonDecode(response.body);
     if (responseBody.isEmpty) {
+      return;
+    }
+    if (reloadAfterwards && _loadRefreshProhibited) {
       return;
     }
     _cards = responseBody["items"];
