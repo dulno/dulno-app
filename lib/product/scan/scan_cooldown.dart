@@ -2,7 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ScanCooldown {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
-  final int _duration = 1000 * 5;
+  final int _duration = 1000 * 2;
 
   void enable() async {
     final currentTime = DateTime.now().millisecondsSinceEpoch;
