@@ -220,7 +220,7 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     if (stamp == "" || picc == "" || cmac == "") {
       return;
     }
-    //WebDeepLink(url: "dulno://stamp?stamp=$stamp&picc=$picc&cmac=$cmac").open();
+    WebDeepLink(url: "dulno://stamp?stamp=$stamp&picc=$picc&cmac=$cmac").open();
     redeem(context, stamp, picc, cmac, 1000);
   }
 
