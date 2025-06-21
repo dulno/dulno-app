@@ -8,6 +8,16 @@ server {
     try_files $uri $uri/ /index.html;
   }
 
+  location = /.well-known/assetlinks.json {
+    root /dulno/app;
+    default_type application/json;
+  }
+
+  location = /apple-app-site-association {
+    root /dulno/app;
+    default_type application/json;
+  }
+
   location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|ttf|woff|woff2)$ {
     expires 30d;
     access_log off;
