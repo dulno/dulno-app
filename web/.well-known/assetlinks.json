@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dulno",
+      "sha256_cert_fingerprints": [
+        "fd:c9:9c:d2:33:92:e7:36:5f:49:fd:2e:a4:83:0f:f4:03:a1:0d:b5:2a:1e:6c:70:b6:00:67:a6:d1:5f:d4:dc"
+      ]
+    }
+  }
+]

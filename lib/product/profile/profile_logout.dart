@@ -1,6 +1,6 @@
-import 'package:dulno/config/google_options.dart';
 import 'package:dulno/request/request.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileLogout {
   Future<void> logout(context) async {
@@ -14,6 +14,6 @@ class ProfileLogout {
     await storage.delete(key: "user");
     await storage.delete(key: "authenticationToken");
     await storage.delete(key: "refreshToken");
-    await GoogleOptions.googleSignIn.signOut();
+    await GoogleSignIn.instance.signOut();
   }
 }
