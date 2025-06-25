@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/connection_alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
-import 'package:dulno/config/google_options.dart';
 import 'package:dulno/product/base/page.dart';
 import 'package:dulno/product/profile/profile_legal_alert.dart';
 import 'package:dulno/product/profile/profile_sign_up_body.dart';
@@ -11,6 +10,7 @@ import 'package:dulno/request/request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileGoogleAlert {
   final Function signInCallback;
@@ -28,13 +28,10 @@ class ProfileGoogleAlert {
   Future<void> processGoogleSignIn(
       context, legalChecked, newsletterChecked) async {
     try {
-      var googleSignIn = GoogleOptions.googleSignIn;
+      var googleSignIn = GoogleSignIn.instance;
       await googleSignIn.signOut();
-      final account = await googleSignIn.signIn();
-      if (account == null) {
-        return;
-      }
-      final auth = await account.authentication;
+      final account = await googleSignIn.authenticate();
+      final auth = account.authentication;
       final idToken = auth.idToken;
       if (idToken == null) {
         return;

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:dulno/alert/alert.dart';
 import 'package:dulno/alert/loader_alert.dart';
+import 'package:dulno/google/google_sign_in.dart';
 import 'package:dulno/localization/locale_notifier.dart';
 import 'package:dulno/localization/locales.dart';
 import 'package:dulno/notification/notification.dart';
@@ -33,6 +34,7 @@ void main() async {
   await Locales.init(["de", "en"]);
   if (!kIsWeb) {
     await DulnoNotification(navigatorKey: navigatorKey).setup();
+    await DulnoGoogleSignIn().setup();
   }
   runApp(DulnoApp());
 }
