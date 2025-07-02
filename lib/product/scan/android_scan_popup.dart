@@ -34,9 +34,9 @@ class AndroidScanPopupContentState
           if (mounted) {
             setState(() {
               scanned = true;
-              ScanFlashlight().flashlight();
             });
           }
+          ScanFlashlight().flashlight();
         },
       );
     }

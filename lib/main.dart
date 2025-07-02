@@ -14,6 +14,7 @@ import 'package:dulno/product/profile/profile_language_state.dart';
 import 'package:dulno/product/scan/scan_cache.dart';
 import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:dulno/product/scan/scan_flashlight.dart';
+import 'package:dulno/product/scan/scan_session.dart';
 import 'package:dulno/product/scan/stamp_redemption.dart';
 import 'package:dulno/product/web/web_deep_link.dart';
 import 'package:dulno/product/web/web_transmission.dart';
@@ -23,7 +24,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -58,11 +58,6 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    if (!kIsWeb && Platform.isAndroid) {
-      NfcManager.instance.startSession(
-        onDiscovered: (NfcTag tag) async {},
-      );
-    }
     _initDeepLinks();
   }
 
@@ -165,6 +160,12 @@ class _DulnoAppState extends State<DulnoApp> with WidgetsBindingObserver {
     processWebStamp(context);
     ScanCache().redeem(context);
     CouponCache().redeem(context);
+    if (!kIsWeb && Platform.isAndroid) {
+      ScanSession session = ScanSession(callback: (stamp, picc, cmac) {
+        redeem(context, stamp, picc, cmac, 0);
+      });
+      session.readNFCTag(context: context);
+    }
   }
 
   Future<void> checkInitializationStatistics(context) async {
