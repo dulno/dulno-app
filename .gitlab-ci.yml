@@ -36,7 +36,7 @@ build_android:
 
 build_web_staging:
   stage: build
-  image: ghcr.io/cirruslabs/flutter:3.35.0
+  image: ghcr.io/cirruslabs/flutter:3.35.1
   script:
     - flutter build web --release --dart-define=ENVIRONMENT=STAGING
   artifacts:
@@ -48,7 +48,7 @@ build_web_staging:
 
 build_web_production:
   stage: build
-  image: ghcr.io/cirruslabs/flutter:3.35.0
+  image: ghcr.io/cirruslabs/flutter:3.35.1
   script:
     - flutter build web --release --dart-define=ENVIRONMENT=PRODUCTION
   artifacts:
