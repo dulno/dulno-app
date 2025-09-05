@@ -20,7 +20,7 @@ include:
 
 build_android:
   stage: build
-  image: instrumentisto/flutter:3.35.2-androidsdk35-r0
+  image: instrumentisto/flutter:3.35.3-androidsdk35-r0
   before_script:
     - echo $ANDROID_KEYSTORE_CONTENT | base64 -d > android/app/keystore.jks
   script:
