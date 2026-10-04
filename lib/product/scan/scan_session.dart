@@ -1,0 +1,89 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dulno/alert/alert.dart';
+import 'package:dulno/product/scan/scan_cooldown.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:nfc_manager/nfc_manager.dart';
+
+class ScanSession {
+  final Function callback;
+
+  const ScanSession({required this.callback});
+
+  Future<void> readNFCTag(
+      {required BuildContext context, Function? readCallback}) async {
+    if (!kIsWeb && Platform.isAndroid) {
+      NfcManager.instance.stopSession().catchError((_) {});
+    }
+    NfcManager.instance.startSession(
+      invalidateAfterFirstRead: true,
+      onDiscovered: (NfcTag tag) async {
+        if (!kIsWeb && Platform.isAndroid && await ScanCooldown().isActive()) {
+          processScanCooldown(context: context, readCallback: readCallback);
+          return;
+        }
+        if (readCallback != null) {
+          readCallback();
+        }
+        try {
+          var payloadBytes =
+          tag.data["ndef"]["cachedMessage"]["records"][0]["payload"];
+          var payloadString = utf8.decode(payloadBytes.sublist(1));
+          processNFCTagScan(context, payloadString);
+        } catch (exception) {
+          displayNFCTagScanError(context);
+        }
+      },
+      onError: (NfcError error) async {
+        if (error.type == NfcErrorType.userCanceled ||
+            error.type == NfcErrorType.systemIsBusy) {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+          return;
+        }
+        displayNFCTagScanError(context);
+      },
+    );
+  }
+
+  void processScanCooldown(
+      {required BuildContext context, Function? readCallback}) {
+    Future.delayed(
+      Duration(milliseconds: 1000),
+          () async {
+        readNFCTag(context: context, readCallback: readCallback);
+      },
+    );
+  }
+
+  void displayNFCTagScanError(context) {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    Alert(
+      description: "product.scan.error.scan",
+      type: AlertType.error,
+    ).show(context);
+  }
+
+  Future<void> processNFCTagScan(context, payloadString) async {
+    Uri uri = Uri.parse(payloadString);
+    String stamp = uri.queryParameters['stamp'] ?? "";
+    String picc = uri.queryParameters['picc'] ?? "";
+    String cmac = uri.queryParameters['cmac'] ?? "";
+    if (stamp == "" || picc == "" || cmac == "") {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      Alert(
+        description: "product.scan.error.nfc.tag",
+        type: AlertType.error,
+      ).show(context);
+      return;
+    }
+    callback(stamp, picc, cmac);
+  }
+}
