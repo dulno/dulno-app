@@ -12,7 +12,6 @@ The app used by our customers to access and manage their digital cards from our 
 |      | Pipeline status                                                     |
 |------|---------------------------------------------------------------------|
 | main | ![](https://github.com/dulno/dulno-app/actions/workflows/ci.yml/badge.svg?branch=main) |
-| dev  | ![](https://github.com/dulno/dulno-app/actions/workflows/ci.yml/badge.svg?branch=dev)  |
 
 ## License
 
