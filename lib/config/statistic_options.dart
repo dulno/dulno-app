@@ -1,4 +1,3 @@
 class StatisticOptions {
-  static String statisticKey =
-      "***REMOVED***";
+  static const String statisticKey = String.fromEnvironment("STATISTIC_KEY");
 }
