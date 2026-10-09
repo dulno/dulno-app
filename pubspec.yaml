@@ -50,7 +50,7 @@ dependencies:
   url_launcher: ^6.3.1
   skeletonizer: ^2.0.1
   flutter_map: ^8.1.1
-  flutter_map_cancellable_tile_provider: ^3.1.0
+  flutter_map_cancellable_tile_provider: ^3.1.1
   latlong2: ^0.9.1
   path: ^1.9.0
   path_provider: ^2.1.5
