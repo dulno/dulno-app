@@ -64,7 +64,7 @@ dependencies:
   intl: ^0.20.2
   timeline_tile: ^2.0.0
   get_time_ago: ^2.3.1
-  sign_in_with_apple: ^7.0.1
+  sign_in_with_apple: ^8.2.0
   universal_html: ^2.2.4
 
 dev_dependencies:
