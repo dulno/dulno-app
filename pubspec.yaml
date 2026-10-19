@@ -42,7 +42,7 @@ dependencies:
   firebase_core: ^5.0.0
   firebase_messaging: ^17.0.0
   flutter_local_notifications: ^19.0.0
-  permission_handler: ^12.0.0+1
+  permission_handler: ^13.0.2
   provider: ^6.1.4
   nfc_manager: ^3.5.0
   flutter_nfc_kit: ^3.6.0
