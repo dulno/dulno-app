@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # pin_code_fields 10+ requires migrating the app to material_ui; stay on 8.x until then.
+      - dependency-name: pin_code_fields
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:

@@ -47,7 +47,7 @@ class CampaignBadge extends StatelessWidget {
     return "product.campaign.type.default";
   }
 
-  IconData findCampaignIcon() {
+  FaIconData findCampaignIcon() {
     if (type == "DISCOUNT") {
       return FontAwesomeIcons.percent;
     } else if (type == "EVENT") {

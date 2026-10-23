@@ -54,17 +54,17 @@ dependencies:
   latlong2: ^0.9.1
   path: ^1.9.0
   path_provider: ^2.1.5
-  font_awesome_flutter: ^10.10.0
+  font_awesome_flutter: ^11.0.0
   google_sign_in: ^7.2.0
   pin_code_fields: ^8.0.1
   flutter_native_splash: ^2.4.4
   package_info_plus: ^9.0.0
   app_links: ^6.4.0
-  torch_light: ^1.1.0
+  torch_light: ^2.0.0
   intl: ^0.20.2
   timeline_tile: ^2.0.0
   get_time_ago: ^2.3.1
-  sign_in_with_apple: ^7.0.1
+  sign_in_with_apple: ^8.2.0
   universal_html: ^2.2.4
 
 dev_dependencies:
