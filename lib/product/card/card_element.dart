@@ -203,7 +203,7 @@ class _CardElementState extends State<CardElement> {
     );
   }
 
-  IconData? parseIcon(name, style) {
+  FaIconData? parseIcon(name, style) {
     if (name == "circle" && style == "regular") {
       return FontAwesomeIcons.circle;
     } else if (name == "circle" && style == "solid") {
