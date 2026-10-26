@@ -399,10 +399,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_nfc_kit
-      sha256: "3cc4059626fa672031261512299458dd274de4ccb57a7f0ee0951ddd70a048e5"
+      sha256: aaf11749318e7e5cf8c54eb6c3ee02685ccc7021efd3cf467a5f106cdc752a66
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.0"
+    version: "3.7.0"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -577,10 +577,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
+      sha256: "2a743920d81b7910627f68ee2c9ac1fc0bfee32b9fc3403587d7c6791ca12f80"
       url: "https://pub.dev"
     source: hosted
-    version: "4.9.0"
+    version: "4.12.0"
   latlong2:
     dependency: "direct main"
     description:
@@ -681,10 +681,10 @@ packages:
     dependency: transitive
     description:
       name: ndef
-      sha256: "5083507cff4bb823b2a198a27ea2c70c4d6bc27a97b66097d966a250e1615d54"
+      sha256: "198ba3798e80cea381648569d84059dbba64cd140079fb7b0d9c3f1e0f5973f3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.4"
+    version: "0.4.0"
   ndef_record:
     dependency: transitive
     description:
@@ -1098,6 +1098,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: "64e16458a0ea9b99260ceb5467a214c1f298d647c659af1bff6d3bf82536b1ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   url_launcher:
     dependency: "direct main"
     description:
