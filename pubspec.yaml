@@ -44,7 +44,7 @@ dependencies:
   flutter_local_notifications: ^19.0.0
   permission_handler: ^13.0.2
   provider: ^6.1.4
-  nfc_manager: ^3.5.0
+  nfc_manager: ^4.2.1
   flutter_nfc_kit: ^3.6.0
   app_settings: ^6.1.1
   url_launcher: ^6.3.1
