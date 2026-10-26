@@ -37,7 +37,8 @@ class IOSScanPopupContentState
 
   @override
   Future<void> checkNFC(context) async {
-    final isAvailable = await NfcManager.instance.isAvailable();
+    final isAvailable = await NfcManager.instance.checkAvailability() ==
+        NfcAvailability.enabled;
     if (isAvailable) {
       readNFCTag(
         context: context,

@@ -6,6 +6,8 @@ import 'package:dulno/product/scan/scan_cooldown.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:nfc_manager/nfc_manager_android.dart';
+import 'package:nfc_manager/nfc_manager_ios.dart';
 
 class ScanSession {
   final Function callback;
@@ -18,7 +20,7 @@ class ScanSession {
       NfcManager.instance.stopSession().catchError((_) {});
     }
     NfcManager.instance.startSession(
-      invalidateAfterFirstRead: true,
+      pollingOptions: {NfcPollingOption.iso14443},
       onDiscovered: (NfcTag tag) async {
         if (!kIsWeb && Platform.isAndroid && await ScanCooldown().isActive()) {
           processScanCooldown(context: context, readCallback: readCallback);
@@ -28,17 +30,21 @@ class ScanSession {
           readCallback();
         }
         try {
-          var payloadBytes =
-          tag.data["ndef"]["cachedMessage"]["records"][0]["payload"];
+          var message = Platform.isAndroid
+              ? NdefAndroid.from(tag)?.cachedNdefMessage
+              : NdefIos.from(tag)?.cachedNdefMessage;
+          var payloadBytes = message!.records[0].payload;
           var payloadString = utf8.decode(payloadBytes.sublist(1));
           processNFCTagScan(context, payloadString);
         } catch (exception) {
           displayNFCTagScanError(context);
         }
       },
-      onError: (NfcError error) async {
-        if (error.type == NfcErrorType.userCanceled ||
-            error.type == NfcErrorType.systemIsBusy) {
+      onSessionErrorIos: (NfcReaderSessionErrorIos error) {
+        if (error.code ==
+                NfcReaderErrorCodeIos.readerSessionInvalidationErrorUserCanceled ||
+            error.code ==
+                NfcReaderErrorCodeIos.readerSessionInvalidationErrorSystemIsBusy) {
           if (Navigator.canPop(context)) {
             Navigator.pop(context);
           }
