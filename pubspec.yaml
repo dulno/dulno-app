@@ -51,7 +51,7 @@ dependencies:
   skeletonizer: ^3.0.0
   flutter_map: ^8.3.2
   flutter_map_cancellable_tile_provider: ^3.1.1
-  latlong2: ^0.9.1
+  latlong2: ^0.10.1
   path: ^1.9.0
   path_provider: ^2.1.6
   font_awesome_flutter: ^11.0.0
