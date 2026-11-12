@@ -47,7 +47,7 @@ dependencies:
   nfc_manager: ^4.2.1
   flutter_nfc_kit: ^3.7.0
   app_settings: ^9.0.1
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.3
   skeletonizer: ^3.0.0
   flutter_map: ^8.3.2
   flutter_map_cancellable_tile_provider: ^3.1.1
